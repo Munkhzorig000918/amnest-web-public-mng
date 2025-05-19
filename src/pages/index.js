@@ -2,6 +2,7 @@ import Layout from "../components/Layout";
 import Image from "next/image";
 import BannerSlider from "../components/BannerSlider";
 import { bannerImages } from "../constants/bannerImages";
+import Button from "@/components/Button";
 
 export default function Home() {
   // Example news items with long text
@@ -73,9 +74,7 @@ export default function Home() {
         <div className="flex gap-x-10 p-4">
           <div className="h-full flex items-center justify-between border border-[#E3E3E3] rounded-xl p-8" style={{ writingMode: "vertical-rl", textOrientation: "upright" }}>
             <h2 className="text-2xl font-bold pl-2">ᠰᠡᢉᠦᠯ ᠦ᠋ᠨ ᠦᠶ᠎ᠡ ᠶ᠋ᠢᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠠᠯᠠᠭᠠᠷᢈᠢ ᠮᠡᠳᠡᢉᠡ</h2>
-            <button className="bg-[#FFFF00] rounded-[10px] w-[50px] py-4 flex items-center justify-center shadow-md hover:brightness-105 transition-all" style={{ writingMode: "vertical-rl", textOrientation: "upright" }}>
-              <p className="pl-2 font-bold">ᠪᠦᢈᠦ ᠮᠡᠳᠡᢉᠡ ᠶ᠋ᠢ ᠦᠵᠡᢈᠦ</p>
-            </button>
+            <Button text={"ᠪᠦᢈᠦ ᠮᠡᠳᠡᢉᠡ ᠶ᠋ᠢ ᠦᠵᠡᢈᠦ"} type="primary" />
           </div>
           <div className="grid grid-cols-2 grid-rows-3 gap-10">
             {newsItems.map((item) => (
@@ -90,13 +89,9 @@ export default function Home() {
                     fill
                     className="object-cover rounded-xl"
                   />
-                  <div className="absolute top-0 right-0 w-[50px] py-4 bg-[#FFFF00] rounded-[10px] flex items-center justify-center" style={{ writingMode: "vertical-lr", textOrientation: "upright" }}>
-                    <p className="pl-2 font-bold">ᠮᠡᠳᠡᢉᠡ</p>
-                  </div>
+                  <Button text={"ᠮᠡᠳᠡᢉᠡ"} type="primary" className="absolute top-0 right-0 text-black" />
                 </div>
-                <button className="rounded-[10px] w-[50px] border border-[#E3E3E3] py-4 flex items-center justify-center" style={{ writingMode: "vertical-lr", textOrientation: "upright" }}>
-                  <p className="pl-2 font-bold">ᠤᠩᠰᠢᠬᠤ</p>
-                </button>
+                <Button text={"ᠤᠩᠰᠢᠬᠤ"} type="secondary" className="text-black h-48" />
               </div>
             ))}
           </div>
@@ -126,9 +121,7 @@ export default function Home() {
                 {item.body}
               </div>
               <div className="flex items-end">
-                <button className="rounded-[10px] w-[50px] border border-[#E3E3E3] py-4 flex items-center justify-center" style={{ writingMode: "vertical-lr", textOrientation: "upright" }}>
-                  <p className="pl-2 font-bold" style={{ writingMode: "vertical-lr", textOrientation: "upright" }}>ᠪᠢᠳᠡᠨ ᠦ᠋ ᠲᠡᠦᢈᠡ ᠶ᠋ᠢ ᠤᠩᠰᠢᠬᠤ</p>
-                </button>
+                <Button type="secondary" text={"ᠪᠢᠳᠡᠨ ᠦ᠋ ᠲᠡᠦᢈᠡ ᠶ᠋ᠢ ᠤᠩᠰᠢᠬᠤ"} />
               </div>
             </div>
           ))}

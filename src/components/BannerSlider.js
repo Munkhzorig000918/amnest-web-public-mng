@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Icon } from "@iconify/react";
+import Button from "./Button";
 
 export default function BannerSlider({ images, width = "100%" }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -77,9 +78,7 @@ export default function BannerSlider({ images, width = "100%" }) {
               <div className="absolute h-full top-0 left-0 bg-black/50 backdrop-blur-lg text-white max-w-xs rounded flex gap-8 p-16">
                 <h3 className="text-2xl font-bold mb-3" style={{ writingMode: "vertical-rl", textOrientation: "upright" }}>ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠤ᠋ᠨ ᠰᠢᠮᠫᠤᠽᠢᠦᠮ ᠒᠐᠒᠕</h3>
                 <p className="text-gray-200" style={{ writingMode: "vertical-rl", textOrientation: "upright" }}>«ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠤ᠋ᠨ ᠰᠢᠮᠫᠤᠽᠢᠦᠮ ᠒᠐᠒᠕- ᠳ᠋ᠤ» ᠢᠯᠡᠳᢈᠡᠯ ᠲᠠᠨᠢᠯᠴᠠᠭᠤᠯᠬᠤ</p>
-                <button className="bg-[#FFFF00] rounded-[10px] w-[50px] h-[200px] py-4 flex items-center justify-center shadow-md hover:brightness-105 transition-all" style={{ writingMode: "vertical-rl", textOrientation: "upright" }}>
-                  <p className="pl-2 font-bold text-black">ᠪᠦᢈᠦ ᠮᠡᠳᠡᢉᠡ ᠶ᠋ᠢ ᠦᠵᠡᢈᠦ</p>
-                </button>
+                <Button text={"ᠪᠦᢈᠦ ᠮᠡᠳᠡᢉᠡ ᠶ᠋ᠢ ᠦᠵᠡᢈᠦ"} type="primary" className="text-black h-48" />
               </div>
             )}
           </div>

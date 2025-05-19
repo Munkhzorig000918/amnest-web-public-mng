@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Icon } from "@iconify/react";
 import { useState } from "react";
+import Button from "./Button";
 
 export default function Header() {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -80,10 +81,8 @@ export default function Header() {
         <button className="p-4 hover:bg-gray-100 rounded-md transition-colors">
           <Icon icon={"lucide:search"} fontSize={25} />  
         </button>
-        <button className="bg-[#FFFF00] rounded-[10px] w-[50px] h-[150px] flex items-center justify-center shadow-md hover:brightness-105 transition-all" style={{ writingMode: "vertical-rl", textOrientation: "upright" }}>
-          <p className="pl-2 font-bold">ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠳᠡᠯᢉᠡᢉᠦᠷ</p>
-        </button>
+        <Button text={"ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠳᠡᠯᢉᠡᢉᠦᠷ"} type="primary" />
       </div>
     </div>
   );
-} 
+}
