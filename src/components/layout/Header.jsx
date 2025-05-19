@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Icon } from "@iconify/react";
 import { useState } from "react";
-import Button from "./Button";
+import Button from "@/components/Button";
 
 export default function Header() {
   const [showDropdown, setShowDropdown] = useState(false);

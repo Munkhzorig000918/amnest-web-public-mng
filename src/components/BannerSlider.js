@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { Icon } from "@iconify/react";
-import Button from "./Button";
+import Button from "@/components/Button";
 
 export default function BannerSlider({ images, width = "100%" }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -42,15 +41,10 @@ export default function BannerSlider({ images, width = "100%" }) {
     };
   }, [currentIndex, isAutoPlaying]);
   
-  // Get width in pixels for calculations
-  const widthValue = typeof width === 'string' && width.endsWith('rem') 
-    ? parseFloat(width) * 16 
-    : (width === '100%' ? '100%' : parseFloat(width));
-  
   return (
     <div 
-      className="relative h-full overflow-hidden m-4"
-      style={{ width }}
+      className="relative h-full overflow-hidden md:m-4"
+      style={{ width: width }}
     >
       {/* Banner Images */}
       <div 
@@ -71,11 +65,11 @@ export default function BannerSlider({ images, width = "100%" }) {
               alt={image.alt || `Banner image ${index + 1}`} 
               fill
               style={{ objectFit: "cover", objectPosition: "center" }}
-              className="rounded-xl"
+              className="md:rounded-xl"
               priority={index === 0}
             />
             {image.caption && (
-              <div className="absolute h-full top-0 left-0 bg-black/50 backdrop-blur-lg text-white max-w-xs rounded flex gap-8 p-16">
+              <div className="hidden md:flex absolute h-full top-0 left-0 bg-black/50 backdrop-blur-lg text-white max-w-xs rounded gap-8 p-16">
                 <h3 className="text-2xl font-bold mb-3" style={{ writingMode: "vertical-rl", textOrientation: "upright" }}>ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠤ᠋ᠨ ᠰᠢᠮᠫᠤᠽᠢᠦᠮ ᠒᠐᠒᠕</h3>
                 <p className="text-gray-200" style={{ writingMode: "vertical-rl", textOrientation: "upright" }}>«ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠤ᠋ᠨ ᠰᠢᠮᠫᠤᠽᠢᠦᠮ ᠒᠐᠒᠕- ᠳ᠋ᠤ» ᠢᠯᠡᠳᢈᠡᠯ ᠲᠠᠨᠢᠯᠴᠠᠭᠤᠯᠬᠤ</p>
                 <Button text={"ᠪᠦᢈᠦ ᠮᠡᠳᠡᢉᠡ ᠶ᠋ᠢ ᠦᠵᠡᢈᠦ"} type="primary" className="text-black h-48" />
@@ -86,12 +80,12 @@ export default function BannerSlider({ images, width = "100%" }) {
       </div>
       
       {/* Navigation Controls */}
-      <div className="absolute right-10 bottom-10 flex justify-center gap-3 z-10">
+      <div className="absolute right-5 bottom-5 md:right-10 md:bottom-10 flex justify-center gap-2 md:gap-3 z-10">
         {images.map((_, index) => (
           <button 
             key={index}
             onClick={() => goToSlide(index)} 
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+            className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
               currentIndex === index 
                 ? 'bg-white scale-125' 
                 : 'bg-white/40 hover:bg-white/70'
