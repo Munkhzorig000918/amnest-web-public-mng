@@ -1,7 +1,8 @@
+import { useState } from "react";
 import Image from "next/image";
 import { Icon } from "@iconify/react";
-import { useState } from "react";
 import Button from "@/components/Button";
+import Link from "next/link";
 
 export default function Header() {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -11,11 +12,11 @@ export default function Header() {
   };
 
   return (
-    <div className="h-full min-w-[100px] inline-flex flex-col justify-between bg-white border-r border-[#E3E3E3] z-20 shadow-md">
+    <div className="h-full min-w-[100px] inline-flex flex-col justify-between bg-white border-r border-[#E3E3E3] z-20">
       <div className="flex flex-col items-center">
-        <div className="py-4 px-2">
+        <Link href="/" className="py-4 px-2">
           <Image src="/images/logo.png" alt="logo" width={80} height={80} className="object-contain" />
-        </div>
+        </Link>
         <div className="mt-4 flex flex-col gap-[10px] items-center">
           <div className="p-4 cursor-pointer hover:bg-gray-100 rounded-md transition-colors relative" onClick={toggleDropdown}>
             <Image src="/images/menu1.png" alt="menu1" width={25} height={25} />
@@ -56,9 +57,11 @@ export default function Header() {
               </>
             )}
           </div>
-          <div className="p-4 cursor-pointer hover:bg-gray-100 rounded-md transition-colors">
-            <Image src="/images/menu2.png" alt="menu2" width={25} height={25} />
-          </div>
+          <Link href="/campaign">
+            <div className="p-4 cursor-pointer hover:bg-gray-100 rounded-md transition-colors">
+              <Image src="/images/menu2.png" alt="menu2" width={25} height={25} />
+            </div>
+          </Link>
           <div className="p-4 cursor-pointer hover:bg-gray-100 rounded-md transition-colors">
             <Image src="/images/menu3.png" alt="menu3" width={25} height={25} />
           </div>

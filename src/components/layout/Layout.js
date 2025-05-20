@@ -26,19 +26,9 @@ export default function Layout({ children }) {
   return (
     <>
       {/* Desktop Layout */}
-      <div 
-        ref={scrollRef}
-        className="hidden md:flex fixed top-0 left-0 h-screen w-full overflow-x-auto overflow-y-hidden whitespace-nowrap scroll-smooth scrollbar-hide"
-      >
-        {/* Header - fixed width */}
+      <div className="h-screen flex items-center justify-start">
         <Header />
-
-        {/* Main Content - fluid width */}
-        <div className="h-full flex-shrink-0 flex">
-          {children}
-        </div>
-
-        {/* Footer - fixed width */}
+        {children}
         <Footer />
       </div>
 

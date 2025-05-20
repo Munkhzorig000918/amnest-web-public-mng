@@ -39,11 +39,11 @@ export default function BannerSlider({ images, width = "100%" }) {
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [currentIndex, isAutoPlaying]);
+  }, [currentIndex, isAutoPlaying, nextSlide]);
   
   return (
     <div 
-      className="relative h-full overflow-hidden md:m-4"
+      className="relative overflow-hidden md:m-4"
       style={{ width: width }}
     >
       {/* Banner Images */}
@@ -69,10 +69,10 @@ export default function BannerSlider({ images, width = "100%" }) {
               priority={index === 0}
             />
             {image.caption && (
-              <div className="hidden md:flex absolute h-full top-0 left-0 bg-black/50 backdrop-blur-lg text-white max-w-xs rounded gap-8 p-16">
+              <div className="hidden md:flex absolute h-full top-0 left-0 bg-black/50 backdrop-blur-lg text-white max-w-xs rounded-xl gap-8 p-16">
                 <h3 className="text-2xl font-bold mb-3" style={{ writingMode: "vertical-rl", textOrientation: "upright" }}>ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠤ᠋ᠨ ᠰᠢᠮᠫᠤᠽᠢᠦᠮ ᠒᠐᠒᠕</h3>
                 <p className="text-gray-200" style={{ writingMode: "vertical-rl", textOrientation: "upright" }}>«ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠤ᠋ᠨ ᠰᠢᠮᠫᠤᠽᠢᠦᠮ ᠒᠐᠒᠕- ᠳ᠋ᠤ» ᠢᠯᠡᠳᢈᠡᠯ ᠲᠠᠨᠢᠯᠴᠠᠭᠤᠯᠬᠤ</p>
-                <Button text={"ᠪᠦᢈᠦ ᠮᠡᠳᠡᢉᠡ ᠶ᠋ᠢ ᠦᠵᠡᢈᠦ"} type="primary" className="text-black h-48" />
+                <Button text={"ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ"} type="primary" className="text-black h-40" />
               </div>
             )}
           </div>
