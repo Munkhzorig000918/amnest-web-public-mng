@@ -2,7 +2,6 @@ import Image from "next/image";
 import Button from "@/components/Button";
 import BannerSlider from "@/components/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
-import SectionTitle from "@/components/SectionTitle";
 
 export default function HomeDesktop() {
   return (
@@ -10,11 +9,15 @@ export default function HomeDesktop() {
       <BannerSlider images={bannerImages} width="90rem" />
       <div className="h-full p-4">
         <div className="h-full flex gap-10">
-          <SectionTitle
-            title="ᠰᠡᢉᠦᠯ ᠦ᠋ᠨ ᠦᠶ᠎ᠡ ᠶ᠋ᠢᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠠᠯᠠᠭᠠᠷᢈᠢ ᠮᠡᠳᠡᢉᠡ"
-            containerClassName="h-full flex flex-col items-center justify-between border border-[#E3E3E3] rounded-xl p-8"
-            button={<Button text={"ᠪᠦᢈᠦ ᠮᠡᠳᠡᢉᠡ ᠶ᠋ᠢ ᠦᠵᠡᢈᠦ"} type="primary" />}
-          />
+          <div className="h-full flex flex-col items-center justify-between border border-[#E3E3E3] rounded-xl p-8">
+            <h2
+              className="text-2xl font-bold pl-2"
+              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+            >
+              ᠰᠡᢉᠦᠯ ᠦ᠋ᠨ ᠦᠶ᠎ᠡ ᠶ᠋ᠢᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠠᠯᠠᠭᠠᠷᢈᠢ ᠮᠡᠳᠡᢉᠡ
+            </h2>
+            <Button text={"ᠪᠦᢈᠦ ᠮᠡᠳᠡᢉᠡ ᠶ᠋ᠢ ᠦᠵᠡᢈᠦ"} type="primary" />
+          </div>
           <div className="h-full grid grid-cols-2 grid-rows-3 gap-10">
             {newsItems.map((item) => (
               <div
