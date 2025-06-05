@@ -57,7 +57,7 @@ export default function HomeDesktop() {
           <img
             src="/images/youthpoweraction.png"
             alt=""
-            className="w-[283px] h-[400px]"
+            className="min-w-[283px] min-h-[400px] max-w-[283px] max-h-[400px]"
           />
           <div className="flex gap-12">
             <p
