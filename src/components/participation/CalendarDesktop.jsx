@@ -1,25 +1,45 @@
 import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import Button from "../Button";
 
 export default function CalendarDesktop() {
   const [currentDate, setCurrentDate] = useState(new Date(2025, 3, 1)); // April 2025
   const [selectedDate, setSelectedDate] = useState(null);
 
   const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "ᠨᠢᠭᠡᠳᠦᠭᠡᠷ ᠰᠠᠷ᠎ᠠ",
+    "ᠬᠣᠶᠠᠳᠤᠭᠠᠷ ᠰᠠᠷ᠎ᠠ",
+    "ᠭᠤᠷᠪᠠᠳᠤᠭᠠᠷ ᠰᠠᠷ᠎ᠠ",
+    "ᠳᠥᠷᠪᠡᠳᠦᠭᠡᠷ ᠰᠠᠷ᠎ᠠ",
+    "ᠲᠠᠪᠤᠳᠤᠭᠠᠷ ᠰᠠᠷ᠎ᠠ",
+    "ᠵᠢᠷᠭᠤᠳᠤᠭᠠᠷ ᠰᠠᠷ᠎ᠠ",
+    "ᠳᠣᠯᠤᠳᠤᠭᠠᠷ ᠰᠠᠷ᠎ᠠ",
+    "ᠨᠠᠢᠮᠠᠳᠤᠭᠠᠷ ᠰᠠᠷ᠎ᠠ",
+    "ᠶᠡᠰᠦᠳᠦᠭᠡᠷ ᠰᠠᠷ᠎ᠠ",
+    "ᠠᠷᠪᠠᠳᠤᠭᠠᠷ ᠰᠠᠷ᠎ᠠ",
+    "ᠠᠷᠪᠠᠨ ᠨᠢᠭᠡᠳᠦᠭᠡᠷ ᠰᠠᠷ᠎ᠠ",
+    "ᠠᠷᠪᠠᠨ ᠬᠣᠶᠠᠳᠤᠭᠠᠷ ᠰᠠᠷ᠎ᠠ",
   ];
 
-  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const daysOfWeek = [
+    "ᠨᠠᠷᠠᠨ",
+    "ᠰᠠᠷᠠᠨ",
+    "ᠠᠩᠭᠠᠷᠠᠭ",
+    "ᠯᠬᠠᠭᠠᠨ",
+    "ᠫᠦᠷᠡᠪ",
+    "ᠪᠠᠰᠠᠩ",
+    "ᠪᠢᠮᠪᠠ",
+  ];
+
+  // Convert Arabic numerals to Mongolian Bichig numerals
+  const toMongolianNumerals = (num) => {
+    const mongolianDigits = ["᠐", "᠑", "᠒", "᠓", "᠔", "᠕", "᠖", "᠗", "᠘", "᠙"];
+    return num
+      .toString()
+      .split("")
+      .map((digit) => mongolianDigits[parseInt(digit)])
+      .join("");
+  };
 
   // Sample events data
   const events = {
@@ -50,6 +70,11 @@ export default function CalendarDesktop() {
     });
   };
 
+  const navigateToToday = () => {
+    setCurrentDate(new Date());
+    setSelectedDate(null);
+  };
+
   const renderCalendarDays = () => {
     const daysInMonth = getDaysInMonth(currentDate);
     const firstDay = getFirstDayOfMonth(currentDate);
@@ -62,9 +87,9 @@ export default function CalendarDesktop() {
       days.push(
         <div
           key={`prev-${day}`}
-          className="border border-gray-200 p-3 text-gray-400 text-sm cursor-pointer hover:bg-gray-50 flex flex-col h-full"
+          className="col-span-1 border border-gray-200 p-2 text-gray-400 text-sm cursor-pointer hover:bg-gray-50 flex flex-col h-full min-w-[240px]"
         >
-          {day}
+          {toMongolianNumerals(day)}
         </div>
       );
     }
@@ -80,15 +105,15 @@ export default function CalendarDesktop() {
       days.push(
         <div
           key={day}
-          className={`border border-gray-200 p-3 text-sm cursor-pointer hover:bg-gray-50 relative flex flex-col h-full ${
-            isSelected ? "bg-blue-100" : ""
+          className={`border border-gray-200 p-2 text-sm cursor-pointer hover:bg-gray-50 relative flex flex-col h-full min-w-[240px] ${
+            isSelected ? "bg-yellow-100" : ""
           }`}
           onClick={() => setSelectedDate(dateString)}
         >
-          <span className="font-medium">{day}</span>
+          <span className="font-medium">{toMongolianNumerals(day)}</span>
           {event && (
             <div
-              className={`absolute bottom-2 left-2 right-2 ${event.color} rounded px-2 py-1 text-xs truncate`}
+              className={`absolute bottom-1 left-1 right-1 ${event.color} rounded px-1 py-0.5 text-xs truncate`}
             >
               {event.title}
             </div>
@@ -103,9 +128,9 @@ export default function CalendarDesktop() {
       days.push(
         <div
           key={`next-${day}`}
-          className="border border-gray-200 p-3 text-gray-400 text-sm cursor-pointer hover:bg-gray-50 flex flex-col h-full"
+          className="border border-gray-200 p-2 text-gray-400 text-sm cursor-pointer hover:bg-gray-50 flex flex-col h-full min-w-[240px]"
         >
-          {day}
+          {toMongolianNumerals(day)}
         </div>
       );
     }
@@ -114,9 +139,9 @@ export default function CalendarDesktop() {
   };
 
   return (
-    <div className="h-full flex gap-10 overflow-x-auto w-auto flex-shrink-0">
+    <div className="h-full flex gap-10 p-14 overflow-x-auto w-auto flex-shrink-0">
       {/* Left side - Legend */}
-      <div className="h-full p-20 flex gap-20">
+      <div className="h-full flex gap-10">
         <div className="h-full flex gap-12">
           <h2
             className="text-base font-bold"
@@ -148,8 +173,8 @@ export default function CalendarDesktop() {
               textOrientation: "upright",
             }}
           >
-            ᠵᠠᢈᠢᠳᠠᠯ ᠳ᠋ᠤ ᠭᠠᠷ ᠤ᠋ᠨ ᠦᠰᠦᢉ ᠵᠢᠷᠤᠵᠤ᠂ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠰᠠᠶᠢᠨ ᠳᠤᠷ
-            ᠠ᠋ᠠ ᠶ᠋ᠢᠨ ᠠᠵᠢᠯ ᠠ᠋ᠠ ᠶ᠋ᠢᠨ ᠠᠵᠢᠯ ᢈᠢᠵᠦ᠂ ᢉᠡᠰᠢᢉᠦᠨ ᠪᠣᠯᠬᠤ ᠪᠣᠯᠤᠮᠵᠢ ᠲᠠᠢ᠃
+            ᠲᠠᠨ ᠤ᠋ ᠣᠷᠤᠯᠴᠠᠬᠤ ᠪᠣᠯᠤᠮᠵᠢᠲᠠᠢ ᠤᠯᠠᠮᠵᠢᠯᠠᠯᠲᠤ᠂ ᠵᠢᠯ ᠪᠣᠯᠭᠠᠨ ᠵᠣᢈᠢᠶᠠᠨ
+            ᠪᠠᠶᠢᠭᠤᠯᠳᠠᠭ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠨᠦ᠋ᢉᠦᠳ᠃
           </h2>
           <div className="flex flex-col gap-2">
             <div className="bg-[#D9D9D9] w-4 h-4 aspect-square"></div>
@@ -193,54 +218,32 @@ export default function CalendarDesktop() {
       </div>
 
       {/* Right side - Calendar Grid */}
-      <div className="flex-1 p-6 bg-white flex flex-col h-full">
+      <div className="flex-1 bg-white flex flex-col h-full">
         {/* Calendar Header */}
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <button
+          <div className="flex items-center gap-2">
+            <Button
+              text={<ChevronLeft />}
+              type="chevron"
               onClick={() => navigateMonth(-1)}
-              className="p-2 hover:bg-gray-100 rounded-md transition-colors"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-            </button>
-            <button
+            />
+            <Button
+              text={<ChevronRight />}
+              type="chevron"
               onClick={() => navigateMonth(1)}
-              className="p-2 hover:bg-gray-100 rounded-md transition-colors"
+            />
+            <button
+              onClick={navigateToToday}
+              className="px-4 py-2 hover:bg-gray-100 text-sm border rounded-md transition-colors"
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
+              <p>ᠥᠨᠥᠳᠦᠷ</p>
             </button>
-            <div className="text-sm text-gray-600">Өмнөдөр</div>
           </div>
           <h2 className="text-xl font-semibold">
-            {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
+            {monthNames[currentDate.getMonth()]}{" "}
+            {toMongolianNumerals(currentDate.getFullYear())}
           </h2>
-          <button className="px-4 py-2 bg-gray-100 text-sm rounded-md hover:bg-gray-200 transition-colors">
-            Day Grid Month
-          </button>
+          <div></div>
         </div>
 
         {/* Calendar Grid */}
@@ -258,10 +261,7 @@ export default function CalendarDesktop() {
           </div>
 
           {/* Calendar days */}
-          <div
-            className="grid grid-cols-7 flex-1"
-            style={{ gridTemplateRows: "repeat(6, 1fr)" }}
-          >
+          <div className="grid grid-cols-7 flex-1 auto-rows-fr">
             {renderCalendarDays()}
           </div>
         </div>
