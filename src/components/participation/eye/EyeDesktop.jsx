@@ -1,7 +1,7 @@
 import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 
-export default function HomeDesktop() {
+export default function EyeDesktop() {
   return (
     <div className="h-full flex gap-10 overflow-x-auto w-auto flex-shrink-0">
       <BannerSlider images={bannerImages} width="90rem" />

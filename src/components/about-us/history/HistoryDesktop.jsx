@@ -4,7 +4,7 @@ import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import SectionTitle from "@/components/common/SectionTitle";
 
-export default function HomeDesktop() {
+export default function HistoryDesktop() {
   return (
     <div className="h-full flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-auto">
       <BannerSlider images={bannerImages} width="90rem" />

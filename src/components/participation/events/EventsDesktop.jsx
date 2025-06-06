@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Button from "../../common/Button";
 
-export default function CalendarDesktop() {
+export default function EventsDesktop() {
   const [currentDate, setCurrentDate] = useState(new Date(2025, 3, 1)); // April 2025
   const [showModal, setShowModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);

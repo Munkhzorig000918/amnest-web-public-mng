@@ -5,7 +5,7 @@ import { bannerImages } from "@/constants/bannerImages";
 import SectionTitle from "@/components/common/SectionTitle";
 import { Download } from "lucide-react";
 
-export default function HomeDesktop() {
+export default function YouthDesktop() {
   return (
     <div className="h-full flex gap-10 overflow-x-auto w-auto flex-shrink-0">
       <BannerSlider images={bannerImages} width="90rem" />
