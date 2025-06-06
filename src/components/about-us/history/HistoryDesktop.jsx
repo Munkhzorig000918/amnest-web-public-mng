@@ -1,12 +1,12 @@
 import Image from "next/image";
-import Button from "@/components/Button";
-import BannerSlider from "@/components/BannerSlider";
+import Button from "@/components/common/Button";
+import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
-import SectionTitle from "@/components/SectionTitle";
+import SectionTitle from "@/components/common/SectionTitle";
 
 export default function HomeDesktop() {
   return (
-    <div className="h-full flex gap-20 overflow-x-auto w-auto flex-shrink-0">
+    <div className="h-full flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-auto">
       <BannerSlider images={bannerImages} width="90rem" />
 
       <div className="flex gap-12 p-4 h-full">

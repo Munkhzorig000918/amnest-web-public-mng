@@ -3,10 +3,10 @@ import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import Button from "../common/Button";
+import Button from "@/components/common/Button";
 import { ChevronUp, ChevronDown } from "lucide-react";
 import { useRef, useState } from "react";
-import SectionTitle from "../common/SectionTitle";
+import SectionTitle from "@/components/common/SectionTitle";
 
 // Custom hook for Mongolian numeral conversion
 const useMongolianNumeral = () => {
@@ -33,7 +33,7 @@ const useMongolianNumeral = () => {
   return { toMongolianNumeral };
 };
 
-export default function RightSwiper({ title, description, sectionTitle }) {
+export default function AssemblySwiper({ title, description, sectionTitle }) {
   const swiperRef = useRef(null);
   const [currentSlide, setCurrentSlide] = useState(1);
   const { toMongolianNumeral } = useMongolianNumeral();
@@ -41,39 +41,33 @@ export default function RightSwiper({ title, description, sectionTitle }) {
   const slides = [
     {
       id: 1,
-      title: "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠶᠡᠷᠦᠩᢈᠡᠢ ᠣᠶᠢᠯᠠᠭᠠᠯᠲᠠ",
+      title: "᠒᠐᠒᠔ ᠣᠨ: ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠤ᠋ ᠲᠠᠶᠢᠯᠤᠨ",
       image: "/images/dummy-image.png",
-      duration: "᠙᠐ ᠮᠢᠨ",
     },
     {
       id: 2,
-      title: "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠶᠡᠷᠦᠩᢈᠡᠢ ᠣᠶᠢᠯᠠᠭᠠᠯᠲᠠ",
+      title: "᠒᠐᠒᠔ ᠣᠨ: ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠤ᠋ ᠲᠠᠶᠢᠯᠤᠨ",
       image: "/images/dummy-image.png",
-      duration: "᠙᠐ ᠮᠢᠨ",
     },
     {
       id: 3,
-      title: "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠶᠡᠷᠦᠩᢈᠡᠢ ᠣᠶᠢᠯᠠᠭᠠᠯᠲᠠ",
+      title: "᠒᠐᠒᠔ ᠣᠨ: ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠤ᠋ ᠲᠠᠶᠢᠯᠤᠨ",
       image: "/images/dummy-image.png",
-      duration: "᠙᠐ ᠮᠢᠨ",
     },
     {
       id: 4,
-      title: "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠶᠡᠷᠦᠩᢈᠡᠢ ᠣᠶᠢᠯᠠᠭᠠᠯᠲᠠ",
+      title: "᠒᠐᠒᠔ ᠣᠨ: ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠤ᠋ ᠲᠠᠶᠢᠯᠤᠨ",
       image: "/images/dummy-image.png",
-      duration: "᠙᠐ ᠮᠢᠨ",
     },
     {
       id: 5,
-      title: "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠶᠡᠷᠦᠩᢈᠡᠢ ᠣᠶᠢᠯᠠᠭᠠᠯᠲᠠ",
+      title: "᠒᠐᠒᠔ ᠣᠨ: ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠤ᠋ ᠲᠠᠶᠢᠯᠤᠨ",
       image: "/images/dummy-image.png",
-      duration: "᠙᠐ ᠮᠢᠨ",
     },
     {
       id: 6,
-      title: "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠶᠡᠷᠦᠩᢈᠡᠢ ᠣᠶᠢᠯᠠᠭᠠᠯᠲᠠ",
+      title: "᠒᠐᠒᠔ ᠣᠨ: ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠤ᠋ ᠲᠠᠶᠢᠯᠤᠨ",
       image: "/images/dummy-image.png",
-      duration: "᠙᠐ ᠮᠢᠨ",
     },
   ];
 
@@ -107,7 +101,6 @@ export default function RightSwiper({ title, description, sectionTitle }) {
       >
         {description}
       </p>
-      <Button text={"ᠪᠦᢉᠦᠳᠡ ᠶ᠋ᠢ ᠦᠵᠡᢈᠦ"} type="secondary" />
       <SectionTitle title={sectionTitle} />
       <Swiper
         direction="vertical"
@@ -127,7 +120,7 @@ export default function RightSwiper({ title, description, sectionTitle }) {
             <div className="w-full h-full flex gap-4">
               <div className="flex flex-col items-center gap-4 justify-between">
                 <p
-                  className="sm"
+                  className="text-sm font-bold"
                   style={{
                     writingMode: "vertical-lr",
                     textOrientation: "upright",
@@ -135,34 +128,12 @@ export default function RightSwiper({ title, description, sectionTitle }) {
                 >
                   {slide.title}
                 </p>
-                <p
-                  className="sm"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                >
-                  {slide.duration}
-                </p>
               </div>
-              <div className="relative z-0 aspect-square">
-                <img
-                  src={slide.image}
-                  alt={""}
-                  className="rounded-lg aspect-square min-h-[270px] min-w-[270px] relative z-0"
-                />
-                <Button text={"ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ"} type="details" />
-              </div>
-
-              <p
-                className="text-sm flex justify-end"
-                style={{
-                  writingMode: "vertical-lr",
-                  textOrientation: "upright",
-                }}
-              >
-                ᠲᠤᠩ ᠤᠳᠠᠬᠤ ᠦᢉᠡᠢ
-              </p>
+              <img
+                src={slide.image}
+                alt={""}
+                className="rounded-lg min-w-[200px] shadow-lg relative z-0 aspect-[9/16]"
+              />
             </div>
           </SwiperSlide>
         ))}

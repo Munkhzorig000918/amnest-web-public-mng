@@ -1,8 +1,8 @@
 import Image from "next/image";
-import Button from "@/components/Button";
-import BannerSlider from "@/components/BannerSlider";
+import Button from "@/components/common/Button";
+import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
-import SectionTitle from "@/components/SectionTitle";
+import SectionTitle from "@/components/common/SectionTitle";
 import { Download } from "lucide-react";
 
 export default function HomeDesktop() {

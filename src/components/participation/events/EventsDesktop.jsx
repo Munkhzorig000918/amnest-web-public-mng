@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import Button from "../Button";
+import Button from "../../common/Button";
 
 export default function CalendarDesktop() {
   const [currentDate, setCurrentDate] = useState(new Date(2025, 3, 1)); // April 2025

@@ -1,4 +1,4 @@
-import BannerSlider from "@/components/BannerSlider";
+import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 
 export default function HomeDesktop() {
@@ -7,41 +7,35 @@ export default function HomeDesktop() {
       <BannerSlider images={bannerImages} width="90rem" />
 
       <div className="h-full p-4 flex gap-20">
-        <div className="flex gap-10">
-          <p
-            className="text-sm"
-            style={{
-              writingMode: "vertical-lr",
-              textOrientation: "upright",
-            }}
-          >
-            ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠠᠩᠬᠠᠷᠤᠯ ᠲᠠᠲᠠᠭᠰᠠᠨ ᠠᠰᠠᠭᠤᠳᠠᠯ ᠤ᠋ᠳ ᠢ᠋ ᠡᠷᠢᠯᢈᠢᠯᠡᢈᠦ᠂
-            ᠰᠢᠢᠳᠪᠦᠷᠢᠯᠡᢈᠦ ᠠᠷᠭ᠎ᠠ ᠵᠠᠮ ᠢ᠋ ᠲᠣᠳᠤᠷᠬᠠᠶᠢᠯᠠᠬᠤ ᠳ᠋ᠤ ᠢᠷᢉᠡᠳ ᠦ᠋ᠨ ᠣᠷᠤᠯᠴᠠᠭ᠎ᠠ ᠶ᠋ᠢ
-            ᠳᠡᠮᠵᠢᢈᠦ ᠵᠣᠷᠢᠯᠭ᠎ᠠ ᠪᠠᠷ ᠶᠠᠪᠤᠭᠤᠯᠵᠤ ᠪᠤᠢ “ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠨᠢᠳᠦ” ᠦᠨᠳᠦᠰᠦᠨ
-            ᠦ᠋ ᠮᠡᠳᠡᢉᠡᠯᠡᠯ ᠦ᠋ᠨ ᠮᠠᠷᠠᠹᠤᠨ᠃
-          </p>
-          <h2
-            className="text-2xl font-bold"
-            style={{
-              writingMode: "vertical-lr",
-              textOrientation: "upright",
-            }}
-          >
-            ᠶᠠᠭᠠᢈᠢᠭᠰᠠᠨ ᠬᠠᠷᠠᠩᠬᠤᠢ ᠶᠤᠮ ᠪᠤᠢ ᢉᠡᠵᠦ ᠬᠠᠰᢈᠢᠷᠤᠭᠰᠠᠨ ᠠ᠋ᠴᠠ ᠶᠠᠳᠠᠵᠤ ᠨᠢᢉᠡ ᠴᠤ
-            ᢉᠡᠰᠡᠨ ᠯᠠ ᠲᠠ ᠥᠪᠡᠷ ᠢ᠋ᠶᠡᠨ ᠠᠰᠠᠭ᠎ᠠ᠃ ᠃ ᠃
-          </h2>
-        </div>
-        <div className="h-full flex justify-center items-center gap-16">
-          <p
-            className="text-2xl font-bold"
-            style={{
-              writingMode: "vertical-lr",
-              textOrientation: "upright",
-            }}
-          >
-            ᠮᠣᠩᠭᠣᠯ ᠤᠯᠤᠰ ᠤ᠋ᠨ ᠭᠠᠵᠠᠷ ᠤ᠋ᠨ ᠵᠢᠷᠤᠭ
-          </p>
-          <img src="/images/mgl-map.png" alt="" className="h-1/2" />
+        <div className="flex gap-24">
+          {volunteerItems.map((item) => (
+            <div
+              key={item.id}
+              className="flex gap-7 col-span-1 w-full max-w-max"
+            >
+              {item.title && (
+                <p
+                  className="text-sm font-bold bg-[#FFFF00] py-6 flex justify-center items-center pl-2 h-full w-12"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                >
+                  {item.title}
+                </p>
+              )}
+
+              <p
+                className="text-sm font-bold"
+                style={{
+                  writingMode: "vertical-lr",
+                  textOrientation: "upright",
+                }}
+              >
+                {item.description}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </div>

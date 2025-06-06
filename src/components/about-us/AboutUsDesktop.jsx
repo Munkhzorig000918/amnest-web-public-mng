@@ -1,12 +1,12 @@
 import Image from "next/image";
-import Button from "@/components/Button";
-import BannerSlider from "@/components/BannerSlider";
+import Button from "@/components/common/Button";
+import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
-import SectionTitle from "@/components/SectionTitle";
+import SectionTitle from "@/components/common/SectionTitle";
 
 export default function HomeDesktop() {
   return (
-    <div className="h-full flex gap-20 overflow-x-auto w-auto flex-shrink-0">
+    <div className="h-full flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-hidden">
       <BannerSlider images={bannerImages} width="90rem" />
       <div className="h-full p-4 flex gap-10">
         <h2
@@ -66,7 +66,7 @@ export default function HomeDesktop() {
         <SectionTitle title={"ᠪᠢᠳᠡ ᢈᠡᠷᢈᠢᠨ ᠥᢉᠡᠷᠡᠴᠢᠯᠡᠯᠲᠡ ᢈᠢᠳᠡᢉ ᠪᠤᠢ?"} />
         <div className="h-full grid grid-cols-2 grid-rows-2 gap-12 mr-20">
           {aboutItems.map((item) => (
-            <div key={item.id} className="flex items-start p-5 gap-4">
+            <div key={item.id} className="flex items-start p-5 gap-4 h-[600px]">
               <Image src={item.image} alt={item.title} width={80} height={80} />
               <h2
                 className="font-bold text-xl"

@@ -1,6 +1,6 @@
 import Image from "next/image";
-import Button from "@/components/Button";
-import BannerSlider from "@/components/BannerSlider";
+import Button from "@/components/common/Button";
+import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 
 export default function HomeDesktop() {

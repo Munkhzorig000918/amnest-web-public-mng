@@ -1,4 +1,4 @@
-import BannerSlider from "@/components/BannerSlider";
+import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 
 export default function HomeMobile() {

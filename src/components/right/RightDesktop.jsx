@@ -1,9 +1,9 @@
 import Image from "next/image";
-import Button from "@/components/Button";
-import BannerSlider from "@/components/BannerSlider";
+import Button from "@/components/common/Button";
+import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import RightSwiper from "./RightSwiper";
-import SectionTitle from "@/components/SectionTitle";
+import SectionTitle from "@/components/common/SectionTitle";
 
 export default function HomeDesktop() {
   return (
