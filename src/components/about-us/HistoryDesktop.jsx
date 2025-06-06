@@ -10,41 +10,39 @@ export default function HomeDesktop() {
       <BannerSlider images={bannerImages} width="90rem" />
 
       <div className="flex gap-12 p-4 h-full">
-        <div className="flex gap-12 p-4 h-full">
-          <SectionTitle
-            title={"ᠮᠣᠩᠭᠣᠯ ᠤ᠋ᠨ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠡᠰᠢᠨᠯ ᠦ᠋ᠨ ᠲᠡᠦᢈᠡᠨ ᠲᠣᠪᠴᠢᠶ᠎ᠠ"}
-          />
-          <div className="flex h-full">
-            {historyItems.map((h, i) => (
-              <div key={i} className="flex flex-col gap-2">
-                <div
-                  className={`h-1/2 flex px-16 justify-center ${
-                    i % 2 === 0 ? "items-end" : "items-start"
-                  } ${i % 2 === 1 ? "order-last" : ""}`}
+        <SectionTitle
+          title={"ᠮᠣᠩᠭᠣᠯ ᠤ᠋ᠨ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠡᠰᠢᠨᠯ ᠦ᠋ᠨ ᠲᠡᠦᢈᠡᠨ ᠲᠣᠪᠴᠢᠶ᠎ᠠ"}
+        />
+        <div className="flex h-full">
+          {historyItems.map((h, i) => (
+            <div key={i} className="flex flex-col gap-2">
+              <div
+                className={`h-1/2 flex px-16 justify-center ${
+                  i % 2 === 0 ? "items-end" : "items-start"
+                } ${i % 2 === 1 ? "order-last" : ""}`}
+              >
+                <p
+                  className="text-sm text-center max-h-[380px]"
+                  style={{
+                    writingMode: "vertical-lr",
+                  }}
                 >
-                  <p
-                    className="text-sm text-center max-h-[380px]"
-                    style={{
-                      writingMode: "vertical-lr",
-                    }}
-                  >
-                    {h.desc}
-                  </p>
-                </div>
-                <div className="relative my-5">
-                  <div className="w-full h-[1px] bg-black"></div>
-                  <div className="h-4 w-4 bg-black rounded-full absolute -top-2 left-1/2 -translate-x-1/2"></div>
-                </div>
-                <div
-                  className={`h-1/2 flex px-16 justify-center ${
-                    i % 2 === 0 ? "items-start" : "items-end"
-                  } ${i % 2 === 1 ? "order-first" : ""}`}
-                >
-                  <img src={h.image} className="max-w-[230px]" />
-                </div>
+                  {h.desc}
+                </p>
               </div>
-            ))}
-          </div>
+              <div className="relative my-5">
+                <div className="w-full h-[1px] bg-black"></div>
+                <div className="h-4 w-4 bg-black rounded-full absolute -top-2 left-1/2 -translate-x-1/2"></div>
+              </div>
+              <div
+                className={`h-1/2 flex px-16 justify-center ${
+                  i % 2 === 0 ? "items-start" : "items-end"
+                } ${i % 2 === 1 ? "order-first" : ""}`}
+              >
+                <img src={h.image} className="max-w-[230px]" />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
