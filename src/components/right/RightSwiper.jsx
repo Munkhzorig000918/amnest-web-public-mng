@@ -3,10 +3,10 @@ import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import Button from "../common/Button";
+import Button from "@/components/common/Button";
 import { ChevronUp, ChevronDown } from "lucide-react";
 import { useRef, useState } from "react";
-import SectionTitle from "../common/SectionTitle";
+import SectionTitle from "@/components/common/SectionTitle";
 
 // Custom hook for Mongolian numeral conversion
 const useMongolianNumeral = () => {
@@ -127,7 +127,7 @@ export default function RightSwiper({ title, description, sectionTitle }) {
             <div className="w-full h-full flex gap-4">
               <div className="flex flex-col items-center gap-4 justify-between">
                 <p
-                  className="sm"
+                  className="text-sm"
                   style={{
                     writingMode: "vertical-lr",
                     textOrientation: "upright",
@@ -136,7 +136,7 @@ export default function RightSwiper({ title, description, sectionTitle }) {
                   {slide.title}
                 </p>
                 <p
-                  className="sm"
+                  className="text-sm"
                   style={{
                     writingMode: "vertical-lr",
                     textOrientation: "upright",
