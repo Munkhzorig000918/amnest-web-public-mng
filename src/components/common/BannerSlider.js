@@ -42,7 +42,10 @@ export default function BannerSlider({ images, width = "100%" }) {
   }, [currentIndex, isAutoPlaying, nextSlide]);
 
   return (
-    <div className="relative overflow-hidden md:m-4" style={{ width: width }}>
+    <div
+      className="relative overflow-hidden md:m-4 h-full"
+      style={{ width: width }}
+    >
       {/* Banner Images */}
       <div
         className="h-full flex transition-transform duration-700 ease-in-out"

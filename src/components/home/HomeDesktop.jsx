@@ -6,7 +6,7 @@ import SectionTitle from "@/components/common/SectionTitle";
 
 export default function HomeDesktop() {
   return (
-    <div className="h-full flex gap-10 overflow-x-auto w-auto flex-shrink-0">
+    <div className="h-full gap-10 overflow-x-auto w-auto flex-shrink-0 hidden md:flex">
       <BannerSlider images={bannerImages} width="90rem" />
       <div className="h-full p-4">
         <div className="h-full flex gap-10">
@@ -73,7 +73,7 @@ export default function HomeDesktop() {
         </p>
       </div>
       <div className="h-full p-4">
-        <div className="h-full grid grid-cols-2 grid-rows-2 gap-[10px] mr-20">
+        <div className="h-full grid grid-cols-2 grid-rows-2 grid-flow-col gap-[10px] mr-20">
           {aboutItems.map((item) => (
             <div
               key={item.id}

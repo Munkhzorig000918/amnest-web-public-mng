@@ -26,7 +26,7 @@ export default function Layout({ children }) {
   return (
     <>
       {/* Desktop Layout */}
-      <div className="h-screen flex items-center justify-start">
+      <div className="h-screen items-center justify-start hidden md:flex">
         <Header />
         {children}
         <Footer />
@@ -35,9 +35,9 @@ export default function Layout({ children }) {
       {/* Mobile Layout */}
       <div className="block md:hidden">
         <HeaderMobile />
-          {children}
+        {children}
         <FooterMobile />
       </div>
     </>
   );
-} 
+}
