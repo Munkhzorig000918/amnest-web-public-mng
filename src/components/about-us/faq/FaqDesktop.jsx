@@ -18,7 +18,7 @@ export default function FaqDesktop() {
   };
 
   return (
-    <div className="h-full flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen">
+    <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen">
       <BannerSlider images={bannerImages} width="90rem" />
       <div className="flex gap-6 max-h-screen overflow-y-auto p-4">
         {faqItems.map((item, index) => (
