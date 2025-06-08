@@ -7,7 +7,7 @@ import StructureDiagram from "./StructureDiagram";
 
 export default function StructureDesktop() {
   return (
-    <div className="h-full flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen sm:overflow-y-hidden">
+    <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen sm:overflow-y-hidden">
       <BannerSlider images={bannerImages} width="90rem" />
 
       <div className="flex gap-12 p-4 h-full">
