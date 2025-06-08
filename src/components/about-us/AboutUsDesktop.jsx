@@ -6,7 +6,7 @@ import SectionTitle from "@/components/common/SectionTitle";
 
 export default function AboutUsDesktop() {
   return (
-    <div className="h-full flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-hidden">
+    <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-hidden">
       <BannerSlider images={bannerImages} width="90rem" />
       <div className="h-full p-4 flex gap-10">
         <h2
@@ -113,10 +113,11 @@ export default function AboutUsDesktop() {
                   <div className="h-4 w-4 bg-black rounded-full absolute -top-2 left-1/2 -translate-x-1/2"></div>
                 </div>
                 <div
-                  className={`h-1/2 flex px-16 justify-center ${
-                    i % 2 === 0 ? "items-start" : "items-end"
+                  className={`h-1/2 flex flex-col gap-3 px-16 items-center ${
+                    i % 2 === 0 ? "justify-start" : "justify-end"
                   } ${i % 2 === 1 ? "order-first" : ""}`}
                 >
+                  <h2 className="text-2xl text-start font-bold">{h.date}</h2>
                   <img src={h.image} className="max-w-[230px]" />
                 </div>
               </div>
