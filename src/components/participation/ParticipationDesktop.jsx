@@ -2,11 +2,10 @@ import Image from "next/image";
 import Button from "@/components/common/Button";
 import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
-import SectionTitle from "@/components/common/SectionTitle";
 
 export default function ParticipationDesktop() {
   return (
-    <div className="h-full flex gap-10 overflow-x-auto w-auto flex-shrink-0">
+    <div className="h-full hidden sm:flex gap-10 overflow-x-auto w-auto flex-shrink-0">
       <BannerSlider images={bannerImages} width="90rem" />
 
       <div className="h-full p-4 flex gap-20">
