@@ -35,10 +35,11 @@ export default function HistoryDesktop() {
                 <div className="h-4 w-4 bg-black rounded-full absolute -top-2 left-1/2 -translate-x-1/2"></div>
               </div>
               <div
-                className={`h-1/2 flex px-16 justify-center ${
-                  i % 2 === 0 ? "items-start" : "items-end"
+                className={`h-1/2 flex flex-col gap-2 px-16 items-center ${
+                  i % 2 === 0 ? "justify-start" : "justify-end"
                 } ${i % 2 === 1 ? "order-first" : ""}`}
               >
+                <p className="text-2xl font-bold">{h.date}</p>
                 <img src={h.image} className="max-w-[230px]" />
               </div>
             </div>
