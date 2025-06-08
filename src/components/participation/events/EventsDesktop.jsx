@@ -143,10 +143,14 @@ export default function EventsDesktop() {
     // Previous month's trailing days
     for (let i = firstDay - 1; i >= 0; i--) {
       const day = prevMonthDays - i;
+      const dayIndex = firstDay - 1 - i;
+      const isLastInRow = (dayIndex + 1) % 7 === 0;
       days.push(
         <div
           key={`prev-${day}`}
-          className="border border-gray-200 p-2 text-gray-400 text-sm cursor-pointer hover:bg-gray-50 flex flex-col h-full min-h-[80px] min-w-[240px]"
+          className={`border-b border-gray-200 p-2 text-gray-400 text-sm cursor-pointer hover:bg-gray-50 flex flex-col h-full min-h-[80px] min-w-[240px] ${
+            isLastInRow ? "" : "border-r"
+          }`}
         >
           {toMongolianNumerals(day)}
         </div>
@@ -159,13 +163,15 @@ export default function EventsDesktop() {
         currentDate.getMonth() + 1
       ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
       const event = events[dateString];
+      const dayIndex = firstDay + day - 1;
+      const isLastInRow = dayIndex % 7 === 0;
 
       days.push(
         <div
           key={day}
-          className={`border border-gray-200 p-2 text-sm cursor-pointer hover:bg-gray-50 relative flex flex-col h-full min-h-[80px] min-w-[240px] ${
-            event ? "hover:bg-blue-50" : ""
-          }`}
+          className={`border-b border-gray-200 p-2 text-sm cursor-pointer hover:bg-gray-50 relative flex flex-col h-full min-h-[80px] min-w-[240px] ${
+            isLastInRow ? "" : "border-r"
+          } ${event ? "hover:bg-blue-50" : ""}`}
           onClick={() => handleDayClick(dateString)}
         >
           <span className="font-medium">{toMongolianNumerals(day)}</span>
@@ -183,10 +189,14 @@ export default function EventsDesktop() {
     // Next month's leading days to fill the grid
     const totalCells = Math.ceil(days.length / 7) * 7;
     for (let day = 1; days.length < totalCells; day++) {
+      const dayIndex = days.length;
+      const isLastInRow = (dayIndex + 1) % 7 === 0;
       days.push(
         <div
           key={`next-${day}`}
-          className="border border-gray-200 p-2 text-gray-400 text-sm cursor-pointer hover:bg-gray-50 flex flex-col h-full min-h-[80px] min-w-[240px]"
+          className={`border-b border-gray-200 p-2 text-gray-400 text-sm cursor-pointer hover:bg-gray-50 flex flex-col h-full min-h-[80px] min-w-[240px] ${
+            isLastInRow ? "" : "border-r"
+          }`}
         >
           {toMongolianNumerals(day)}
         </div>
@@ -334,10 +344,12 @@ export default function EventsDesktop() {
         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden flex-1 flex flex-col">
           {/* Days of week header */}
           <div className="grid grid-cols-7 bg-gray-50">
-            {daysOfWeek.map((day) => (
+            {daysOfWeek.map((day, index) => (
               <div
                 key={day}
-                className="p-3 text-center text-sm font-medium text-gray-700 border-r border-gray-200 last:border-r-0"
+                className={`p-3 text-center text-sm font-medium text-gray-700 border-r border-gray-200 ${
+                  index === 6 ? "border-r-0" : ""
+                }`}
               >
                 {day}
               </div>
