@@ -6,7 +6,7 @@ import SectionTitle from "@/components/common/SectionTitle";
 
 export default function HistoryDesktop() {
   return (
-    <div className="h-full flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-auto">
+    <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-auto">
       <BannerSlider images={bannerImages} width="90rem" />
 
       <div className="flex gap-12 p-4 h-full">
