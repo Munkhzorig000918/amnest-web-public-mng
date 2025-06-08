@@ -8,7 +8,7 @@ import ReportSwiper from "./ReportSwiper";
 
 export default function ReportDesktop() {
   return (
-    <div className="h-full flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-hidden">
+    <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-hidden">
       <BannerSlider images={bannerImages} width="90rem" />
       <div className="flex gap-16 p-4 h-full">
         <ReportSwiper
