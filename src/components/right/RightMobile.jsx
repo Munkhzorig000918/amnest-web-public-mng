@@ -7,8 +7,8 @@ export default function RightMobile() {
     <div className="h-full flex flex-col sm:hidden gap-7">
       <BannerSlider images={bannerImages} width="90rem" />
       <div className="h-full p-4">
-        <div className="h-full flex gap-10">
-          <div className="flex gap-4 max-h-[200px]">
+        <div className="h-full flex flex-col gap-7">
+          <div className="flex gap-2 max-h-[200px] overflow-x-auto">
             <h1
               className="text-xs font-bold"
               style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
@@ -45,14 +45,16 @@ export default function RightMobile() {
               ᠲᠥᠯᠦᠪᠰᠢᢉᠦᠯᠵᠦ᠂ ᢈᠥᢉᠵᠢᢉᠦᠯᠵᠦ ᠴᠢᠳᠠᠨ᠎ᠠ᠃
             </p>
           </div>
-          {swiperItems.map((item) => (
-            <RightSwiper
-              key={item.id}
-              title={item.title}
-              description={item.description}
-              sectionTitle={item.sectionTitle}
-            />
-          ))}
+          <div className="flex flex-col gap-7 overflow-x-auto">
+            {swiperItems.map((item) => (
+              <RightSwiper
+                key={item.id}
+                title={item.title}
+                description={item.description}
+                sectionTitle={item.sectionTitle}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>

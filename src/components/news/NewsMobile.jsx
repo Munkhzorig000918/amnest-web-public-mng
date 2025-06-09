@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 export default function NewsMobile() {
   const [currentPage, setCurrentPage] = useState(1);
   const [activeCategory, setActiveCategory] = useState("news");
-  const itemsPerPage = 6; // Fewer items per page on mobile
+  const itemsPerPage = 9; // Fewer items per page on mobile
 
   // Filter news items by category
   const filteredItems = newsItems.filter(
