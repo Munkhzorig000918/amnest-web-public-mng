@@ -43,6 +43,99 @@ export default function EyeDesktop() {
           </p>
           <img src="/images/mgl-map.png" alt="" className="h-1/2" />
         </div>
+        <div className="flex gap-7 p-20">
+          <div className="flex gap-2">
+            <p
+              className="text-sm"
+              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+            >
+              ᠤᠲᠠᠰᠤᠨ ᠤ᠋ ᠳ᠋ᠤᠭᠠᠷ:
+            </p>
+            <input
+              type="text"
+              className="border border-gray-300 rounded-md p-2 w-20"
+              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+            />
+          </div>
+          <div className="flex gap-2">
+            <p
+              className="text-sm"
+              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+            >
+              ᠪᠠᠲᠤᠯᠠᠭᠠᠵᠢᠭᠤᠯᠬᠤ ᠻᠣᠳ*
+            </p>
+            <input
+              type="text"
+              className="border border-gray-300 rounded-md p-2 w-20"
+              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+            />
+          </div>
+          <div className="flex gap-2">
+            <p
+              className="text-sm"
+              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+            >
+              ᠪᠠᠶᠢᠷᠢᠰᠢᠯ*
+            </p>
+            <input
+              type="text"
+              className="border border-gray-300 rounded-md p-2 w-20"
+              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+            />
+          </div>
+          <div className="flex gap-2">
+            <p
+              className="text-sm"
+              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+            >
+              ᠭᠠᠷᠴᠠᠭ
+            </p>
+            <input
+              type="text"
+              className="border border-gray-300 rounded-md p-2 w-20"
+              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+            />
+          </div>
+          <div className="flex gap-2">
+            <p
+              className="text-sm"
+              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+            >
+              ᠻᠣᠸᠧᠷ ᠵᠢᠷᠤᠭ ᠰᠣᠩᠭᠤᠬᠤ*
+            </p>
+            <input
+              type="text"
+              className="border border-gray-300 rounded-md p-2 w-20"
+              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+            />
+          </div>
+          <div className="flex gap-2">
+            <p
+              className="text-sm"
+              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+            >
+              ᠶᠠᠮᠠᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠠᠰᠠᠭᠤᠳᠠᠯ ᠢ᠋ᠶᠠᠷ*
+            </p>
+            <input
+              type="text"
+              className="border border-gray-300 rounded-md p-2 w-20"
+              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+            />
+          </div>
+          <div className="flex gap-2">
+            <p
+              className="text-sm"
+              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+            >
+              ᠮᠧᠰᠰᠧᠵᠢ
+            </p>
+            <textarea
+              type="text"
+              className="border border-gray-300 rounded-md p-2 w-60"
+              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

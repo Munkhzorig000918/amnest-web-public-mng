@@ -15,7 +15,7 @@ export default function Button({
   } else if (type === "chevron") {
     buttonClasses = `${className} border border-solid border-[#E3E3E3] w-10 h-10 rounded-full flex justify-center items-center p-2 hover:bg-gray-100 transition-all`;
   } else if (type === "banner") {
-    buttonClasses = `${className} text-sm z-10 bg-[#FFFFFF99] opacity-60 px-2 py-4 rounded-lg`;
+    buttonClasses = `${className} text-[10px] sm:text-sm z-10 bg-[#FFFFFF99] opacity-60 px-2 py-4 rounded-lg`;
   } else {
     buttonClasses = `${className} border border-solid border-[#E3E3E3] rounded-[10px] w-[50px] py-6 flex items-center justify-center hover:brightness-105 transition-all`;
   }

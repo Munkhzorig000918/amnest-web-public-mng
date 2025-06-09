@@ -3,13 +3,12 @@ import { bannerImages } from "@/constants/bannerImages";
 
 export default function EyeMobile() {
   return (
-    <div className="h-full w-full block sm:hidden p-4 flex flex-col gap-7">
+    <div className="h-full w-full sm:hidden p-4 flex flex-col gap-4">
       <BannerSlider images={bannerImages} width="90rem" />
-
-      <div className="h-full p-4 flex gap-20">
-        <div className="flex gap-10">
+      <div className="h-full w-full flex flex-col gap-4">
+        <div className="flex gap-4 max-h-[150px] w-full">
           <p
-            className="text-sm"
+            className="text-[10px]"
             style={{
               writingMode: "vertical-lr",
               textOrientation: "upright",
@@ -21,7 +20,7 @@ export default function EyeMobile() {
             ᠦ᠋ ᠮᠡᠳᠡᢉᠡᠯᠡᠯ ᠦ᠋ᠨ ᠮᠠᠷᠠᠹᠤᠨ᠃
           </p>
           <h2
-            className="text-2xl font-bold"
+            className="text-xs font-bold"
             style={{
               writingMode: "vertical-lr",
               textOrientation: "upright",
@@ -31,9 +30,9 @@ export default function EyeMobile() {
             ᢉᠡᠰᠡᠨ ᠯᠠ ᠲᠠ ᠥᠪᠡᠷ ᠢ᠋ᠶᠡᠨ ᠠᠰᠠᠭ᠎ᠠ᠃ ᠃ ᠃
           </h2>
         </div>
-        <div className="h-full flex justify-center items-center gap-16">
+        <div className="h-full max-h-[150px] flex justify-center items-center gap-4">
           <p
-            className="text-2xl font-bold"
+            className="text-xs font-bold"
             style={{
               writingMode: "vertical-lr",
               textOrientation: "upright",
@@ -41,7 +40,60 @@ export default function EyeMobile() {
           >
             ᠮᠣᠩᠭᠣᠯ ᠤᠯᠤᠰ ᠤ᠋ᠨ ᠭᠠᠵᠠᠷ ᠤ᠋ᠨ ᠵᠢᠷᠤᠭ
           </p>
-          <img src="/images/mgl-map.png" alt="" className="h-1/2" />
+          <img src="/images/mgl-map.png" alt="" className="max-h-[150px]" />
+        </div>
+        <div className="flex flex-col gap-4 w-full">
+          <div className="flex flex-col gap-2">
+            <p className="text-[10px]">ᠤᠲᠠᠰᠤᠨ ᠤ᠋ ᠳ᠋ᠤᠭᠠᠷ:</p>
+            <input
+              type="text"
+              className="border border-gray-300 rounded-md p-2 w-full"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="text-[10px]">ᠪᠠᠲᠤᠯᠠᠭᠠᠵᠢᠭᠤᠯᠬᠤ ᠻᠣᠳ*</p>
+            <input
+              type="text"
+              className="border border-gray-300 rounded-md p-2 w-full"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="text-[10px]">ᠪᠠᠶᠢᠷᠢᠰᠢᠯ*</p>
+            <input
+              type="text"
+              className="border border-gray-300 rounded-md p-2 w-full"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="text-[10px]">ᠭᠠᠷᠴᠠᠭ*</p>
+            <input
+              type="text"
+              className="border border-gray-300 rounded-md p-2 w-full"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="text-[10px]">ᠻᠣᠸᠧᠷ ᠵᠢᠷᠤᠭ ᠰᠣᠩᠭᠤᠬᠤ*</p>
+            <input
+              type="text"
+              className="border border-gray-300 rounded-md p-2 w-full"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="text-[10px]">
+              ᠶᠠᠮᠠᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠠᠰᠠᠭᠤᠳᠠᠯ ᠢ᠋ᠶᠠᠷ*
+            </p>
+            <input
+              type="text"
+              className="border border-gray-300 rounded-md p-2 w-full"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="text-[10px]">ᠮᠧᠰᠰᠧᠵᠢ</p>
+            <textarea
+              type="text"
+              className="border border-gray-300 rounded-md p-2 w-full"
+            />
+          </div>
         </div>
       </div>
     </div>
