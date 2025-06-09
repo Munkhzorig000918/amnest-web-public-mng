@@ -94,15 +94,15 @@ export default function RightSwiper({ title, description, sectionTitle }) {
   };
 
   return (
-    <div className="h-full flex gap-8">
+    <div className="h-full flex gap-4 sm:gap-8 max-h-[200px] sm:max-h-max overflow-x-auto sm:overflow-auto">
       <h1
-        className="text-2xl font-bold"
+        className="text-xs sm:text-2xl font-bold"
         style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
       >
         {title}
       </h1>
       <p
-        className="text-sm font-bold"
+        className="text-[10px] sm:text-sm font-bold"
         style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
       >
         {description}

@@ -2,19 +2,13 @@ import Image from "next/image";
 import Button from "@/components/common/Button";
 import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronUp,
-  ChevronDown,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 
 export default function NewsMobile() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [isMobile, setIsMobile] = useState(false);
   const [activeCategory, setActiveCategory] = useState("news");
-  const itemsPerPage = 9;
+  const itemsPerPage = 6; // Fewer items per page on mobile
 
   // Filter news items by category
   const filteredItems = newsItems.filter(
@@ -37,18 +31,6 @@ export default function NewsMobile() {
       .join("");
   };
 
-  // Check if mobile
-  useEffect(() => {
-    const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < 640);
-    };
-
-    checkIsMobile();
-    window.addEventListener("resize", checkIsMobile);
-
-    return () => window.removeEventListener("resize", checkIsMobile);
-  }, []);
-
   const handlePrevPage = () => {
     setCurrentPage((prev) => Math.max(prev - 1, 1));
   };
@@ -63,104 +45,100 @@ export default function NewsMobile() {
   };
 
   return (
-    <div className="h-full w-full flex sm:hidden flex-col gap-7">
-      <BannerSlider images={bannerImages} width="90rem" />
-      <div className="h-full p-4">
-        <div className="h-full flex gap-4">
-          <div className="h-full flex flex-col items-center gap-4">
-            <button
-              onClick={() => handleCategoryChange("news")}
-              className={`max-h-[100px] w-full h-full flex justify-center items-center text-center text-[10px] font-bold rounded-[6px] p-3 transition-colors cursor-pointer ${
-                activeCategory === "news"
-                  ? "text-white bg-[#2D2D2D] border border-[#2D2D2D]"
-                  : "text-black bg-white border border-[#E3E3E3] hover:bg-gray-50"
-              }`}
-              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+    <div className="block sm:hidden h-full overflow-y-auto">
+      <BannerSlider images={bannerImages} width="100%" />
+
+      <div className="p-4">
+        {/* Category Buttons */}
+        <div className="flex gap-2 mb-4 overflow-x-auto">
+          <button
+            onClick={() => handleCategoryChange("news")}
+            className={`px-2 py-1 rounded-lg text-xs whitespace-nowrap transition-colors ${
+              activeCategory === "news"
+                ? "bg-[#2D2D2D] text-white"
+                : "bg-white border border-[#E3E3E3] text-black hover:bg-gray-50"
+            }`}
+          >
+            ᠮᠡᠳᠡᢉᠡ
+          </button>
+          <button
+            onClick={() => handleCategoryChange("reports")}
+            className={`px-2 py-1 rounded-lg text-xs whitespace-nowrap transition-colors ${
+              activeCategory === "reports"
+                ? "bg-[#2D2D2D] text-white"
+                : "bg-white border border-[#E3E3E3] text-black hover:bg-gray-50"
+            }`}
+          >
+            ᠮᠡᠳᠡᢉᠳᠡᠯ᠂ ᠪᠠᠶᠢᠷᠢ ᠰᠠᠭᠤᠷᠢ
+          </button>
+          <button
+            onClick={() => handleCategoryChange("special")}
+            className={`px-2 py-1 rounded-lg text-xs whitespace-nowrap transition-colors ${
+              activeCategory === "special"
+                ? "bg-[#2D2D2D] text-white"
+                : "bg-white border border-[#E3E3E3] text-black hover:bg-gray-50"
+            }`}
+          >
+            ᠣᠨᠴᠠᠯᠠᠬᠤ ᠮᠡᠳᠡᢉᠡ
+          </button>
+        </div>
+
+        {/* News Grid */}
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          {currentItems.map((item) => (
+            <div
+              key={item.id}
+              className="bg-white rounded-lg overflow-hidden border border-[#E3E3E3]"
             >
-              ᠮᠡᠳᠡᢉᠡ
-            </button>
-            <button
-              onClick={() => handleCategoryChange("reports")}
-              className={`max-h-[100px] w-full h-full flex justify-center items-center text-center text-[10px] font-bold rounded-[6px] p-3 transition-colors cursor-pointer ${
-                activeCategory === "reports"
-                  ? "text-white bg-[#2D2D2D] border border-[#2D2D2D]"
-                  : "text-black bg-white border border-[#E3E3E3] hover:bg-gray-50"
-              }`}
-              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
-            >
-              ᠮᠡᠳᠡᢉᠳᠡᠯ᠂ ᠪᠠᠶᠢᠷᠢ ᠰᠠᠭᠤᠷᠢ
-            </button>
-            <button
-              onClick={() => handleCategoryChange("special")}
-              className={`max-h-[100px] w-full h-full flex justify-center items-center text-center text-[10px] font-bold rounded-[6px] p-3 transition-colors cursor-pointer ${
-                activeCategory === "special"
-                  ? "text-white bg-[#2D2D2D] border border-[#2D2D2D]"
-                  : "text-black bg-white border border-[#E3E3E3] hover:bg-gray-50"
-              }`}
-              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
-            >
-              ᠣᠨᠴᠠᠯᠠᠬᠤ ᠮᠡᠳᠡᢉᠡ
-            </button>
-          </div>
-          <div className="h-full w-full flex gap-4">
-            <div className="flex flex-col gap-4 w-full">
-              {currentItems.map((item) => (
-                <div
-                  key={item.id}
-                  className="w-full h-full flex gap-2 max-h-[200px]"
+              <div className="relative aspect-square">
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  fill
+                  className="object-cover"
+                />
+                <Button
+                  text={"ᠮᠡᠳᠡᢉᠡ"}
+                  type="primary"
+                  className="absolute top-2 right-2 text-xs"
+                />
+              </div>
+              <div className="p-3 flex items-end">
+                <h3
+                  className="text-xs mb-2 max-h-[100px] w-full line-clamp-6"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
                 >
-                  <h3
-                    className="text-[10px] font-bold h-full line-clamp-4"
-                    style={{
-                      writingMode: "vertical-lr",
-                      textOrientation: "upright",
-                    }}
-                  >
-                    {item.title}
-                  </h3>
-                  <div className="h-full flex items-end gap-2">
-                    <div className="relative w-full h-full max-h-[200px] max-w-[200px] aspect-square">
-                      <Image
-                        src={item.image}
-                        alt={item.title}
-                        fill
-                        className="object-cover max-h-[200px] max-w-[200px] rounded-xl"
-                      />
-                      <Button
-                        text={"ᠮᠡᠳᠡᢉᠡ"}
-                        type="primary"
-                        className="absolute top-0 right-0 text-black"
-                      />
-                    </div>
-                    <Button
-                      text={"ᠤᠩᠰᠢᠬᠤ"}
-                      type="secondary"
-                      className="text-black h-48"
-                    />
-                  </div>
-                </div>
-              ))}
+                  {item.title}
+                </h3>
+                <Button text={"ᠤᠩᠰᠢᠬᠤ"} type="secondary" />
+              </div>
             </div>
-          </div>
+          ))}
         </div>
+
         {/* Pagination Controls */}
-        <div className="flex flex-row sm:flex-col justify-center sm:justify-start items-center gap-2">
-          <Button
-            text={isMobile ? <ChevronLeft /> : <ChevronUp />}
-            type="chevron"
-            onClick={handlePrevPage}
-            disabled={currentPage === 1}
-          />
-          <p className="text-sm">
-            {toMongolianNumeral(currentPage)}/{toMongolianNumeral(totalPages)}
-          </p>
-          <Button
-            text={isMobile ? <ChevronRight /> : <ChevronDown />}
-            type="chevron"
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages}
-          />
-        </div>
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-4">
+            <Button
+              text={<ChevronLeft />}
+              type="chevron"
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
+            />
+            <span className="text-sm">
+              {toMongolianNumeral(currentPage)}/{toMongolianNumeral(totalPages)}
+            </span>
+            <Button
+              text={<ChevronRight />}
+              type="chevron"
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -211,86 +189,86 @@ const newsItems = [
   },
   {
     id: 7,
+    category: "news",
+    title:
+      "ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠲᠦᠷᠦ ᠶᠢᠨ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
+    image: "/images/news1.png",
+  },
+  {
+    id: 8,
+    category: "news",
+    title:
+      "ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠧᠰᠢᠨᠯ ᠤᠨ ᠰᠠᠢᠢᠳ ᠤᠯᠤᠰ ᠤᠨ ᠡᠷᢈᠡ ᠶᠢᠨ ᠰᠢᠨ᠎ᠡ ᠬᠦᠳᠡᠯᢉᠡᠭᠡᠨ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
+    image: "/images/news1.png",
+  },
+  {
+    id: 9,
+    category: "news",
+    title:
+      "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠦᠨᠡᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠠᠯᠳᠠᠷ ᠤᠨ ᠰᠠᠯᠪᠠᠷ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
+    image: "/images/news1.png",
+  },
+  {
+    id: 10,
+    category: "news",
+    title:
+      "ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠦᠨᠳᠦᠰᠦᠲᠡᠨ ᠦ᠋ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᠶᠢᠨ ᠰᠠᠯᠪᠠᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᠢ ᠳᠡᠮᠵᠢᠭᠦᠯᠦᠨ ᠵᠦᠷᠭᠡᠨ ᠠᠵᠢᠯᠠᠳᠠᠨ᠎ᠠ",
+    image: "/images/news1.png",
+  },
+  {
+    id: 11,
+    category: "news",
+    title:
+      "ᠰᠠᠶᠢᠨ ᠳᠤᠷ᠎ᠠ ᠶᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠰᠢᠨ᠎ᠡ ᠦᠷᠭᠦᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
+    image: "/images/news1.png",
+  },
+  {
+    id: 12,
+    category: "news",
+    title:
+      "ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶᠢᠨ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠪᠡᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠦᠷᠭᠦᠯᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
+    image: "/images/news1.png",
+  },
+  {
+    id: 13,
     category: "reports",
     title:
       "ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠦᠨᠳᠦᠰᠦᠲᠡᠨ ᠦ᠋ ᠶᠡᠬᠡ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᠶᠢᠨ ᠰᠠᠯᠪᠠᠷ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
     image: "/images/news1.png",
   },
   {
-    id: 8,
+    id: 14,
     category: "reports",
     title:
       "ᠨᠠᠢᠷᠠᠮᠳᠠᠯ ᠤᠨ ᠰᠠᠯᠪᠠᠷ ᢈᠦᠮᠦᠨ ᠤ ᠡᠷᢈᠡ ᠶᠢᠨ ᠳᠠᠶᠠᠨ ᠳᠡᠯᠡᢈᠡᠢ ᠶᠢᠨ ᠬᠤᠷᠠᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠤᠨ ᠠᠵᠢᠯᠠᠳᠠᠨ᠎ᠠ",
     image: "/images/news1.png",
   },
   {
-    id: 9,
+    id: 15,
     category: "reports",
     title:
       "ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠰᠢᠨ᠋ᠯ ᠤᠨ ᠰᠠᠢᠢᠳ ᠤᠯᠤᠰ ᠤᠨ ᠡᠷᢈᠡ ᠶᠢᠨ ᠰᠠᠯᠪᠠᠷ ᢈᠦᠮᠦᠨ ᠦ ᠡᠷᢈᠡ ᠶᠢᠨ ᠬᠤᠷᠠᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠤᠨ᠎ᠠ",
     image: "/images/news1.png",
   },
   {
-    id: 10,
-    category: "reports",
-    title:
-      "ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶ᠋ᠢᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠦᠨᠡᠨ ᠦ᠋ ᠲᠦᠪ ᠲᠡᠦᢈᠡ ᠶ᠋ᠢᠨ ᠠᠰᠠᠭᠤᠳᠠᠯ ᠢ ᠰᠢᠨᠵᠢᠯᠡᢉᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 11,
-    category: "reports",
-    title:
-      "ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠦᠨᠳᠦᠰᠦᠲᠡᠨ ᠦ᠋ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᠶ᠋ᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠬᠦᠷᠢᠶᠡᠯᠡᠩ ᠢ ᠳᠡᠮᠵᠢᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 12,
-    category: "reports",
-    title:
-      "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠠᠯᠳᠠᠷ ᠤᠨ ᠰᠠᠯᠪᠠᠷ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠰᠢᠨ᠎ᠡ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ ᠵᠦᠷᠭᠡᠨ ᠠᠵᠢᠯᠠᠳᠠᠨ᠎ᠠ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 13,
-    category: "special",
-    title:
-      "ᠨᠠᠢᠷᠠᠮᠳᠠᠯ ᠤᠨ ᠰᠠᠯᠪᠠᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠨᠢᠭᠡ ᠨᠠᠢᠷᠠᠮᠳᠠᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 14,
-    category: "special",
-    title:
-      "ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᠶ᠋ᠢᠨ ᠰᠠᠯᠪᠠᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 15,
-    category: "special",
-    title:
-      "ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶ᠋ᠢᠨ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠪᠡᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠰᠢᠨ᠎ᠡ ᠬᠦᠳᠡᠯᢉᠡᠭᠡᠨ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
     id: 16,
-    category: "special",
+    category: "reports",
     title:
-      "ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠰᠢᠨ᠋ᠯ ᠤᠨ ᠰᠠᠢᠢᠳ ᠤᠯᠤᠰ ᠤᠨ ᠡᠷᢈᠡ ᠶᠢᠨ ᠨᠢᠭᠡ ᠰᠠᠯᠪᠠᠷ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
+      "ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶ᠋ᠢᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠦᠨᠡᠨ ᠦ᠋ ᠲᠦᠪ ᠲᠡᠦᢈᠡ ᠶ᠋ᠢᠨ ᠠᠰᠠᠭᠤᠳᠠᠯ ᠢ ᠰᠢᠨᠵᠢᠯᠡᢉᠦᠯᠦᠨ᠎ᠡ",
     image: "/images/news1.png",
   },
   {
     id: 17,
-    category: "special",
+    category: "reports",
     title:
-      "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠦᠨᠡᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠠᠯᠳᠠᠷ ᠤᠨ ᠰᠠᠯᠪᠠᠷ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
+      "ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠦᠨᠳᠦᠰᠦᠲᠡᠨ ᠦ᠋ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᠶ᠋ᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᠢ ᠳᠡᠮᠵᠢᠭᠦᠯᠦᠨ᠎ᠡ",
     image: "/images/news1.png",
   },
   {
     id: 18,
-    category: "special",
+    category: "reports",
     title:
-      "ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠦᠨᠳᠦᠰᠦᠲᠡᠨ ᠦ᠋ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᠶ᠋ᠢᠨ ᠰᠠᠯᠪᠠᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᠢ ᠳᠡᠮᠵᠢᠭᠦᠯᠦᠨ ᠵᠦᠷᠭᠡᠨ ᠠᠵᠢᠯᠠᠳᠠᠨ᠎ᠠ",
+      "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠠᠯᠳᠠᠷ ᠤᠨ ᠰᠠᠯᠪᠠᠷ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠰᠢᠨ᠎ᠡ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ ᠵᠦᠷᠭᠡᠨ ᠠᠵᠢᠯᠠᠳᠠᠨ᠎ᠠ",
     image: "/images/news1.png",
   },
   {
