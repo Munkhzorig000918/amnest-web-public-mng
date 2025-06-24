@@ -9,6 +9,12 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import {
+  useGetPostsQuery,
+  useGetVideosQuery,
+  useGetLibrariesQuery,
+} from "@/redux/services/apiService";
+import { getImageUrl } from "@/config/api";
 
 export default function NewsDesktop() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -16,16 +22,109 @@ export default function NewsDesktop() {
   const [activeCategory, setActiveCategory] = useState("news");
   const itemsPerPage = 9;
 
-  // Filter news items by category
-  const filteredItems = newsItems.filter(
-    (item) => item.category === activeCategory
+  // Fetch different content types based on active category
+  const {
+    data: postsData,
+    error: postsError,
+    isLoading: postsLoading,
+  } = useGetPostsQuery(
+    {
+      pageSize: itemsPerPage,
+      page: currentPage,
+      sort: "publishedAt:desc",
+    },
+    { skip: activeCategory !== "news" }
   );
 
-  // Calculate pagination
-  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentItems = filteredItems.slice(startIndex, endIndex);
+  const {
+    data: videosData,
+    error: videosError,
+    isLoading: videosLoading,
+  } = useGetVideosQuery(
+    {
+      pageSize: itemsPerPage,
+      page: currentPage,
+      sort: "publishedAt:desc",
+    },
+    { skip: activeCategory !== "reports" }
+  );
+
+  const {
+    data: librariesData,
+    error: librariesError,
+    isLoading: librariesLoading,
+  } = useGetLibrariesQuery(
+    {
+      pageSize: itemsPerPage,
+      page: currentPage,
+      sort: "amnesty_published_at:desc",
+    },
+    { skip: activeCategory !== "special" }
+  );
+
+  // Determine current data based on active category
+  let currentData = [];
+  let isLoading = false;
+  let error = null;
+
+  switch (activeCategory) {
+    case "news":
+      currentData = postsData || [];
+      isLoading = postsLoading;
+      error = postsError;
+      break;
+    case "reports":
+      currentData = videosData || [];
+      isLoading = videosLoading;
+      error = videosError;
+      break;
+    case "special":
+      currentData = librariesData || [];
+      isLoading = librariesLoading;
+      error = librariesError;
+      break;
+    default:
+      currentData = [];
+  }
+
+  // Convert data to unified format
+  const newsItems = currentData.map((item) => {
+    let title, image, description;
+
+    switch (activeCategory) {
+      case "news":
+        title = item.title || "ᠭᠠᠷᠴᠢᠭ ᠦᠭᠡᠢ";
+        image = getImageUrl(item.cover) || "/images/news1.png";
+        description = item.short_description || "";
+        break;
+      case "reports":
+        title = item.title || "ᠦᠵᠡᠮᠡᠯ ᠦᠭᠡᠢ";
+        image = getImageUrl(item.thumbnail) || "/images/news1.png";
+        description = item.description || "";
+        break;
+      case "special":
+        title = item.title || "ᠨᠣᠮ ᠦᠭᠡᠢ";
+        image = getImageUrl(item.cover) || "/images/news1.png";
+        description = item.description || "";
+        break;
+      default:
+        title = "ᠭᠠᠷᠴᠢᠭ ᠦᠭᠡᠢ";
+        image = "/images/news1.png";
+        description = "";
+    }
+
+    return {
+      id: item.id,
+      title,
+      image,
+      description,
+      category: activeCategory,
+    };
+  });
+
+  // Calculate pagination - for now we'll use the current page size
+  // In a real implementation, you'd get total count from the API response
+  const totalPages = Math.max(1, Math.ceil(currentData.length / itemsPerPage));
 
   // Convert Arabic numerals to Mongolian Bichig numerals
   const toMongolianNumeral = (num) => {
@@ -62,6 +161,36 @@ export default function NewsDesktop() {
     setCurrentPage(1); // Reset to first page when changing category
   };
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="h-full hidden sm:flex gap-10 overflow-x-auto overflow-y-hidden w-auto flex-shrink-0 max-h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 mx-auto"></div>
+          <p
+            className="mt-4 text-gray-600"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+          >
+            ᠠᠴᠢᠶᠠᠯᠠᠵᠤ ᠪᠠᠶᠢᠨ᠎ᠠ...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="h-full hidden sm:flex gap-10 overflow-x-auto overflow-y-hidden w-auto flex-shrink-0 max-h-screen items-center justify-center">
+        <div className="text-center text-red-600">
+          <p style={{ writingMode: "vertical-lr", textOrientation: "upright" }}>
+            ᠮᠡᠳᠡᢉᠡ ᠠᠴᠢᠶᠠᠯᠠᠬᠤ ᠳ᠋ᠤ ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠪᠠ
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="h-full hidden sm:flex gap-10 overflow-x-auto overflow-y-hidden w-auto flex-shrink-0 max-h-screen">
       <BannerSlider images={bannerImages} width="90rem" />
@@ -88,7 +217,7 @@ export default function NewsDesktop() {
               }`}
               style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
             >
-              ᠮᠡᠳᠡᢉᠳᠡᠯ᠂ ᠪᠠᠶᠢᠷᠢ ᠰᠠᠭᠤᠷᠢ
+              ᠦᠵᠡᠮᠡᠯ
             </button>
             <button
               onClick={() => handleCategoryChange("special")}
@@ -99,24 +228,27 @@ export default function NewsDesktop() {
               }`}
               style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
             >
-              ᠣᠨᠴᠠᠯᠠᠬᠤ ᠮᠡᠳᠡᢉᠡ
+              ᠨᠣᠮ ᠦᠨ ᠰᠠᠩ
             </button>
           </div>
           <div className="h-full flex gap-4">
             <div className="grid grid-cols-3 grid-rows-3 gap-10 flex-1">
-              {currentItems.map((item) => (
+              {newsItems.slice(0, 9).map((item) => (
                 <div
                   key={item.id}
                   className="w-full h-full flex items-end space-x-4"
                 >
                   <h3
-                    className="w-16 h-full"
+                    className="w-16 h-full text-sm"
                     style={{
                       writingMode: "vertical-lr",
                       textOrientation: "upright",
                     }}
+                    title={item.title}
                   >
-                    {item.title}
+                    {item.title.length > 50
+                      ? `${item.title.substring(0, 50)}...`
+                      : item.title}
                   </h3>
                   <div className="relative w-full h-full max-w-[420px] min-w-[420px] aspect-square flex-shrink-0">
                     <Image
@@ -124,6 +256,9 @@ export default function NewsDesktop() {
                       alt={item.title}
                       fill
                       className="object-cover rounded-xl"
+                      onError={(e) => {
+                        e.target.src = "/images/news1.png"; // fallback image
+                      }}
                     />
                     <Button
                       text={"ᠮᠡᠳᠡᢉᠡ"}
@@ -138,6 +273,25 @@ export default function NewsDesktop() {
                   />
                 </div>
               ))}
+              {/* Fill empty slots if we have less than 9 items */}
+              {Array.from({ length: Math.max(0, 9 - newsItems.length) }).map(
+                (_, index) => (
+                  <div
+                    key={`empty-${index}`}
+                    className="w-full h-full flex items-center justify-center border border-gray-200 rounded-xl"
+                  >
+                    <p
+                      className="text-gray-400"
+                      style={{
+                        writingMode: "vertical-lr",
+                        textOrientation: "upright",
+                      }}
+                    >
+                      ᠮᠡᠳᠡᢉᠡ ᠦᠭᠡᠢ
+                    </p>
+                  </div>
+                )
+              )}
             </div>
 
             {/* Pagination Controls */}
@@ -165,285 +319,3 @@ export default function NewsDesktop() {
     </div>
   );
 }
-
-const newsItems = [
-  {
-    id: 1,
-    category: "news",
-    title:
-      "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠳ᠋ᠦ ᠡᢉᠡᠯᠢ ᠲᠡᠢ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᢈᠥᠲᠦᠯᠪᠦᠷᠢ ᠪᠠᠶᠠᠨ-ᠥᠯᠦᢉᠡᠢ᠂ ᠬᠣᠪᠳᠤ ᠠᠶᠢᠮᠠᠭ ᠲᠤ ᢈᠡᠷᠡᢉᠵᠢᠵᠦ ᠪᠠᠶᠢᠨ᠎ᠠ᠃",
-    image: "/images/news1.png",
-  },
-  {
-    id: 2,
-    category: "news",
-    title:
-      "ᠲᠠᠨ ᠤ᠋ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠡᠰᠢᠨᠯ᠋ ᠪᠠᠶᠢᠭᠤᠯᠤᠯᠭ᠎ᠠ ᠶ᠋ᠢᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠡᠮᠡᠴᠡᠯ ᠲᠠᠢ ᠬᠣᠯᠪᠣᠭᠳᠠᠬᠤ ᠴᠢᠬᠤᠯᠠ ᠲᠡᠮᠡᠴᠡᠯ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 3,
-    category: "news",
-    title:
-      "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠵᠠᠯᠠᠭᠤᠴᠤᠳ ᠤᠨ ᠬᠦᠳᠡᠯᢉᠡᠭᠡᠨ ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠪᠦᢉᠦᠳᠡ ᠶ᠋ᠢᠨ ᠢᠳᠡᠪᢈᠢ ᠣᠷᠣᠯᠴᠠᠭ᠎ᠠ ᠶ᠋ᠢ ᠡᠷᠢᠯᢈᠢᠯᠡᠵᠦ ᠪᠠᠶᠢᠨ᠎ᠠ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 4,
-    category: "news",
-    title:
-      "ᠲᠡᢉᠰᠢ ᠪᠢᠰᠢ ᠪᠠᠶᠢᠳᠠᠯ ᠤ᠋ᠨ ᠡᠰᠡᠷᢉᠦ ᠲᠡᠮᠡᠴᠡᠯ ᠢ ᠳᠡᠮᠵᠢᠬᠦ ᠲᠦᠷᠦ ᠶ᠋ᠢᠨ ᠪᠣᠳᠣᠯᠭ᠎ᠠ ᠶ᠋ᠢ ᠰᠠᠶᠢᠵᠢᠷᠠᠭᠤᠯᠬᠤ ᠬᠡᠷᠡᢉᠲᠡᠢ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 5,
-    category: "news",
-    title:
-      "ᠰᠠᠶᠢᠨ ᠳᠤᠷ᠎ᠠ ᠶ᠋ᠢᠨ ᠪᠣᠯᠤᠨ ᠳᠠᠳᠤᠯᠭ᠎ᠠ ᠶ᠋ᠢᠨ ᠠᠵᠢᠯ ᠤᠨ ᠲᠥᠯᠦᢉᠡ ᠮᠣᠩᢉᠣᠯ ᠳᠠᠬᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠡᠰᠢᠨᠯ ᠵᠢᠨ ᠠᠵᠢᠯᠯᠠᢉᠠ ᠲᠥᢈᠦᠰᠪᠦᠷᠢ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 6,
-    category: "news",
-    title:
-      "ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶ᠋ᠢᠨ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠪᠡᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠬᠠᠮᠲᠤᠷᠠᠯ ᠤᠨ ᠡᠷᢈᠡᠮ ᠰᠢᠨᠵᠢᠯᠡᢉᠡᠨ ᠦ᠋ ᠬᠦᠷᠢᠶᠡᠯᠡᠩ ᠢ᠋ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 7,
-    category: "reports",
-    title:
-      "ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠦᠨᠳᠦᠰᠦᠲᠡᠨ ᠦ᠋ ᠶᠡᠬᠡ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᠶᠢᠨ ᠰᠠᠯᠪᠠᠷ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 8,
-    category: "reports",
-    title:
-      "ᠨᠠᠢᠷᠠᠮᠳᠠᠯ ᠤᠨ ᠰᠠᠯᠪᠠᠷ ᢈᠦᠮᠦᠨ ᠤ ᠡᠷᢈᠡ ᠶᠢᠨ ᠳᠠᠶᠠᠨ ᠳᠡᠯᠡᢈᠡᠢ ᠶᠢᠨ ᠬᠤᠷᠠᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠤᠨ ᠠᠵᠢᠯᠠᠳᠠᠨ᠎ᠠ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 9,
-    category: "reports",
-    title:
-      "ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠰᠢᠨ᠋ᠯ ᠤᠨ ᠰᠠᠢᠢᠳ ᠤᠯᠤᠰ ᠤᠨ ᠡᠷᢈᠡ ᠶᠢᠨ ᠰᠠᠯᠪᠠᠷ ᢈᠦᠮᠦᠨ ᠦ ᠡᠷᢈᠡ ᠶᠢᠨ ᠬᠤᠷᠠᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠤᠨ᠎ᠠ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 10,
-    category: "reports",
-    title:
-      "ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶ᠋ᠢᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠦᠨᠡᠨ ᠦ᠋ ᠲᠦᠪ ᠲᠡᠦᢈᠡ ᠶ᠋ᠢᠨ ᠠᠰᠠᠭᠤᠳᠠᠯ ᠢ ᠰᠢᠨᠵᠢᠯᠡᢉᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 11,
-    category: "reports",
-    title:
-      "ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠦᠨᠳᠦᠰᠦᠲᠡᠨ ᠦ᠋ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᠶ᠋ᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠬᠦᠷᠢᠶᠡᠯᠡᠩ ᠢ ᠳᠡᠮᠵᠢᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 12,
-    category: "reports",
-    title:
-      "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠠᠯᠳᠠᠷ ᠤᠨ ᠰᠠᠯᠪᠠᠷ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠰᠢᠨ᠎ᠡ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ ᠵᠦᠷᠭᠡᠨ ᠠᠵᠢᠯᠠᠳᠠᠨ᠎ᠠ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 13,
-    category: "special",
-    title:
-      "ᠨᠠᠢᠷᠠᠮᠳᠠᠯ ᠤᠨ ᠰᠠᠯᠪᠠᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠨᠢᠭᠡ ᠨᠠᠢᠷᠠᠮᠳᠠᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 14,
-    category: "special",
-    title:
-      "ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᠶ᠋ᠢᠨ ᠰᠠᠯᠪᠠᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 15,
-    category: "special",
-    title:
-      "ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶ᠋ᠢᠨ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠪᠡᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠰᠢᠨ᠎ᠡ ᠬᠦᠳᠡᠯᢉᠡᠭᠡᠨ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 16,
-    category: "special",
-    title:
-      "ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠰᠢᠨ᠋ᠯ ᠤᠨ ᠰᠠᠢᠢᠳ ᠤᠯᠤᠰ ᠤᠨ ᠡᠷᢈᠡ ᠶᠢᠨ ᠨᠢᠭᠡ ᠰᠠᠯᠪᠠᠷ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 17,
-    category: "special",
-    title:
-      "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠦᠨᠡᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠠᠯᠳᠠᠷ ᠤᠨ ᠰᠠᠯᠪᠠᠷ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 18,
-    category: "special",
-    title:
-      "ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠦᠨᠳᠦᠰᠦᠲᠡᠨ ᠦ᠋ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᠶ᠋ᠢᠨ ᠰᠠᠯᠪᠠᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᠢ ᠳᠡᠮᠵᠢᠭᠦᠯᠦᠨ ᠵᠦᠷᠭᠡᠨ ᠠᠵᠢᠯᠠᠳᠠᠨ᠎ᠠ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 19,
-    category: "reports",
-    title:
-      "ᠰᠠᠶᠢᠨ ᠳᠤᠷ᠎ᠠ ᠶᠢᠨ ᠨᠡᠶᠢᠲᠡ ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠡᠷᢈᠡ ᠶᠢᠨ ᠰᠠᠯᠪᠠᠷ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 20,
-    category: "reports",
-    title:
-      "ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠧᠰᠢᠨᠯ ᠤᠨ ᠰᠠᠢᠢᠳ ᠤᠯᠤᠰ ᠤᠨ ᠡᠷᢈᠡ ᠶᠢᠨ ᠵᠦᠷᠭᠡᠨ ᠪᠠᠢᠢᠴᠠᠭᠠᠨ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 21,
-    category: "reports",
-    title:
-      "ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠬᠦᠮᠦᠵᠢᠯ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠰᠢᠨ᠎ᠡ ᠦᠷᠭᠦᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 22,
-    category: "reports",
-    title:
-      "ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶᠢᠨ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠪᠡᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠦᠷᠭᠦᠯᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 23,
-    category: "reports",
-    title:
-      "ᠰᠠᠶᠢᠨ ᠳᠤᠷ᠎ᠠ ᠶᠢᠨ ᠪᠣᠯᠤᠨ ᠳᠠᠳᠤᠯᠭ᠎ᠠ ᠶᠢᠨ ᠠᠵᠢᠯ ᠤᠨ ᠲᠥᠯᠦᢉᠡ ᠮᠣᠩᢉᠣᠯ ᠳᠠᠬᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠡᠰᠢᠨᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 24,
-    category: "reports",
-    title:
-      "ᠲᠡᢉᠰᠢ ᠪᠢᠰᠢ ᠪᠠᠶᠢᠳᠠᠯ ᠤᠨ ᠡᠰᠡᠷᢉᠦ ᠲᠡᠮᠡᠴᠡᠯ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 25,
-    category: "special",
-    title:
-      "ᠨᠠᠢᠷᠠᠮᠳᠠᠯ ᠤᠨ ᠰᠠᠯᠪᠠᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠨᠢᠭᠡ ᠨᠠᠢᠷᠠᠮᠳᠠᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 26,
-    category: "special",
-    title:
-      "ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᠶ᠋ᠢᠨ ᠰᠠᠯᠪᠠᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 27,
-    category: "special",
-    title:
-      "ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶ᠋ᠢᠨ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠪᠡᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠰᠢᠨ᠎ᠡ ᠬᠦᠳᠡᠯᢉᠡᠭᠡᠨ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 28,
-    category: "special",
-    title:
-      "ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠰᠢᠨ᠋ᠯ ᠤᠨ ᠰᠠᠢᠢᠳ ᠤᠯᠤᠰ ᠤᠨ ᠡᠷᢈᠡ ᠶᠢᠨ ᠨᠢᠭᠡ ᠰᠠᠯᠪᠠᠷ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 29,
-    category: "special",
-    title:
-      "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠦᠨᠡᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠠᠯᠳᠠᠷ ᠤᠨ ᠰᠠᠯᠪᠠᠷ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 30,
-    category: "special",
-    title:
-      "ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠦᠨᠳᠦᠰᠦᠲᠡᠨ ᠦ᠋ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᠶ᠋ᠢᠨ ᠰᠠᠯᠪᠠᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᠢ ᠳᠡᠮᠵᠢᠭᠦᠯᠦᠨ ᠵᠦᠷᠭᠡᠨ ᠠᠵᠢᠯᠠᠳᠠᠨ᠎ᠠ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 31,
-    category: "special",
-    title:
-      "ᠰᠠᠶᠢᠨ ᠳᠤᠷ᠎ᠠ ᠶᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠰᠢᠨ᠎ᠡ ᠦᠷᠭᠦᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 32,
-    category: "special",
-    title:
-      "ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶᠢᠨ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠪᠡᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠦᠷᠭᠦᠯᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 33,
-    category: "special",
-    title:
-      "ᠲᠡᢉᠰᠢ ᠪᠢᠰᠢ ᠪᠠᠶᠢᠳᠠᠯ ᠤᠨ ᠡᠰᠡᠷᢉᠦ ᠲᠡᠮᠡᠴᠡᠯ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠦᠷᠭᠦᠯᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 34,
-    category: "special",
-    title:
-      "ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠲᠦᠷᠦ ᠶᠢᠨ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 35,
-    category: "special",
-    title:
-      "ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠧᠰᠢᠨᠯ ᠤᠨ ᠰᠠᠢᠢᠳ ᠤᠯᠤᠰ ᠤᠨ ᠡᠷᢈᠡ ᠶᠢᠨ ᠰᠢᠨ᠎ᠡ ᠬᠦᠳᠡᠯᢉᠡᠭᠡᠨ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 36,
-    category: "special",
-    title:
-      "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠦᠨᠡᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠠᠯᠳᠠᠷ ᠤᠨ ᠰᠠᠯᠪᠠᠷ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-];
-
-const aboutItems = [
-  {
-    id: 1,
-    title: "ᠪᠢᠳᠡ ᢈᠡᠨ ᠪᠤᠢ?",
-    body: "ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠰᠢᠨ᠋ᠯ ᠨᠢ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡᢈᠦ ᢈᠦᠮᠦᠰ ᠦ᠋ᠨ ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᢈᠢᠨ ᠤ᠋ ᢈᠥᠳᠡᠯᢉᠡᢉᠡᠨ ᠶᠠᠭᠤᠮ᠎ᠠ᠃",
-    image: "/images/about1.png",
-  },
-  {
-    id: 2,
-    title: "ᠪᠢᠳᠡ ᠶᠠᠭᠤ ᢈᠢᠳᠡᢉ ᠪᠤᠢ?",
-    body: "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠦᢉᠡᠮᠡᠯ ᠲᠤᠩᠬᠠᠭᠯᠠᠯ ᠪᠣᠯᠤᠨ ᠪᠤᠰᠤᠳ ᠣᠯᠠᠨ ᠤᠯᠤᠰ ᠤ᠋ᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠵᠢᠱᠢᢉ ᢈᠡᠮᠵᠢᠶᠡᠨ ᠳ᠋ᠦ ᠵᠢᠭᠠᠭᠰᠠᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢ ᠡᠨᠡ ᠳᠡᠯᠡᢈᠡᠢ ᠶ᠋ᠢᠨ ᢈᠦᠮᠦᠨ  ᠪᠦᠷᠢ ᠳ᠋ᠦ ᠡᠳ᠋ᠯᠡᢉᠦᠯᢈᠦ ᠳ᠋ᠦ ᠣᠷᠤᠰᠢᠨ᠎ᠠ᠃",
-    image: "/images/about2.png",
-  },
-  {
-    id: 3,
-    title: "ᠪᠢᠳᠡ ᢈᠡᠨ ᠪᠤᠢ?",
-    body: "ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠰᠢᠨ᠋ᠯ ᠨᠢ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡᢈᠦ ᢈᠦᠮᠦᠰ ᠦ᠋ᠨ ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᢈᠢᠨ ᠤ᠋ ᢈᠥᠳᠡᠯᢉᠡᢉᠡᠨ ᠶᠠᠭᠤᠮ᠎ᠠ᠃",
-    image: "/images/about3.jpg",
-  },
-  {
-    id: 4,
-    title: "ᠪᠢᠳᠡ ᠶᠠᠭᠤ ᢈᠢᠳᠡᢉ ᠪᠤᠢ?",
-    body: "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠦᢉᠡᠮᠡᠯ ᠲᠤᠩᠬᠠᠭᠯᠠᠯ ᠪᠣᠯᠤᠨ ᠪᠤᠰᠤᠳ ᠣᠯᠠᠨ ᠤᠯᠤᠰ ᠤ᠋ᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠵᠢᠱᠢᢉ ᢈᠡᠮᠵᠢᠶᠡᠨ ᠳ᠋ᠦ ᠵᠢᠭᠠᠭᠰᠠᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢ ᠡᠨᠡ ᠳᠡᠯᠡᢈᠡᠢ ᠶ᠋ᠢᠨ ᢈᠦᠮᠦᠨ  ᠪᠦᠷᠢ ᠳ᠋ᠦ ᠡᠳ᠋ᠯᠡᢉᠦᠯᢈᠦ ᠳ᠋ᠦ ᠣᠷᠤᠰᠢᠨ᠎ᠠ᠃",
-    image: "/images/about4.jpg",
-  },
-];

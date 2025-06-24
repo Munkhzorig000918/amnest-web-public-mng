@@ -3,8 +3,83 @@ import { bannerImages } from "@/constants/bannerImages";
 import SectionTitle from "../common/SectionTitle";
 import Button from "../common/Button";
 import Image from "next/image";
+import { useGetPostsQuery, useGetFaqsQuery } from "@/redux/services/apiService";
+import { getImageUrl } from "@/config/api";
 
 export default function HomeMobile() {
+  // Fetch posts for news section (limit to 6 for layout)
+  const {
+    data: postsData,
+    error: postsError,
+    isLoading: postsLoading,
+  } = useGetPostsQuery({
+    pageSize: 6,
+    sort: "publishedAt:desc",
+  });
+
+  // Fetch FAQs for about section (limit to 4 for layout)
+  const {
+    data: faqsData,
+    error: faqsError,
+    isLoading: faqsLoading,
+  } = useGetFaqsQuery({
+    pageSize: 4,
+    sort: "publishedAt:desc",
+  });
+
+  // Convert posts data to the format expected by the component
+  const newsItems = postsData
+    ? postsData.map((post) => ({
+        id: post.id,
+        title: post.title || "ᠭᠠᠷᠴᠢᠭ ᠦᠭᠡᠢ",
+        image: getImageUrl(post.cover) || "/images/news1.png", // fallback image
+        body: post.short_description || post.body || "",
+      }))
+    : [];
+
+  // Convert FAQs data to about items format
+  const aboutItems = faqsData
+    ? faqsData.map((faq) => ({
+        id: faq.id,
+        title: faq.question || "ᠠᠰᠠᠭᠤᠯᠲᠠ",
+        body: faq.answer || "ᠬᠠᠷᠢᠭᠤᠯᠲᠠ ᠦᠭᠡᠢ",
+        image: getImageUrl(faq.image) || "/images/about1.png", // fallback image
+      }))
+    : [];
+
+  // Loading state
+  if (postsLoading || faqsLoading) {
+    return (
+      <div className="w-full min-h-screen bg-white block md:hidden flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900 mx-auto"></div>
+          <p
+            className="mt-4 text-gray-600 text-sm"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+          >
+            ᠠᠴᠢᠶᠠᠯᠠᠵᠤ ᠪᠠᠶᠢᠨ᠎ᠠ...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (postsError || faqsError) {
+    return (
+      <div className="w-full min-h-screen bg-white block md:hidden flex items-center justify-center">
+        <div className="text-center text-red-600">
+          <p
+            className="text-sm"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+          >
+            ᠮᠡᠳᠡᢉᠡ ᠠᠴᠢᠶᠠᠯᠠᠬᠤ ᠳ᠋ᠤ ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠪᠠ
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full min-h-screen bg-white block md:hidden">
       <div className="relative w-full h-[40vh]">
@@ -28,7 +103,7 @@ export default function HomeMobile() {
             }
           />
           <div className="flex flex-row gap-4 overflow-x-auto">
-            {newsItems.map((item) => (
+            {newsItems.slice(0, 6).map((item) => (
               <div
                 key={item.id}
                 className="w-full min-w-max flex items-end space-x-2"
@@ -39,8 +114,11 @@ export default function HomeMobile() {
                     writingMode: "vertical-lr",
                     textOrientation: "upright",
                   }}
+                  title={item.title}
                 >
-                  {item.title}
+                  {item.title.length > 50
+                    ? `${item.title.substring(0, 50)}...`
+                    : item.title}
                 </h3>
                 <div className="relative min-w-[200px] min-h-[200px] max-w-[200px] max-h-[200px]">
                   <Image
@@ -48,6 +126,9 @@ export default function HomeMobile() {
                     alt={item.title}
                     fill
                     className="min-w-[200px] min-h-[200px] max-w-[200px] max-h-[200px] object-cover rounded-xl"
+                    onError={(e) => {
+                      e.target.src = "/images/news1.png"; // fallback image
+                    }}
                   />
                   <Button
                     text={"ᠮᠡᠳᠡᢉᠡ"}
@@ -62,6 +143,25 @@ export default function HomeMobile() {
                 />
               </div>
             ))}
+            {/* Fill empty slots if we have less than 6 posts */}
+            {Array.from({ length: Math.max(0, 6 - newsItems.length) }).map(
+              (_, index) => (
+                <div
+                  key={`empty-${index}`}
+                  className="min-w-[200px] min-h-[200px] flex items-center justify-center border border-gray-200 rounded-xl"
+                >
+                  <p
+                    className="text-gray-400 text-[10px]"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                  >
+                    ᠮᠡᠳᠡᢉᠡ ᠦᠭᠡᠢ
+                  </p>
+                </div>
+              )
+            )}
           </div>
         </div>
       </div>
@@ -86,7 +186,7 @@ export default function HomeMobile() {
       </div>
       <div className="min-h-[400px] w-full overflow-x-auto p-1">
         <div className="h-full grid grid-cols-2 grid-rows-2 gap-[5px]">
-          {aboutItems.map((item) => (
+          {aboutItems.slice(0, 4).map((item) => (
             <div
               key={item.id}
               className="max-h-[200px] w-full flex flex-row justify-between border border-[#E3E3E3] rounded-xl p-2 gap-1"
@@ -101,6 +201,9 @@ export default function HomeMobile() {
                     alt={item.title}
                     width={28}
                     height={28}
+                    onError={(e) => {
+                      e.target.src = "/images/about1.png"; // fallback image
+                    }}
                   />
                   <h4
                     className="text-black font-bold text-[10px] sm:text-base"
@@ -108,8 +211,11 @@ export default function HomeMobile() {
                       writingMode: "vertical-lr",
                       textOrientation: "upright",
                     }}
+                    title={item.title}
                   >
-                    {item.title}
+                    {item.title.length > 10
+                      ? `${item.title.substring(0, 10)}...`
+                      : item.title}
                   </h4>
                 </div>
                 <div
@@ -118,80 +224,36 @@ export default function HomeMobile() {
                     writingMode: "vertical-lr",
                     textOrientation: "upright",
                   }}
+                  title={item.body}
                 >
-                  {item.body}
+                  {item.body.length > 100
+                    ? `${item.body.substring(0, 100)}...`
+                    : item.body}
                 </div>
               </div>
             </div>
           ))}
+          {/* Fill empty slots if we have less than 4 FAQs */}
+          {Array.from({ length: Math.max(0, 4 - aboutItems.length) }).map(
+            (_, index) => (
+              <div
+                key={`empty-${index}`}
+                className="max-h-[200px] w-full flex items-center justify-center border border-gray-200 rounded-xl"
+              >
+                <p
+                  className="text-gray-400 text-[10px]"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                >
+                  ᠮᠡᠳᠡᢉᠡ ᠦᠭᠡᠢ
+                </p>
+              </div>
+            )
+          )}
         </div>
       </div>
     </div>
   );
 }
-
-const newsItems = [
-  {
-    id: 1,
-    title:
-      "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠳ᠋ᠦ ᠡᢉᠡᠯᠢ ᠲᠡᠢ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᢈᠥᠲᠦᠯᠪᠦᠷᠢ ᠪᠠᠶᠠᠨ-ᠥᠯᠦᢉᠡᠢ᠂ ᠬᠣᠪᠳᠤ ᠠᠶᠢᠮᠠᠭ ᠲᠤ ᢈᠡᠷᠡᢉᠵᠢᠵᠦ ᠪᠠᠶᠢᠨ᠎ᠠ᠃",
-    image: "/images/news1.png",
-  },
-  {
-    id: 2,
-    title:
-      "ᠲᠠᠨ ᠤ᠋ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠡᠰᠢᠨᠯ᠋ ᠪᠠᠶᠢᠭᠤᠯᠤᠯᠭ᠎ᠠ ᠶ᠋ᠢᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠡᠮᠡᠴᠡᠯ ᠲᠠᠢ ᠬᠣᠯᠪᠣᠭᠳᠠᠬᠤ ᠴᠢᠬᠤᠯᠠ ᠲᠡᠮᠡᠴᠡᠯ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 3,
-    title:
-      "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠵᠠᠯᠠᠭᠤᠴᠤᠳ ᠤᠨ ᠬᠦᠳᠡᠯᢉᠡᠭᠡᠨ ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠪᠦᢉᠦᠳᠡ ᠶ᠋ᠢᠨ ᠢᠳᠡᠪᢈᠢ ᠣᠷᠣᠯᠴᠠᠭ᠎ᠠ ᠶ᠋ᠢ ᠡᠷᠢᠯᢈᠢᠯᠡᠵᠦ ᠪᠠᠶᠢᠨ᠎ᠠ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 4,
-    title:
-      "ᠲᠡᢉᠰᠢ ᠪᠢᠰᠢ ᠪᠠᠶᠢᠳᠠᠯ ᠤ᠋ᠨ ᠡᠰᠡᠷᢉᠦ ᠲᠡᠮᠡᠴᠡᠯ ᠢ ᠳᠡᠮᠵᠢᠬᠦ ᠲᠦᠷᠦ ᠶ᠋ᠢᠨ ᠪᠣᠳᠣᠯᠭ᠎ᠠ ᠶ᠋ᠢ ᠰᠠᠶᠢᠵᠢᠷᠠᠭᠤᠯᠬᠤ ᠬᠡᠷᠡᢉᠲᠡᠢ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 5,
-    title:
-      "ᠰᠠᠶᠢᠨ ᠳᠤᠷ᠎ᠠ ᠶ᠋ᠢᠨ ᠪᠣᠯᠤᠨ ᠳᠠᠳᠤᠯᠭ᠎ᠠ ᠶ᠋ᠢᠨ ᠠᠵᠢᠯ ᠤᠨ ᠲᠥᠯᠦᢉᠡ ᠮᠣᠩᢉᠣᠯ ᠳᠠᠬᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠡᠰᠢᠨᠯ ᠵᠢᠨ ᠠᠵᠢᠯᠯᠠᢉᠠ ᠲᠥᢈᠦᠰᠪᠦᠷᠢ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 6,
-    title:
-      "ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶ᠋ᠢᠨ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠪᠡᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠬᠠᠮᠲᠤᠷᠠᠯ ᠤᠨ ᠡᠷᢈᠡᠮ ᠰᠢᠨᠵᠢᠯᠡᢉᠡᠨ ᠦ᠋ ᠬᠦᠷᠢᠶᠡᠯᠡᠩ ᠢ᠋ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ",
-    image: "/images/news1.png",
-  },
-];
-
-const aboutItems = [
-  {
-    id: 1,
-    title: "ᠪᠢᠳᠡ ᢈᠡᠨ ᠪᠤᠢ?",
-    body: "ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠰᠢᠨ᠋ᠯ ᠨᠢ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡᢈᠦ ᢈᠦᠮᠦᠰ ᠦ᠋ᠨ ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᢈᠢᠨ ᠤ᠋ ᢈᠥᠳᠡᠯᢉᠡᢉᠡᠨ ᠶᠠᠭᠤᠮ᠎ᠠ᠃",
-    image: "/images/about1.png",
-  },
-  {
-    id: 2,
-    title: "ᠪᠢᠳᠡ ᠶᠠᠭᠤ ᢈᠢᠳᠡᢉ ᠪᠤᠢ?",
-    body: "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠦᢉᠡᠮᠡᠯ ᠲᠤᠩᠬᠠᠭᠯᠠᠯ ᠪᠣᠯᠤᠨ ᠪᠤᠰᠤᠳ ᠣᠯᠠᠨ ᠤᠯᠤᠰ ᠤ᠋ᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠵᠢᠱᠢᢉ ᢈᠡᠮᠵᠢᠶᠡᠨ ᠳ᠋ᠦ ᠵᠢᠭᠠᠭᠰᠠᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢ ᠡᠨᠡ ᠳᠡᠯᠡᢈᠡᠢ ᠶ᠋ᠢᠨ ᢈᠦᠮᠦᠨ  ᠪᠦᠷᠢ ᠳ᠋ᠦ ᠡᠳ᠋ᠯᠡᢉᠦᠯᢈᠦ ᠳ᠋ᠦ ᠣᠷᠤᠰᠢᠨ᠎ᠠ᠃",
-    image: "/images/about2.png",
-  },
-  {
-    id: 3,
-    title: "ᠪᠢᠳᠡ ᢈᠡᠨ ᠪᠤᠢ?",
-    body: "ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠰᠢᠨ᠋ᠯ ᠨᠢ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡᢈᠦ ᢈᠦᠮᠦᠰ ᠦ᠋ᠨ ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᢈᠢᠨ ᠤ᠋ ᢈᠥᠳᠡᠯᢉᠡᢉᠡᠨ ᠶᠠᠭᠤᠮ᠎ᠠ᠃",
-    image: "/images/about3.jpg",
-  },
-  {
-    id: 4,
-    title: "ᠪᠢᠳᠡ ᠶᠠᠭᠤ ᢈᠢᠳᠡᢉ ᠪᠤᠢ?",
-    body: "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠦᢉᠡᠮᠡᠯ ᠲᠤᠩᠬᠠᠭᠯᠠᠯ ᠪᠣᠯᠤᠨ ᠪᠤᠰᠤᠳ ᠣᠯᠠᠨ ᠤᠯᠤᠰ ᠤ᠋ᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠵᠢᠱᠢᢉ ᢈᠡᠮᠵᠢᠶᠡᠨ ᠳ᠋ᠦ ᠵᠢᠭᠠᠭᠰᠠᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢ ᠡᠨᠡ ᠳᠡᠯᠡᢈᠡᠢ ᠶ᠋ᠢᠨ ᢈᠦᠮᠦᠨ  ᠪᠦᠷᠢ ᠳ᠋ᠦ ᠡᠳ᠋ᠯᠡᢉᠦᠯᢈᠦ ᠳ᠋ᠦ ᠣᠷᠤᠰᠢᠨ᠎ᠠ᠃",
-    image: "/images/about4.jpg",
-  },
-];
