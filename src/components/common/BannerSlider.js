@@ -1,23 +1,70 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import Button from "@/components/common/Button";
+import { useGetSlideshowsQuery } from "@/redux/services/apiService";
+import { getImageUrl } from "@/config/api";
 
-export default function BannerSlider({ images, width = "100%" }) {
+export default function BannerSlider({
+  images,
+  width = "100%",
+  useDynamic = false,
+}) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const timeoutRef = useRef(null);
 
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === images.length - 1 ? 0 : prevIndex + 1
-    );
-  };
+  // Fetch dynamic slideshow data if useDynamic is true
+  const {
+    data: slideshowData,
+    error: slideshowError,
+    isLoading: slideshowLoading,
+  } = useGetSlideshowsQuery(
+    {
+      pageSize: 10,
+      sort: "publishedAt:desc",
+    },
+    { skip: !useDynamic }
+  );
 
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
-    );
-  };
+  // Convert slideshow data to banner format
+  const dynamicImages = slideshowData
+    ? slideshowData.map((slide) => ({
+        id: slide.id,
+        src: getImageUrl(slide.image) || "/images/news1.png",
+        alt: slide.title || `Slideshow ${slide.id}`,
+        caption:
+          slide.title || slide.description
+            ? {
+                title:
+                  slide.title ||
+                  "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠤ᠋ᠨ ᠰᠢᠮᠫᠤᠽᠢᠦᠮ ᠒᠐᠒᠕",
+                description:
+                  slide.description ||
+                  "«ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠤ᠋ᠨ ᠰᠢᠮᠫᠤᠽᠢᠦᠮ ᠒᠐᠒᠕- ᠳ᠋ᠤ» ᠢᠯᠡᠳᢈᠡᠯ ᠲᠠᠨᠢᠯᠴᠠᠭᠤᠯᠬᠤ",
+              }
+            : null,
+      }))
+    : [];
+
+  // Use dynamic images if available and useDynamic is true, otherwise use static images
+  const displayImages =
+    useDynamic && dynamicImages.length > 0 ? dynamicImages : images;
+
+  const nextSlide = useCallback(() => {
+    if (displayImages && displayImages.length > 0) {
+      setCurrentIndex((prevIndex) =>
+        prevIndex === displayImages.length - 1 ? 0 : prevIndex + 1
+      );
+    }
+  }, [displayImages]);
+
+  const prevSlide = useCallback(() => {
+    if (displayImages && displayImages.length > 0) {
+      setCurrentIndex((prevIndex) =>
+        prevIndex === 0 ? displayImages.length - 1 : prevIndex - 1
+      );
+    }
+  }, [displayImages]);
 
   const goToSlide = (index) => {
     setCurrentIndex(index);
@@ -27,8 +74,9 @@ export default function BannerSlider({ images, width = "100%" }) {
     setIsAutoPlaying(!isAutoPlaying);
   };
 
+  // Auto-slide effect
   useEffect(() => {
-    if (isAutoPlaying) {
+    if (isAutoPlaying && displayImages && displayImages.length > 1) {
       timeoutRef.current = setTimeout(() => {
         nextSlide();
       }, 5000);
@@ -39,7 +87,67 @@ export default function BannerSlider({ images, width = "100%" }) {
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [currentIndex, isAutoPlaying, nextSlide]);
+  }, [currentIndex, isAutoPlaying, displayImages, nextSlide]);
+
+  // Show loading state for dynamic content
+  if (useDynamic && slideshowLoading) {
+    return (
+      <div
+        className="relative overflow-hidden md:m-4 h-full flex items-center justify-center bg-gray-100"
+        style={{ width: width }}
+      >
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900 mx-auto"></div>
+          <p
+            className="mt-4 text-gray-600 text-sm"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+          >
+            ᠠᠴᠢᠶᠠᠯᠠᠵᠤ ᠪᠠᠶᠢᠨ᠎ᠠ...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state for dynamic content
+  if (useDynamic && slideshowError) {
+    console.warn(
+      "Failed to load slideshow data, falling back to static images"
+    );
+    // Fall back to static images if provided
+    if (!images || images.length === 0) {
+      return (
+        <div
+          className="relative overflow-hidden md:m-4 h-full flex items-center justify-center bg-gray-100"
+          style={{ width: width }}
+        >
+          <p
+            className="text-red-600 text-sm"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+          >
+            ᠮᠡᠳᠡᢉᠡ ᠠᠴᠢᠶᠠᠯᠠᠬᠤ ᠳ᠋ᠤ ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠪᠠ
+          </p>
+        </div>
+      );
+    }
+  }
+
+  // If no images to display, show placeholder
+  if (!displayImages || displayImages.length === 0) {
+    return (
+      <div
+        className="relative overflow-hidden md:m-4 h-full flex items-center justify-center bg-gray-100"
+        style={{ width: width }}
+      >
+        <p
+          className="text-gray-500 text-sm"
+          style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+        >
+          ᠵᠢᠷᠤᠭ ᠦᠭᠡᠢ
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -54,9 +162,9 @@ export default function BannerSlider({ images, width = "100%" }) {
           width: "100%",
         }}
       >
-        {images.map((image, index) => (
+        {displayImages.map((image, index) => (
           <div
-            key={index}
+            key={image.id || index}
             className="h-full relative flex-shrink-0"
             style={{ width: "100%" }}
           >
@@ -67,6 +175,9 @@ export default function BannerSlider({ images, width = "100%" }) {
               style={{ objectFit: "cover", objectPosition: "center" }}
               className="md:rounded-xl"
               priority={index === 0}
+              onError={(e) => {
+                e.target.src = "/images/news1.png"; // fallback image
+              }}
             />
             {image.caption && (
               <div className="hidden md:flex absolute h-full top-0 left-0 bg-black/50 backdrop-blur-lg text-white max-w-xs rounded-xl gap-8 p-16">
@@ -77,7 +188,7 @@ export default function BannerSlider({ images, width = "100%" }) {
                     textOrientation: "upright",
                   }}
                 >
-                  ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠤ᠋ᠨ ᠰᠢᠮᠫᠤᠽᠢᠦᠮ ᠒᠐᠒᠕
+                  {image.caption.title}
                 </h3>
                 <p
                   className="text-gray-200"
@@ -86,8 +197,7 @@ export default function BannerSlider({ images, width = "100%" }) {
                     textOrientation: "upright",
                   }}
                 >
-                  «ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠤ᠋ᠨ ᠰᠢᠮᠫᠤᠽᠢᠦᠮ ᠒᠐᠒᠕- ᠳ᠋ᠤ»
-                  ᠢᠯᠡᠳᢈᠡᠯ ᠲᠠᠨᠢᠯᠴᠠᠭᠤᠯᠬᠤ
+                  {image.caption.description}
                 </p>
                 <Button
                   text={"ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ"}
@@ -101,20 +211,22 @@ export default function BannerSlider({ images, width = "100%" }) {
       </div>
 
       {/* Navigation Controls */}
-      <div className="absolute right-5 bottom-5 md:right-10 md:bottom-10 flex justify-center gap-2 md:gap-3 z-10">
-        {images.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => goToSlide(index)}
-            className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
-              currentIndex === index
-                ? "bg-white scale-125"
-                : "bg-white/40 hover:bg-white/70"
-            }`}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
-      </div>
+      {displayImages.length > 1 && (
+        <div className="absolute right-5 bottom-5 md:right-10 md:bottom-10 flex justify-center gap-2 md:gap-3 z-10">
+          {displayImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
+                currentIndex === index
+                  ? "bg-white scale-125"
+                  : "bg-white/40 hover:bg-white/70"
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Arrow Controls */}
       {/* <button 

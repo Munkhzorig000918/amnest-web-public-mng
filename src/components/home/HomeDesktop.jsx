@@ -80,7 +80,7 @@ export default function HomeDesktop() {
 
   return (
     <div className="h-full gap-10 overflow-x-auto w-auto flex-shrink-0 hidden md:flex">
-      <BannerSlider images={bannerImages} width="90rem" />
+      <BannerSlider images={bannerImages} width="90rem" useDynamic={true} />
       <div className="h-full p-4">
         <div className="h-full flex gap-10">
           <SectionTitle

@@ -83,7 +83,7 @@ export default function WorkMobile() {
 
   return (
     <div className="h-full w-full block sm:hidden">
-      <BannerSlider images={bannerImages} width="90rem" />
+      <BannerSlider images={bannerImages} width="90rem" useDynamic={true} />
 
       <div className="h-full p-4 flex flex-col gap-7">
         <div className="h-full flex gap-7 max-h-[150px]">

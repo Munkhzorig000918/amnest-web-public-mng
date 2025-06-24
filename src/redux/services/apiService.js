@@ -8,16 +8,6 @@ import {
   MOCK_DATA,
 } from "@/config/api";
 
-// Mock query function for demo mode
-const mockQuery = (data, delay = 500) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ data: { data, total: data.length } });
-    }, delay);
-  });
-};
-
-// Define a service using the Amnesty CMS base URL
 export const apiService = createApi({
   reducerPath: "apiService",
   baseQuery: fetchBaseQuery({
@@ -215,25 +205,31 @@ export const apiService = createApi({
       transformResponse: (response) => {
         return formatStrapiResponse(response);
       },
-      providesTags: (result, error, id) => [{ type: "Library", id }],
+      providesTags: (result, error, id) => [{ type: "Librarys", id }],
     }),
 
     // FAQs endpoints - using standard Strapi API
     getFaqs: builder.query({
       query: (params = {}) => {
-        const url = buildApiUrl(API_CONFIG.ENDPOINTS.FAQS, {
-          "pagination[pageSize]":
-            params.pageSize || API_CONFIG.PAGINATION.DEFAULT_PAGE_SIZE,
-          "pagination[page]": params.page || 1,
-          sort: params.sort || "publishedAt:desc",
-          ...params,
-        });
-        return url.replace(API_CONFIG.BASE_URL, "");
+        // Simple endpoint without complex pagination
+        return "/faqs";
       },
       transformResponse: (response) => {
         return formatStrapiResponse(response);
       },
       providesTags: ["FAQ"],
+    }),
+
+    // Reports endpoints - using standard Strapi API
+    getReports: builder.query({
+      query: (params = {}) => {
+        // Simple endpoint without complex pagination
+        return "/reports";
+      },
+      transformResponse: (response) => {
+        return formatStrapiResponse(response);
+      },
+      providesTags: ["Report"],
     }),
 
     // Slideshows endpoints - using standard Strapi API
@@ -286,6 +282,7 @@ export const {
   useGetLibrariesQuery,
   useGetLibraryByIdQuery,
   useGetFaqsQuery,
+  useGetReportsQuery,
   useGetSlideshowsQuery,
   useGetHomepageContentQuery,
 } = apiService;

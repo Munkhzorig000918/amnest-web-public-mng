@@ -83,7 +83,7 @@ export default function HomeMobile() {
   return (
     <div className="w-full min-h-screen bg-white block md:hidden">
       <div className="relative w-full h-[40vh]">
-        <BannerSlider images={bannerImages} width="100%" />
+        <BannerSlider images={bannerImages} width="100%" useDynamic={true} />
       </div>
       <div className="h-full p-1">
         <div className="max-h-[200px] h-full flex gap-3">
