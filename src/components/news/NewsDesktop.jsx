@@ -9,12 +9,8 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { useState, useEffect } from "react";
-import {
-  useGetPostsQuery,
-  useGetVideosQuery,
-  useGetLibrariesQuery,
-} from "@/redux/services/apiService";
-import { getImageUrl } from "@/config/api";
+import apiService from "@/services/apiService";
+import { getImageUrl } from "@/utils/fetcher";
 
 export default function NewsDesktop() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -22,66 +18,81 @@ export default function NewsDesktop() {
   const [activeCategory, setActiveCategory] = useState("news");
   const itemsPerPage = 9;
 
-  // Fetch different content types based on active category
-  const {
-    data: postsData,
-    error: postsError,
-    isLoading: postsLoading,
-  } = useGetPostsQuery(
-    {
-      pageSize: itemsPerPage,
-      page: currentPage,
-      sort: "publishedAt:desc",
-    },
-    { skip: activeCategory !== "news" }
-  );
+  // State for API data
+  const [postsData, setPostsData] = useState([]);
+  const [videosData, setVideosData] = useState([]);
+  const [librariesData, setLibrariesData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const {
-    data: videosData,
-    error: videosError,
-    isLoading: videosLoading,
-  } = useGetVideosQuery(
-    {
-      pageSize: itemsPerPage,
-      page: currentPage,
-      sort: "publishedAt:desc",
-    },
-    { skip: activeCategory !== "reports" }
-  );
+  // Fetch data based on active category
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
 
-  const {
-    data: librariesData,
-    error: librariesError,
-    isLoading: librariesLoading,
-  } = useGetLibrariesQuery(
-    {
-      pageSize: itemsPerPage,
-      page: currentPage,
-      sort: "amnesty_published_at:desc",
-    },
-    { skip: activeCategory !== "special" }
-  );
+      try {
+        switch (activeCategory) {
+          case "news":
+            if (postsData.length === 0) {
+              // Only fetch if not already loaded
+              const posts = await apiService.posts.getPostsList({
+                page: currentPage,
+                pageSize: itemsPerPage,
+                "sort[publishedAt]": "desc",
+                populate: "deep",
+              });
+              setPostsData(posts.data || []);
+            }
+            break;
+
+          case "reports":
+            if (videosData.length === 0) {
+              // Only fetch if not already loaded
+              const videos = await apiService.videos.getVideos({
+                page: currentPage,
+                pageSize: itemsPerPage,
+                "sort[publishedAt]": "desc",
+              });
+              setVideosData(videos || []);
+            }
+            break;
+
+          case "special":
+            if (librariesData.length === 0) {
+              // Only fetch if not already loaded
+              const libraries = await apiService.libraries.getLibraries({
+                page: currentPage,
+                pageSize: itemsPerPage,
+                "sort[amnesty_published_at]": "desc",
+              });
+              setLibrariesData(libraries || []);
+            }
+            break;
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [activeCategory, currentPage]);
 
   // Determine current data based on active category
   let currentData = [];
-  let isLoading = false;
-  let error = null;
 
   switch (activeCategory) {
     case "news":
-      currentData = postsData || [];
-      isLoading = postsLoading;
-      error = postsError;
+      currentData = postsData;
       break;
     case "reports":
-      currentData = videosData || [];
-      isLoading = videosLoading;
-      error = videosError;
+      currentData = videosData;
       break;
     case "special":
-      currentData = librariesData || [];
-      isLoading = librariesLoading;
-      error = librariesError;
+      currentData = librariesData;
       break;
     default:
       currentData = [];
