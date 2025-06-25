@@ -3,82 +3,8 @@ import Button from "@/components/common/Button";
 import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import SectionTitle from "@/components/common/SectionTitle";
-import { useGetFaqsQuery } from "@/redux/services/apiService";
-import { getImageUrl } from "@/config/api";
 
 export default function AboutUsDesktop() {
-  // Fetch FAQs from API
-  const {
-    data: faqsData,
-    error: faqsError,
-    isLoading: faqsLoading,
-  } = useGetFaqsQuery({
-    pageSize: 8,
-    sort: "publishedAt:desc",
-  });
-
-  // Convert FAQs data to about items format
-  const aboutItems = faqsData
-    ? faqsData.slice(0, 4).map((faq) => ({
-        id: faq.id,
-        title: faq.question || "ᠠᠰᠠᠭᠤᠯᠲᠠ",
-        body: faq.answer || "ᠬᠠᠷᠢᠭᠤᠯᠲᠠ ᠦᠭᠡᠢ",
-        image: getImageUrl(faq.image) || "/images/aboutus1.png",
-      }))
-    : [];
-
-  // Use remaining FAQs for history items
-  const historyItems = faqsData
-    ? faqsData.slice(4, 8).map((faq, index) => ({
-        id: faq.id,
-        date: `᠒᠐᠒${index + 1}`, // Simple date format
-        image:
-          getImageUrl(faq.image) ||
-          `/images/internationalhistoryimage${index + 1}.png`,
-        desc: faq.answer || "ᠲᠡᠦᠬᠡ ᠦᠭᠡᠢ",
-      }))
-    : [];
-
-  // Loading state
-  if (faqsLoading) {
-    return (
-      <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-hidden">
-        <BannerSlider images={bannerImages} width="90rem" />
-        <div className="flex items-center justify-center p-4">
-          <p
-            className="text-lg"
-            style={{
-              writingMode: "vertical-lr",
-              textOrientation: "upright",
-            }}
-          >
-            ᠠᠴᠢᠶᠠᠯᠠᠵᠤ ᠪᠠᠶᠢᠨ᠎ᠠ...
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  // Error state
-  if (faqsError) {
-    return (
-      <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-hidden">
-        <BannerSlider images={bannerImages} width="90rem" />
-        <div className="flex items-center justify-center p-4">
-          <p
-            className="text-lg text-red-600"
-            style={{
-              writingMode: "vertical-lr",
-              textOrientation: "upright",
-            }}
-          >
-            ᠮᠡᠳᠡᢉᠡ ᠠᠴᠢᠶᠠᠯᠠᠬᠤ ᠳ᠋ᠤ ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠪᠠ
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-hidden">
       <BannerSlider images={bannerImages} width="90rem" />
@@ -141,71 +67,25 @@ export default function AboutUsDesktop() {
         <div className="h-full grid grid-cols-2 grid-rows-2 gap-12 mr-20">
           {aboutItems.map((item) => (
             <div key={item.id} className="flex items-start p-5 gap-4 h-[600px]">
-              <Image
-                src={item.image}
-                alt={item.title}
-                width={80}
-                height={80}
-                onError={(e) => {
-                  e.target.src = "/images/aboutus1.png"; // fallback image
-                }}
-              />
+              <Image src={item.image} alt={item.title} width={80} height={80} />
               <h2
                 className="font-bold text-xl"
                 style={{
                   writingMode: "vertical-lr",
                 }}
-                title={item.title}
               >
-                {item.title.length > 50
-                  ? `${item.title.substring(0, 50)}...`
-                  : item.title}
+                {item.title}
               </h2>
               <p
                 className="text-black font-bold text-sm"
                 style={{
                   writingMode: "vertical-lr",
                 }}
-                title={item.body}
               >
-                {item.body.length > 200
-                  ? `${item.body.substring(0, 200)}...`
-                  : item.body}
+                {item.body}
               </p>
             </div>
           ))}
-          {/* Fill empty slots if we have less than 4 FAQs */}
-          {Array.from({ length: Math.max(0, 4 - aboutItems.length) }).map(
-            (_, index) => (
-              <div
-                key={`empty-${index}`}
-                className="flex items-start p-5 gap-4 h-[600px] opacity-50"
-              >
-                <Image
-                  src="/images/aboutus1.png"
-                  alt="Empty slot"
-                  width={80}
-                  height={80}
-                />
-                <h2
-                  className="font-bold text-xl text-gray-400"
-                  style={{
-                    writingMode: "vertical-lr",
-                  }}
-                >
-                  ᠮᠡᠳᠡᢉᠡ ᠦᠭᠡᠢ
-                </h2>
-                <p
-                  className="text-gray-400 font-bold text-sm"
-                  style={{
-                    writingMode: "vertical-lr",
-                  }}
-                >
-                  ᠮᠡᠳᠡᢉᠡ ᠦᠭᠡᠢ
-                </p>
-              </div>
-            )
-          )}
         </div>
         <div className="flex gap-12 p-4 h-full">
           <SectionTitle
@@ -272,3 +152,73 @@ export default function AboutUsDesktop() {
     </div>
   );
 }
+
+const aboutItems = [
+  {
+    id: 1,
+    title:
+      "ᠪᠢᠳᠡ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠵᠥᠷᠢᠴᠡᠯ ᠢ᠋ ᠲᠠᠰᠤᠯᠤᠨ ᠵᠣᠭᠰᠤᠭᠠᠬᠤ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠠᠵᠢᠯᠯᠠᠳᠠᠭ",
+    body: "ᢈᠦᠮᠦᠰ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠵᠥᠷᠢᠴᠡᢉᠳᠡᠵᠦ ᠪᠠᠶᠢᠭ᠎ᠠ ᠦᠶ᠎ᠡ ᠳ᠋ᠦ ᠡᠮᠨᠧᠰᠲ ᠢ᠋ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠰᠢᠨ᠋ᠯ ᠲᠡᠳᠡᠨ ᠦ᠋ ᠨᠥᢈᠦᠴᠡᠯ ᠪᠠᠶᠢᠳᠠᠯ ᠢ᠋ ᠳᠡᠯᠡᢈᠡᠢ ᠨᠡᠶᠢᠲᠡ ᠶ᠋ᠢᠨ ᠠᠩᠬᠠᠷᠤᠯ ᠤ᠋ᠨ ᠲᠥᠪ ᠲᠦ ᠣᠷᠤᠭᠤᠯᠳᠠᠭ᠃ ᠮᠠᠨ ᠤ᠋ ᠳᠡᠮᠵᠢᢉᠴᠢᠳ ᠲᠡᠳᠡᠨ ᠢ᠋ ᠬᠠᠮᠠᠭᠠᠯᠠᠬᠤ ᠶ᠋ᠢᠨ ᠲᠤᠯᠠᠳᠠ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠠᠪᠴᠤ ᠠᠵᠢᠯᠯᠠᠳᠠᠭ᠃",
+    image: "/images/aboutus1.png",
+  },
+  {
+    id: 2,
+    title:
+      "ᠪᠢᠳᠡ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠵᠥᠷᠢᠴᠡᠯ ᠢ᠋ ᠲᠠᠰᠤᠯᠤᠨ ᠵᠣᠭᠰᠤᠭᠠᠬᠤ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠠᠵᠢᠯᠯᠠᠳᠠᠭ",
+    body: "ᢈᠦᠮᠦᠰ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠵᠥᠷᠢᠴᠡᢉᠳᠡᠵᠦ ᠪᠠᠶᠢᠭ᠎ᠠ ᠦᠶ᠎ᠡ ᠳ᠋ᠦ ᠡᠮᠨᠧᠰᠲ ᠢ᠋ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠰᠢᠨ᠋ᠯ ᠲᠡᠳᠡᠨ ᠦ᠋ ᠨᠥᢈᠦᠴᠡᠯ ᠪᠠᠶᠢᠳᠠᠯ ᠢ᠋ ᠳᠡᠯᠡᢈᠡᠢ ᠨᠡᠶᠢᠲᠡ ᠶ᠋ᠢᠨ ᠠᠩᠬᠠᠷᠤᠯ ᠤ᠋ᠨ ᠲᠥᠪ ᠲᠦ ᠣᠷᠤᠭᠤᠯᠳᠠᠭ᠃ ᠮᠠᠨ ᠤ᠋ ᠳᠡᠮᠵᠢᢉᠴᠢᠳ ᠲᠡᠳᠡᠨ ᠢ᠋ ᠬᠠᠮᠠᠭᠠᠯᠠᠬᠤ ᠶ᠋ᠢᠨ ᠲᠤᠯᠠᠳᠠ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠠᠪᠴᠤ ᠠᠵᠢᠯᠯᠠᠳᠠᠭ᠃",
+    image: "/images/aboutus2.png",
+  },
+  {
+    id: 3,
+    title:
+      "ᠪᠢᠳᠡ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠵᠥᠷᠢᠴᠡᠯ ᠢ᠋ ᠲᠠᠰᠤᠯᠤᠨ ᠵᠣᠭᠰᠤᠭᠠᠬᠤ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠠᠵᠢᠯᠯᠠᠳᠠᠭ",
+    body: "ᢈᠦᠮᠦᠰ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠵᠥᠷᠢᠴᠡᢉᠳᠡᠵᠦ ᠪᠠᠶᠢᠭ᠎ᠠ ᠦᠶ᠎ᠡ ᠳ᠋ᠦ ᠡᠮᠨᠧᠰᠲ ᠢ᠋ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠰᠢᠨ᠋ᠯ ᠲᠡᠳᠡᠨ ᠦ᠋ ᠨᠥᢈᠦᠴᠡᠯ ᠪᠠᠶᠢᠳᠠᠯ ᠢ᠋ ᠳᠡᠯᠡᢈᠡᠢ ᠨᠡᠶᠢᠲᠡ ᠶ᠋ᠢᠨ ᠠᠩᠬᠠᠷᠤᠯ ᠤ᠋ᠨ ᠲᠥᠪ ᠲᠦ ᠣᠷᠤᠭᠤᠯᠳᠠᠭ᠃ ᠮᠠᠨ ᠤ᠋ ᠳᠡᠮᠵᠢᢉᠴᠢᠳ ᠲᠡᠳᠡᠨ ᠢ᠋ ᠬᠠᠮᠠᠭᠠᠯᠠᠬᠤ ᠶ᠋ᠢᠨ ᠲᠤᠯᠠᠳᠠ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠠᠪᠴᠤ ᠠᠵᠢᠯᠯᠠᠳᠠᠭ᠃",
+    image: "/images/aboutus3.png",
+  },
+  {
+    id: 4,
+    title:
+      "ᠪᠢᠳᠡ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠵᠥᠷᠢᠴᠡᠯ ᠢ᠋ ᠲᠠᠰᠤᠯᠤᠨ ᠵᠣᠭᠰᠤᠭᠠᠬᠤ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠠᠵᠢᠯᠯᠠᠳᠠᠭ",
+    body: "ᢈᠦᠮᠦᠰ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠵᠥᠷᠢᠴᠡᢉᠳᠡᠵᠦ ᠪᠠᠶᠢᠭ᠎ᠠ ᠦᠶ᠎ᠡ ᠳ᠋ᠦ ᠡᠮᠨᠧᠰᠲ ᠢ᠋ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠰᠢᠨ᠋ᠯ ᠲᠡᠳᠡᠨ ᠦ᠋ ᠨᠥᢈᠦᠴᠡᠯ ᠪᠠᠶᠢᠳᠠᠯ ᠢ᠋ ᠳᠡᠯᠡᢈᠡᠢ ᠨᠡᠶᠢᠲᠡ ᠶ᠋ᠢᠨ ᠠᠩᠬᠠᠷᠤᠯ ᠤ᠋ᠨ ᠲᠥᠪ ᠲᠦ ᠣᠷᠤᠭᠤᠯᠳᠠᠭ᠃ ᠮᠠᠨ ᠤ᠋ ᠳᠡᠮᠵᠢᢉᠴᠢᠳ ᠲᠡᠳᠡᠨ ᠢ᠋ ᠬᠠᠮᠠᠭᠠᠯᠠᠬᠤ ᠶ᠋ᠢᠨ ᠲᠤᠯᠠᠳᠠ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠠᠪᠴᠤ ᠠᠵᠢᠯᠯᠠᠳᠠᠭ᠃",
+    image: "/images/aboutus4.png",
+  },
+];
+
+const historyItems = [
+  {
+    id: 1,
+    date: "᠑᠙᠙᠔-᠑᠙᠙᠕",
+    image: "/images/internationalhistoryimage1.png",
+    desc: "᠑᠙᠗᠗ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠧᠰᠢᠨᠯ ᠨᠢ “ᠡᠷᢈᠡ ᠴᠢᠯᠦᢉᠡ᠂ ᠰᠢᠳᠤᠷᠭᠤ ᠶᠣᠰᠤᠨ ᠤ᠋ ᠦᠨᠳᠦᠰᠦ ᠰᠠᠭᠤᠷᠢ ᠶ᠋ᠢ ᠪᠠᠲᠤᠯᠠᠭᠠᠵᠢᠭᠤᠯᠵᠤ”᠂ ᠤᠯᠠᠮ ᠢ᠋ᠶᠠᠷ ᠳᠡᠯᠡᢈᠡᠢ ᠶ᠋ᠢᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠢ᠋ ᠲᠣᠭᠲᠠᠭᠠᠬᠤ ᠳ᠋ᠤ ᠬᠤᠪᠢ ᠨᠡᠮᠡᠷᠢ ᠪᠡᠨ ᠣᠷᠤᠭᠤᠯᠤᠭᠰᠠᠨ ᠤ᠋ ᠲᠥᠯᠦᢉᠡ ᠨᠣᠪᠧᠯ ᠤ᠋ᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠤ᠋ᠨ ᠱᠠᠩᠨᠠᠯ ᢈᠦᠷᠲᠡᠪᠡ᠃  ᠡᠨᠡ ᠨᠢ ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᠶᠠᠭᠠᠷᢈᠢ ᠡᠮᠨᠧᠰᠲ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠡᠰᠢᠩᠯ ᠦ᠋ᠨ ᠳᠡᠮᠵᠢᢉᠴᠢᠳ ᠦ᠋ᠨ ᠰᠢᠷᠭᠠᠭᠤ ᢈᠥᠳᠡᠯᠮᠦᠷᠢ᠂ ᠲᠤᠭᠤᠰᠢᠲᠠᠢ ᠪᠠᠶᠢᠳᠠᠯ ᠤ᠋ᠨ ᠦᠷ᠎ᠡ ᠳ᠋ᠦᠩ ᠶᠠᠭᠤᠮ᠎ᠠ᠃᠑᠙᠗᠗ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠧᠰᠢᠨᠯ ᠨᠢ “ᠡᠷᢈᠡ ᠴᠢᠯᠦᢉᠡ᠂ ᠰᠢᠳᠤᠷᠭᠤ ᠶᠣᠰᠤᠨ ᠤ᠋ ᠦᠨᠳᠦᠰᠦ ᠰᠠᠭᠤᠷᠢ ᠶ᠋ᠢ ᠪᠠᠲᠤᠯᠠᠭᠠᠵᠢᠭᠤᠯᠵᠤ”᠂ ᠤᠯᠠᠮ ᠢ᠋ᠶᠠᠷ ᠳᠡᠯᠡᢈᠡᠢ ᠶ᠋ᠢᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠢ᠋ ᠲᠣᠭᠲᠠᠭᠠᠬᠤ ᠳ᠋ᠤ ᠬᠤᠪᠢ ᠨᠡᠮᠡᠷᠢ ᠪᠡᠨ ᠣᠷᠤᠭᠤᠯᠤᠭᠰᠠᠨ ᠤ᠋ ᠲᠥᠯᠦᢉᠡ ᠨᠣᠪᠧᠯ ᠤ᠋ᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠤ᠋ᠨ ᠱᠠᠩᠨᠠᠯ ᢈᠦᠷᠲᠡᠪᠡ᠃  ᠡᠨᠡ ᠨᠢ ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᠶᠠᠭᠠᠷᢈᠢ ᠡᠮᠨᠧᠰᠲ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠡᠰᠢᠩᠯ ᠦ᠋ᠨ ᠳᠡᠮᠵᠢᢉᠴᠢᠳ ᠦ᠋ᠨ ᠰᠢᠷᠭᠠᠭᠤ ᢈᠥᠳᠡᠯᠮᠦᠷᠢ᠂ ᠲᠤᠭᠤᠰᠢᠲᠠᠢ ᠪᠠᠶᠢᠳᠠᠯ ᠤ᠋ᠨ ᠦᠷ᠎ᠡ ᠳ᠋ᠦᠩ ᠶᠠᠭᠤᠮ᠎ᠠ᠃᠑᠙᠗᠗ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠧᠰᠢᠨᠯ ᠨᠢ “ᠡᠷᢈᠡ ᠴᠢᠯᠦᢉᠡ᠂ ᠰᠢᠳᠤᠷᠭᠤ ᠶᠣᠰᠤᠨ ᠤ᠋ ᠦᠨᠳᠦᠰᠦ ᠰᠠᠭᠤᠷᠢ ᠶ᠋ᠢ ᠪᠠᠲᠤᠯᠠᠭᠠᠵᠢᠭᠤᠯᠵᠤ”᠂ ᠤᠯᠠᠮ ᠢ᠋ᠶᠠᠷ ᠳᠡᠯᠡᢈᠡᠢ ᠶ᠋ᠢᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠢ᠋ ᠲᠣᠭᠲᠠᠭᠠᠬᠤ ᠳ᠋ᠤ ᠬᠤᠪᠢ ᠨᠡᠮᠡᠷᠢ ᠪᠡᠨ ᠣᠷᠤᠭᠤᠯᠤᠭᠰᠠᠨ ᠤ᠋ ᠲᠥᠯᠦᢉᠡ ᠨᠣᠪᠧᠯ ᠤ᠋ᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠤ᠋ᠨ ᠱᠠᠩᠨᠠᠯ ᢈᠦᠷᠲᠡᠪᠡ᠃  ᠡᠨᠡ ᠨᠢ ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᠶᠠᠭᠠᠷᢈᠢ ᠡᠮᠨᠧᠰᠲ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠡᠰᠢᠩᠯ ᠦ᠋ᠨ ᠳᠡᠮᠵᠢᢉᠴᠢᠳ ᠦ᠋ᠨ ᠰᠢᠷᠭᠠᠭᠤ ᢈᠥᠳᠡᠯᠮᠦᠷᠢ᠂ ᠲᠤᠭᠤᠰᠢᠲᠠᠢ ᠪᠠᠶᠢᠳᠠᠯ ᠤ᠋ᠨ ᠦᠷ᠎ᠡ ᠳ᠋ᠦᠩ ᠶᠠᠭᠤᠮ᠎ᠠ᠃",
+  },
+  {
+    id: 2,
+    date: "᠑᠙᠙᠔-᠑᠙᠙᠕",
+    image: "/images/internationalhistoryimage2.png",
+    desc: "᠑᠙᠗᠗ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠧᠰᠢᠨᠯ ᠨᠢ “ᠡᠷᢈᠡ ᠴᠢᠯᠦᢉᠡ᠂ ᠰᠢᠳᠤᠷᠭᠤ ᠶᠣᠰᠤᠨ ᠤ᠋ ᠦᠨᠳᠦᠰᠦ ᠰᠠᠭᠤᠷᠢ ᠶ᠋ᠢ ᠪᠠᠲᠤᠯᠠᠭᠠᠵᠢᠭᠤᠯᠵᠤ”᠂ ᠤᠯᠠᠮ ᠢ᠋ᠶᠠᠷ ᠳᠡᠯᠡᢈᠡᠢ ᠶ᠋ᠢᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠢ᠋ ᠲᠣᠭᠲᠠᠭᠠᠬᠤ ᠳ᠋ᠤ ᠬᠤᠪᠢ ᠨᠡᠮᠡᠷᠢ ᠪᠡᠨ ᠣᠷᠤᠭᠤᠯᠤᠭᠰᠠᠨ ᠤ᠋ ᠲᠥᠯᠦᢉᠡ ᠨᠣᠪᠧᠯ ᠤ᠋ᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠤ᠋ᠨ ᠱᠠᠩᠨᠠᠯ ᢈᠦᠷᠲᠡᠪᠡ᠃  ᠡᠨᠡ ᠨᠢ ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᠶᠠᠭᠠᠷᢈᠢ ᠡᠮᠨᠧᠰᠲ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠡᠰᠢᠩᠯ ᠦ᠋ᠨ ᠳᠡᠮᠵᠢᢉᠴᠢᠳ ᠦ᠋ᠨ ᠰᠢᠷᠭᠠᠭᠤ ᢈᠥᠳᠡᠯᠮᠦᠷᠢ᠂ ᠲᠤᠭᠤᠰᠢᠲᠠᠢ ᠪᠠᠶᠢᠳᠠᠯ ᠤ᠋ᠨ ᠦᠷ᠎ᠡ ᠳ᠋ᠦᠩ ᠶᠠᠭᠤᠮ᠎ᠠ᠃᠑᠙᠗᠗ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠧᠰᠢᠨᠯ ᠨᠢ “ᠡᠷᢈᠡ ᠴᠢᠯᠦᢉᠡ᠂ ᠰᠢᠳᠤᠷᠭᠤ ᠶᠣᠰᠤᠨ ᠤ᠋ ᠦᠨᠳᠦᠰᠦ ᠰᠠᠭᠤᠷᠢ ᠶ᠋ᠢ ᠪᠠᠲᠤᠯᠠᠭᠠᠵᠢᠭᠤᠯᠵᠤ”᠂ ᠤᠯᠠᠮ ᠢ᠋ᠶᠠᠷ ᠳᠡᠯᠡᢈᠡᠢ ᠶ᠋ᠢᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠢ᠋ ᠲᠣᠭᠲᠠᠭᠠᠬᠤ ᠳ᠋ᠤ ᠬᠤᠪᠢ ᠨᠡᠮᠡᠷᠢ ᠪᠡᠨ ᠣᠷᠤᠭᠤᠯᠤᠭᠰᠠᠨ ᠤ᠋ ᠲᠥᠯᠦᢉᠡ ᠨᠣᠪᠧᠯ ᠤ᠋ᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠤ᠋ᠨ ᠱᠠᠩᠨᠠᠯ ᢈᠦᠷᠲᠡᠪᠡ᠃  ᠡᠨᠡ ᠨᠢ ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᠶᠠᠭᠠᠷᢈᠢ ᠡᠮᠨᠧᠰᠲ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠡᠰᠢᠩᠯ ᠦ᠋ᠨ ᠳᠡᠮᠵᠢᢉᠴᠢᠳ ᠦ᠋ᠨ ᠰᠢᠷᠭᠠᠭᠤ ᢈᠥᠳᠡᠯᠮᠦᠷᠢ᠂ ᠲᠤᠭᠤᠰᠢᠲᠠᠢ ᠪᠠᠶᠢᠳᠠᠯ ᠤ᠋ᠨ ᠦᠷ᠎ᠡ ᠳ᠋ᠦᠩ ᠶᠠᠭᠤᠮ᠎ᠠ᠃",
+  },
+  {
+    id: 3,
+    date: "᠑᠙᠙᠔-᠑᠙᠙᠕",
+    image: "/images/internationalhistoryimage3.png",
+    desc: "᠑᠙᠗᠗ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠧᠰᠢᠨᠯ ᠨᠢ “ᠡᠷᢈᠡ ᠴᠢᠯᠦᢉᠡ᠂ ᠰᠢᠳᠤᠷᠭᠤ ᠶᠣᠰᠤᠨ ᠤ᠋ ᠦᠨᠳᠦᠰᠦ ᠰᠠᠭᠤᠷᠢ ᠶ᠋ᠢ ᠪᠠᠲᠤᠯᠠᠭᠠᠵᠢᠭᠤᠯᠵᠤ”᠂ ᠤᠯᠠᠮ ᠢ᠋ᠶᠠᠷ ᠳᠡᠯᠡᢈᠡᠢ ᠶ᠋ᠢᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠢ᠋ ᠲᠣᠭᠲᠠᠭᠠᠬᠤ ᠳ᠋ᠤ ᠬᠤᠪᠢ ᠨᠡᠮᠡᠷᠢ ᠪᠡᠨ ᠣᠷᠤᠭᠤᠯᠤᠭᠰᠠᠨ ᠤ᠋ ᠲᠥᠯᠦᢉᠡ ᠨᠣᠪᠧᠯ ᠤ᠋ᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠤ᠋ᠨ ᠱᠠᠩᠨᠠᠯ ᢈᠦᠷᠲᠡᠪᠡ᠃  ᠡᠨᠡ ᠨᠢ ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᠶᠠᠭᠠᠷᢈᠢ ᠡᠮᠨᠧᠰᠲ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠡᠰᠢᠩᠯ ᠦ᠋ᠨ ᠳᠡᠮᠵᠢᢉᠴᠢᠳ ᠦ᠋ᠨ ᠰᠢᠷᠭᠠᠭᠤ ᢈᠥᠳᠡᠯᠮᠦᠷᠢ᠂ ᠲᠤᠭᠤᠰᠢᠲᠠᠢ ᠪᠠᠶᠢᠳᠠᠯ ᠤ᠋ᠨ ᠦᠷ᠎ᠡ ᠳ᠋ᠦᠩ ᠶᠠᠭᠤᠮ᠎ᠠ᠃᠑᠙᠗᠗ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠧᠰᠢᠨᠯ ᠨᠢ “ᠡᠷᢈᠡ ᠴᠢᠯᠦᢉᠡ᠂ ᠰᠢᠳᠤᠷᠭᠤ ᠶᠣᠰᠤᠨ ᠤ᠋ ᠦᠨᠳᠦᠰᠦ ᠰᠠᠭᠤᠷᠢ ᠶ᠋ᠢ ᠪᠠᠲᠤᠯᠠᠭᠠᠵᠢᠭᠤᠯᠵᠤ”᠂ ᠤᠯᠠᠮ ᠢ᠋ᠶᠠᠷ ᠳᠡᠯᠡᢈᠡᠢ ᠶ᠋ᠢᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠢ᠋ ᠲᠣᠭᠲᠠᠭᠠᠬᠤ ᠳ᠋ᠤ ᠬᠤᠪᠢ ᠨᠡᠮᠡᠷᠢ ᠪᠡᠨ ᠣᠷᠤᠭᠤᠯᠤᠭᠰᠠᠨ ᠤ᠋ ᠲᠥᠯᠦᢉᠡ ᠨᠣᠪᠧᠯ ᠤ᠋ᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠤ᠋ᠨ ᠱᠠᠩᠨᠠᠯ ᢈᠦᠷᠲᠡᠪᠡ᠃  ᠡᠨᠡ ᠨᠢ ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᠶᠠᠭᠠᠷᢈᠢ ᠡᠮᠨᠧᠰᠲ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠡᠰᠢᠩᠯ ᠦ᠋ᠨ ᠳᠡᠮᠵᠢᢉᠴᠢᠳ ᠦ᠋ᠨ ᠰᠢᠷᠭᠠᠭᠤ ᢈᠥᠳᠡᠯᠮᠦᠷᠢ᠂ ᠲᠤᠭᠤᠰᠢᠲᠠᠢ ᠪᠠᠶᠢᠳᠠᠯ ᠤ᠋ᠨ ᠦᠷ᠎ᠡ ᠳ᠋ᠦᠩ ᠶᠠᠭᠤᠮ᠎ᠠ᠃",
+  },
+  {
+    id: 4,
+    date: "᠑᠙᠙᠔-᠑᠙᠙᠕",
+    image: "/images/internationalhistoryimage4.png",
+    desc: "᠑᠙᠗᠗ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠧᠰᠢᠨᠯ ᠨᠢ “ᠡᠷᢈᠡ ᠴᠢᠯᠦᢉᠡ᠂ ᠰᠢᠳᠤᠷᠭᠤ ᠶᠣᠰᠤᠨ ᠤ᠋ ᠦᠨᠳᠦᠰᠦ ᠰᠠᠭᠤᠷᠢ ᠶ᠋ᠢ ᠪᠠᠲᠤᠯᠠᠭᠠᠵᠢᠭᠤᠯᠵᠤ”᠂ ᠤᠯᠠᠮ ᠢ᠋ᠶᠠᠷ ᠳᠡᠯᠡᢈᠡᠢ ᠶ᠋ᠢᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠢ᠋ ᠲᠣᠭᠲᠠᠭᠠᠬᠤ ᠳ᠋ᠤ ᠬᠤᠪᠢ ᠨᠡᠮᠡᠷᠢ ᠪᠡᠨ ᠣᠷᠤᠭᠤᠯᠤᠭᠰᠠᠨ ᠤ᠋ ᠲᠥᠯᠦᢉᠡ ᠨᠣᠪᠧᠯ ᠤ᠋ᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠤ᠋ᠨ ᠱᠠᠩᠨᠠᠯ ᢈᠦᠷᠲᠡᠪᠡ᠃  ᠡᠨᠡ ᠨᠢ ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᠶᠠᠭᠠᠷᢈᠢ ᠡᠮᠨᠧᠰᠲ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠡᠰᠢᠩᠯ ᠦ᠋ᠨ ᠳᠡᠮᠵᠢᢉᠴᠢᠳ ᠦ᠋ᠨ ᠰᠢᠷᠭᠠᠭᠤ ᢈᠥᠳᠡᠯᠮᠦᠷᠢ᠂ ᠲᠤᠭᠤᠰᠢᠲᠠᠢ ᠪᠠᠶᠢᠳᠠᠯ ᠤ᠋ᠨ ᠦᠷ᠎ᠡ ᠳ᠋ᠦᠩ ᠶᠠᠭᠤᠮ᠎ᠠ᠃᠑᠙᠗᠗ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠧᠰᠢᠨᠯ ᠨᠢ “ᠡᠷᢈᠡ ᠴᠢᠯᠦᢉᠡ᠂ ᠰᠢᠳᠤᠷᠭᠤ ᠶᠣᠰᠤᠨ ᠤ᠋ ᠦᠨᠳᠦᠰᠦ ᠰᠠᠭᠤᠷᠢ ᠶ᠋ᠢ ᠪᠠᠲᠤᠯᠠᠭᠠᠵᠢᠭᠤᠯᠵᠤ”᠂ ᠤᠯᠠᠮ ᠢ᠋ᠶᠠᠷ ᠳᠡᠯᠡᢈᠡᠢ ᠶ᠋ᠢᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠢ᠋ ᠲᠣᠭᠲᠠᠭᠠᠬᠤ ᠳ᠋ᠤ ᠬᠤᠪᠢ ᠨᠡᠮᠡᠷᠢ ᠪᠡᠨ ᠣᠷᠤᠭᠤᠯᠤᠭᠰᠠᠨ ᠤ᠋ ᠲᠥᠯᠦᢉᠡ ᠨᠣᠪᠧᠯ ᠤ᠋ᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠤ᠋ᠨ ᠱᠠᠩᠨᠠᠯ ᢈᠦᠷᠲᠡᠪᠡ᠃  ᠡᠨᠡ ᠨᠢ ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᠶᠠᠭᠠᠷᢈᠢ ᠡᠮᠨᠧᠰᠲ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠡᠰᠢᠩᠯ ᠦ᠋ᠨ ᠳᠡᠮᠵᠢᢉᠴᠢᠳ ᠦ᠋ᠨ ᠰᠢᠷᠭᠠᠭᠤ ᢈᠥᠳᠡᠯᠮᠦᠷᠢ᠂ ᠲᠤᠭᠤᠰᠢᠲᠠᠢ ᠪᠠᠶᠢᠳᠠᠯ ᠤ᠋ᠨ ᠦᠷ᠎ᠡ ᠳ᠋ᠦᠩ ᠶᠠᠭᠤᠮ᠎ᠠ᠃",
+  },
+  {
+    id: 5,
+    date: "᠑᠙᠙᠔-᠑᠙᠙᠕",
+    image: "/images/internationalhistoryimage5.png",
+    desc: "᠑᠙᠗᠗ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠧᠰᠢᠨᠯ ᠨᠢ “ᠡᠷᢈᠡ ᠴᠢᠯᠦᢉᠡ᠂ ᠰᠢᠳᠤᠷᠭᠤ ᠶᠣᠰᠤᠨ ᠤ᠋ ᠦᠨᠳᠦᠰᠦ ᠰᠠᠭᠤᠷᠢ ᠶ᠋ᠢ ᠪᠠᠲᠤᠯᠠᠭᠠᠵᠢᠭᠤᠯᠵᠤ”᠂ ᠤᠯᠠᠮ ᠢ᠋ᠶᠠᠷ ᠳᠡᠯᠡᢈᠡᠢ ᠶ᠋ᠢᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠢ᠋ ᠲᠣᠭᠲᠠᠭᠠᠬᠤ ᠳ᠋ᠤ ᠬᠤᠪᠢ ᠨᠡᠮᠡᠷᠢ ᠪᠡᠨ ᠣᠷᠤᠭᠤᠯᠤᠭᠰᠠᠨ ᠤ᠋ ᠲᠥᠯᠦᢉᠡ ᠨᠣᠪᠧᠯ ᠤ᠋ᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠤ᠋ᠨ ᠱᠠᠩᠨᠠᠯ ᢈᠦᠷᠲᠡᠪᠡ᠃  ᠡᠨᠡ ᠨᠢ ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᠶᠠᠭᠠᠷᢈᠢ ᠡᠮᠨᠧᠰᠲ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠡᠰᠢᠩᠯ ᠦ᠋ᠨ ᠳᠡᠮᠵᠢᢉᠴᠢᠳ ᠦ᠋ᠨ ᠰᠢᠷᠭᠠᠭᠤ ᢈᠥᠳᠡᠯᠮᠦᠷᠢ᠂ ᠲᠤᠭᠤᠰᠢᠲᠠᠢ ᠪᠠᠶᠢᠳᠠᠯ ᠤ᠋ᠨ ᠦᠷ᠎ᠡ ᠳ᠋ᠦᠩ ᠶᠠᠭᠤᠮ᠎ᠠ᠃᠑᠙᠗᠗ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠧᠰᠢᠨᠯ ᠨᠢ “ᠡᠷᢈᠡ ᠴᠢᠯᠦᢉᠡ᠂ ᠰᠢᠳᠤᠷᠭᠤ ᠶᠣᠰᠤᠨ ᠤ᠋ ᠦᠨᠳᠦᠰᠦ ᠰᠠᠭᠤᠷᠢ ᠶ᠋ᠢ ᠪᠠᠲᠤᠯᠠᠭᠠᠵᠢᠭᠤᠯᠵᠤ”᠂ ᠤᠯᠠᠮ ᠢ᠋ᠶᠠᠷ ᠳᠡᠯᠡᢈᠡᠢ ᠶ᠋ᠢᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠢ᠋ ᠲᠣᠭᠲᠠᠭᠠᠬᠤ ᠳ᠋ᠤ ᠬᠤᠪᠢ ᠨᠡᠮᠡᠷᠢ ᠪᠡᠨ ᠣᠷᠤᠭᠤᠯᠤᠭᠰᠠᠨ ᠤ᠋ ᠲᠥᠯᠦᢉᠡ ᠨᠣᠪᠧᠯ ᠤ᠋ᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠤ᠋ᠨ ᠱᠠᠩᠨᠠᠯ ᢈᠦᠷᠲᠡᠪᠡ᠃  ᠡᠨᠡ ᠨᠢ ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᠶᠠᠭᠠᠷᢈᠢ ᠡᠮᠨᠧᠰᠲ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠡᠰᠢᠩᠯ ᠦ᠋ᠨ ᠳᠡᠮᠵᠢᢉᠴᠢᠳ ᠦ᠋ᠨ ᠰᠢᠷᠭᠠᠭᠤ ᢈᠥᠳᠡᠯᠮᠦᠷᠢ᠂ ᠲᠤᠭᠤᠰᠢᠲᠠᠢ ᠪᠠᠶᠢᠳᠠᠯ ᠤ᠋ᠨ ᠦᠷ᠎ᠡ ᠳ᠋ᠦᠩ ᠶᠠᠭᠤᠮ᠎ᠠ᠃",
+  },
+  {
+    id: 6,
+    date: "᠑᠙᠙᠔-᠑᠙᠙᠕",
+    image: "/images/internationalhistoryimage6.png",
+    desc: "᠑᠙᠗᠗ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠧᠰᠢᠨᠯ ᠨᠢ “ᠡᠷᢈᠡ ᠴᠢᠯᠦᢉᠡ᠂ ᠰᠢᠳᠤᠷᠭᠤ ᠶᠣᠰᠤᠨ ᠤ᠋ ᠦᠨᠳᠦᠰᠦ ᠰᠠᠭᠤᠷᠢ ᠶ᠋ᠢ ᠪᠠᠲᠤᠯᠠᠭᠠᠵᠢᠭᠤᠯᠵᠤ”᠂ ᠤᠯᠠᠮ ᠢ᠋ᠶᠠᠷ ᠳᠡᠯᠡᢈᠡᠢ ᠶ᠋ᠢᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠢ᠋ ᠲᠣᠭᠲᠠᠭᠠᠬᠤ ᠳ᠋ᠤ ᠬᠤᠪᠢ ᠨᠡᠮᠡᠷᠢ ᠪᠡᠨ ᠣᠷᠤᠭᠤᠯᠤᠭᠰᠠᠨ ᠤ᠋ ᠲᠥᠯᠦᢉᠡ ᠨᠣᠪᠧᠯ ᠤ᠋ᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠤ᠋ᠨ ᠱᠠᠩᠨᠠᠯ ᢈᠦᠷᠲᠡᠪᠡ᠃  ᠡᠨᠡ ᠨᠢ ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᠶᠠᠭᠠᠷᢈᠢ ᠡᠮᠨᠧᠰᠲ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠡᠰᠢᠩᠯ ᠦ᠋ᠨ ᠳᠡᠮᠵᠢᢉᠴᠢᠳ ᠦ᠋ᠨ ᠰᠢᠷᠭᠠᠭᠤ ᢈᠥᠳᠡᠯᠮᠦᠷᠢ᠂ ᠲᠤᠭᠤᠰᠢᠲᠠᠢ ᠪᠠᠶᠢᠳᠠᠯ ᠤ᠋ᠨ ᠦᠷ᠎ᠡ ᠳ᠋ᠦᠩ ᠶᠠᠭᠤᠮ᠎ᠠ᠃᠑᠙᠗᠗ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠧᠰᠢᠨᠯ ᠨᠢ “ᠡᠷᢈᠡ ᠴᠢᠯᠦᢉᠡ᠂ ᠰᠢᠳᠤᠷᠭᠤ ᠶᠣᠰᠤᠨ ᠤ᠋ ᠦᠨᠳᠦᠰᠦ ᠰᠠᠭᠤᠷᠢ ᠶ᠋ᠢ ᠪᠠᠲᠤᠯᠠᠭᠠᠵᠢᠭᠤᠯᠵᠤ”᠂ ᠤᠯᠠᠮ ᠢ᠋ᠶᠠᠷ ᠳᠡᠯᠡᢈᠡᠢ ᠶ᠋ᠢᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠢ᠋ ᠲᠣᠭᠲᠠᠭᠠᠬᠤ ᠳ᠋ᠤ ᠬᠤᠪᠢ ᠨᠡᠮᠡᠷᠢ ᠪᠡᠨ ᠣᠷᠤᠭᠤᠯᠤᠭᠰᠠᠨ ᠤ᠋ ᠲᠥᠯᠦᢉᠡ ᠨᠣᠪᠧᠯ ᠤ᠋ᠨ ᠡᠩᢈᠡ ᠲᠠᠶᠢᠪᠤᠩ ᠤ᠋ᠨ ᠱᠠᠩᠨᠠᠯ ᢈᠦᠷᠲᠡᠪᠡ᠃  ᠡᠨᠡ ᠨᠢ ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᠶᠠᠭᠠᠷᢈᠢ ᠡᠮᠨᠧᠰᠲ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠡᠰᠢᠩᠯ ᠦ᠋ᠨ ᠳᠡᠮᠵᠢᢉᠴᠢᠳ ᠦ᠋ᠨ ᠰᠢᠷᠭᠠᠭᠤ ᢈᠥᠳᠡᠯᠮᠦᠷᠢ᠂ ᠲᠤᠭᠤᠰᠢᠲᠠᠢ ᠪᠠᠶᠢᠳᠠᠯ ᠤ᠋ᠨ ᠦᠷ᠎ᠡ ᠳ᠋ᠦᠩ ᠶᠠᠭᠤᠮ᠎ᠠ᠃",
+  },
+];
