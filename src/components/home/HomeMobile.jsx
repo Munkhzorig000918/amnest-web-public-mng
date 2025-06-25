@@ -10,9 +10,40 @@ import { getImageUrl } from "@/utils/fetcher";
 export default function HomeMobile() {
   // State for API data
   const [postsData, setPostsData] = useState([]);
-  const [eventsData, setEventsData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Static about content matching the original SvelteKit homepage
+  const aboutItems = [
+    {
+      id: 1,
+      title: "ᠪᠢᠳᠡ ᠬᠡᠨ ᠪᠡ?",
+      body: "ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠰᠢᠨ᠋ᠯ ᠨᠢ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᢈᠦᠮᠦᠰ ᠦ᠋ᠨ ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᠶᠠᠷ᠎ᠠ ᠬᠥᠳᠡᠯᠭᠡᠭᠡᠨ ᠶᠤᠮ᠃",
+      image: "/images/about1.png",
+      buttonHref: "/about",
+    },
+    {
+      id: 2,
+      title: "ᠪᠢᠳᠡ ᠶᠤᠤ ᢈᠢᠶᠡᠳᠡᠭ ᠪᠡ?",
+      body: "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠦᠭᠡᠮᠡᠯ ᠲᠤᠨᠬᠠᠭᠯᠠᠯ ᠪᠣᠯᠤᠨ ᠪᠤᠰᠠᠳ ᠣᠯᠠᠨ ᠤᠯᠤᠰ ᠤ᠋ᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠵᠢᠰᠢᠭ ᢈᠡᠮ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠳ᠋ᠤ ᠵᠠᠠᠰᠠᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢ ᠡᠨᠡ ᠳᠡᠯᠡᢈᠡᠢ ᠶ᠋ᠢᠨ ᢈᠦᠮᠦᠨ ᠪᠦᠷᠢ ᠳ᠋ᠦ ᠡᠳ᠋ᠯᠡᢉᠦᠯᢈᠦ ᠳ᠋ᠤ ᠣᠷᠣᠰᠢᠨ᠎ᠠ᠃",
+      image: "/images/about2.png",
+      buttonHref: "/about/what-we-do",
+    },
+    {
+      id: 3,
+      title: "ᠲᠠ ᠶᠤᠤ ᢈᠢᠶᠡᠵᠤ ᠴᠠᠳᠠᠬᠤ ᠪᠡ?",
+      body: "ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᠶᠠᠷ᠎ᠠ ᠶᠠᠪᠤᠭᠤᠯᠵᠤ ᠪᠠᠶᠢᠭ᠎ᠠ ᠣᠯᠠᠨ ᠤᠯᠤᠰ ᠤ᠋ᠨ ᠻᠠᠮᠫᠠᠨᠢᠲᠤ ᠠᠵᠢᠯ ᠪᠣᠯᠤᠨ ᠳᠣᠲᠣᠭᠠᠳ ᠤ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢ ᠬᠠᠮᠠᠭᠠᠯᠠᠬᠤ, ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠤᠬᠠᠢ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠮᠡᠳᠡᠯᠭᠡ ᠶ᠋ᠢ ᠳᠡᠭᠡᠰᠢᠯᠡᢉᠦᠯᢈᠦ ᠦᠶ᠎ᠡᠳ ᠤ ᠬᠠᠮᠲᠤᠷᠠᠨ ᠠᠵᠢᠯᠯᠠᠬᠤ᠃",
+      image: "/images/about3.png",
+      buttonHref: "/participation",
+    },
+    {
+      id: 4,
+      title: "ᢈᠠᠨᠳᠢᠪ ᠥᠭᠴᠦ, ᠠᠮᠢᠳᠤᠷᠠᠯ ᠥᠥᠷᠴᠢᠯᢉᠦ",
+      body: "ᠪᠢᠳᠡ ᠠᠯᠢᠪᠠ ᠵᠠᠰᠠᠭ ᠤ᠋ᠨ ᠭᠠᠵᠠᠷ, ᠤᠯᠤᠰ ᠲᠥᠷ ᠦ᠋ᠨ ᠦᠵᠡᠯ ᠰᠤᠷᠲᠠᠯ, ᠡᠳ᠋ᠦᠨ ᠵᠠᠰᠠᠭ ᠤ᠋ᠨ ᠠᠰᠢᠭ ᠰᠣᠨᠢᠷᠬᠣᠯ, ᠰᠠᠰᠢᠨ ᠰᠦᠲᠡᠯᠡᠭ ᠡᠴᠡ ᠠᠩᠭᠢᠳ ᠪᠢᠶ᠎ᠡ ᠳᠠᠭᠠᠰᠠᠨ, ᠬᠠᠷᠠᠭᠠᠳ ᠦᠭᠡᠢ ᠪᠥᠭᠡᠳ ᠭᠢᠰᠦᠨ ᠳᠡᠮᠵᠢᠭᠴᠢᠳ ᠦ᠋ᠨ ᢈᠠᠨᠳᠢᠪ ᠲᠤᠰᠠᠯᠠᠮᠵᠢ ᠪᠠᠷ ᠰᠠᠨᢈᠦᠦᠵᠢᠳᠡᠭ᠃",
+      image: "/images/about4.png",
+      buttonHref: "/donate",
+    },
+  ];
 
   // Fetch data on component mount
   useEffect(() => {
@@ -32,18 +63,6 @@ export default function HomeMobile() {
         // Handle the consistent data structure
         const postsArray = Array.isArray(posts) ? posts : posts?.data || [];
         setPostsData(postsArray);
-
-        console.log("Fetching events data...");
-        // Use events instead of FAQs for the about section
-        const events = await apiService.events.getEvents({
-          page: 1,
-          pageSize: 4,
-        });
-        console.log("Events response:", events);
-
-        // Handle the consistent data structure
-        const eventsArray = Array.isArray(events) ? events : events?.data || [];
-        setEventsData(eventsArray);
       } catch (err) {
         console.error("Error fetching data:", err);
         setError(err);
@@ -63,17 +82,6 @@ export default function HomeMobile() {
       title: post.title || "ᠭᠠᠷᠴᠢᠭ ᠦᠭᠡᠢ",
       image: getImageUrl(post.cover) || "/images/news1.png",
       body: post.short_description || post.body || "",
-    };
-  });
-
-  // Convert events data to about items format
-  const aboutItems = eventsData.map((event) => {
-    console.log("Processing event:", event.id, event);
-    return {
-      id: event.id,
-      title: event.title || "ᠠᠷᠪᠢᠳᠠᠯ",
-      body: event.description || event.body || "ᠠᠷᠪᠢᠳᠠᠯ ᠤ᠋ᠨ ᠳᠡᠯᠭᠡᠷᠡᠩᢉᠦᠢ",
-      image: getImageUrl(event.cover) || "/images/about1.png",
     };
   });
 
