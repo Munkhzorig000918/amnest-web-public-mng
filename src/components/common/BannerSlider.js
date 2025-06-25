@@ -9,12 +9,6 @@ export default function BannerSlider({
   width = "100%",
   useDynamic = false,
 }) {
-  console.log("=== BannerSlider Props ===");
-  console.log("images:", images);
-  console.log("width:", width);
-  console.log("useDynamic:", useDynamic);
-  console.log("========================");
-
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [slideshowData, setSlideshowData] = useState([]);
@@ -24,40 +18,18 @@ export default function BannerSlider({
 
   // Fetch dynamic slideshow data if useDynamic is true
   useEffect(() => {
-    console.log("useEffect triggered, useDynamic:", useDynamic);
-    console.log("apiService:", apiService);
-    console.log("apiService.slideshows:", apiService.slideshows);
-
     if (useDynamic) {
-      console.log("Starting to fetch slideshows...");
-
       const fetchSlideshows = async () => {
-        console.log("fetchSlideshows function called");
         setSlideshowLoading(true);
         setSlideshowError(null);
 
         try {
-          console.log("Making API call to slideshows...");
-          console.log(
-            "Calling apiService.slideshows.getSlideshows with params:",
-            {
-              page: 1,
-              pageSize: 10,
-              sort: "publishedAt:desc",
-            }
-          );
-
           // Use regular slideshows endpoint since content is in slideshows collection
           const response = await apiService.slideshows.getSlideshows({
             page: 1,
             pageSize: 10,
             sort: "publishedAt:desc",
           });
-
-          console.log("API Response received:", response);
-          console.log("Response type:", typeof response);
-          console.log("Response.data:", response?.data);
-          console.log("Response.data length:", response?.data?.length);
 
           // The slideshowsService.getSlideshows() uses formatStrapiResponse()
           // which returns the data directly as an array, not wrapped in response.data
@@ -66,37 +38,21 @@ export default function BannerSlider({
             : response?.data || [];
 
           setSlideshowData(slideshowsData);
-          console.log("setSlideshowData called with:", slideshowsData);
         } catch (error) {
           console.error("Error fetching slideshows:", error);
-          console.error("Error details:", error.message, error.stack);
           setSlideshowError(error);
         } finally {
-          console.log("Setting loading to false");
           setSlideshowLoading(false);
         }
       };
 
-      console.log("About to call fetchSlideshows()");
       fetchSlideshows();
-      console.log("fetchSlideshows() called");
-    } else {
-      console.log("useDynamic is false, skipping API call");
     }
   }, [useDynamic]);
 
   // Convert slideshow data to banner format
   const dynamicImages = slideshowData
     ? slideshowData.flatMap((slide) => {
-        console.log("Processing slide:", slide.id, slide);
-
-        // formatStrapiResponse flattens the structure, so properties are directly on slide
-        // Instead of slide.attributes.title, it's slide.title
-        console.log("Slide title:", slide.title);
-        console.log("Slide body:", slide.body);
-        console.log("Slide cover:", slide.cover);
-        console.log("Slide images:", slide.images);
-
         const images = [];
 
         // Use cover image if available - no .attributes needed after formatStrapiResponse
@@ -104,7 +60,6 @@ export default function BannerSlider({
           slide.cover?.data?.attributes ||
           slide.cover?.attributes ||
           slide.cover;
-        console.log("Cover image data:", coverImage);
 
         if (coverImage) {
           const coverImageUrl =
@@ -112,8 +67,6 @@ export default function BannerSlider({
             coverImage?.formats?.medium?.url ||
             coverImage?.formats?.small?.url ||
             coverImage?.url;
-
-          console.log("Cover image URL:", coverImageUrl);
 
           if (coverImageUrl) {
             const coverSlide = {
@@ -129,25 +82,20 @@ export default function BannerSlider({
                   "«ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠤ᠋ᠨ ᠰᠢᠮᠫᠤᠽᠢᠦᠮ ᠒᠐᠒᠕- ᠳ᠋ᠤ» ᠢᠯᠡᠳᢈᠡᠯ ᠲᠠᠨᠢᠯᠴᠠᠭᠤᠯᠬᠤ",
               },
             };
-            console.log("Adding cover slide:", coverSlide);
             images.push(coverSlide);
           }
         }
 
         // Add additional images from the images array - no .attributes needed after formatStrapiResponse
         const slideImages = slide.images?.data || slide.images || [];
-        console.log("Additional images data:", slideImages);
 
         slideImages.forEach((image, index) => {
-          console.log(`Processing additional image ${index}:`, image);
           const imageAttrs = image.attributes || image;
           const imageUrl =
             imageAttrs?.formats?.large?.url ||
             imageAttrs?.formats?.medium?.url ||
             imageAttrs?.formats?.small?.url ||
             imageAttrs?.url;
-
-          console.log(`Additional image ${index} URL:`, imageUrl);
 
           if (imageUrl) {
             const additionalSlide = {
@@ -166,27 +114,17 @@ export default function BannerSlider({
                   "«ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠤ᠋ᠨ ᠰᠢᠮᠫᠤᠽᠢᠦᠮ ᠒᠐᠒᠕- ᠳ᠋ᠤ» ᠢᠯᠡᠳᢈᠡᠯ ᠲᠠᠨᠢᠯᠴᠠᠭᠤᠯᠬᠤ",
               },
             };
-            console.log(`Adding additional slide ${index}:`, additionalSlide);
             images.push(additionalSlide);
           }
         });
 
-        console.log("Final images array for this slide:", images);
         return images;
       })
     : [];
 
-  console.log("=== FINAL RESULTS ===");
-  console.log("Slideshow data:", slideshowData);
-  console.log("Dynamic images:", dynamicImages);
-  console.log("Static images:", images);
-
   // Use dynamic images if available and useDynamic is true, otherwise use static images
   const displayImages =
     useDynamic && dynamicImages.length > 0 ? dynamicImages : images;
-
-  console.log("Display images:", displayImages);
-  console.log("Using dynamic:", useDynamic && dynamicImages.length > 0);
 
   const nextSlide = useCallback(() => {
     if (displayImages && displayImages.length > 0) {
@@ -365,22 +303,6 @@ export default function BannerSlider({
           ))}
         </div>
       )}
-
-      {/* Arrow Controls */}
-      {/* <button 
-        onClick={prevSlide}
-        className="absolute left-5 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/60 p-3 rounded-full text-white z-10 transition-all duration-300"
-        aria-label="Previous slide"
-      >
-        <Icon icon="lucide:chevron-left" fontSize={24} />
-      </button>
-      <button 
-        onClick={nextSlide}
-        className="absolute right-5 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/60 p-3 rounded-full text-white z-10 transition-all duration-300"
-        aria-label="Next slide"
-      >
-        <Icon icon="lucide:chevron-right" fontSize={24} />
-      </button> */}
 
       {/* Autoplay Control */}
       {/* <button 

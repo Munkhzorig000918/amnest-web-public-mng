@@ -2,7 +2,8 @@
 // Posts use custom routes, other content types use standard Strapi routes
 
 export const API_ENDPOINTS = {
-  // Posts - Custom routes (as defined in post/routes/post.ts)
+  // Posts - Both custom routes and standard route
+  POSTS: "/posts", // Standard Strapi route
   POSTS_LIST: "/posts/list",
   POSTS_GET: "/posts/get",
   POSTS_RECOMMENDED: "/posts/recommended",

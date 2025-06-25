@@ -121,14 +121,40 @@ export const getImageUrl = (imageData, baseUrl = "http://localhost:1337") => {
   if (!imageData) return null;
 
   // Handle different response formats from Strapi
-  const url = imageData.data?.attributes?.url || imageData.url || imageData;
+  let url = null;
+
+  // Try different possible structures
+  if (typeof imageData === "string") {
+    url = imageData;
+  } else if (imageData.data?.attributes?.url) {
+    // Standard Strapi format: { data: { attributes: { url: "..." } } }
+    url = imageData.data.attributes.url;
+  } else if (imageData.attributes?.url) {
+    // Flattened format: { attributes: { url: "..." } }
+    url = imageData.attributes.url;
+  } else if (imageData.url) {
+    // Direct format: { url: "..." }
+    url = imageData.url;
+  } else if (typeof imageData === "object" && imageData.formats) {
+    // Handle formats object directly
+    url =
+      imageData.formats?.large?.url ||
+      imageData.formats?.medium?.url ||
+      imageData.formats?.small?.url ||
+      imageData.url;
+  }
+
+  // Ensure url is a string before calling startsWith
+  if (!url || typeof url !== "string") {
+    return null;
+  }
 
   // Return full URL if already absolute, otherwise prepend base URL
-  if (url && url.startsWith("http")) {
+  if (url.startsWith("http")) {
     return url;
   }
 
-  return url ? `${baseUrl}${url}` : null;
+  return `${baseUrl}${url}`;
 };
 
 // Helper function to format Strapi response data

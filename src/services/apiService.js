@@ -12,22 +12,82 @@ import {
   DEFAULT_QUERY_PARAMS,
 } from "@/config/apiEndpoints";
 
-// Posts and News Services - Using custom routes
+// Posts and News Services - Using both custom routes and standard routes
 export const postsService = {
+  // Get posts using standard /posts endpoint (what user requested)
+  async getPosts(params = {}) {
+    try {
+      const queryParams = {
+        populate: "*",
+        sort: "publishedAt:desc",
+        locale: "mn",
+        "pagination[page]": params.page || 1,
+        "pagination[pageSize]": params.pageSize || 10,
+      };
+
+      // Add any filters from params
+      if (params.filters) {
+        Object.keys(params.filters).forEach((key) => {
+          queryParams[key] = params.filters[key];
+        });
+      }
+
+      const endpoint = buildEndpointUrl(API_ENDPOINTS.POSTS, queryParams);
+      const response = await Fetcher(endpoint);
+      return formatStrapiResponse(response);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+      throw error;
+    }
+  },
+
   // Get posts list using custom route
   async getPostsList(params = {}) {
     try {
       const queryParams = {
-        "pagination[page]": params.page || 1,
-        "pagination[pageSize]": params.pageSize || 10,
         populate: "*",
         sort: "publishedAt:desc",
         locale: "mn",
-        ...params,
+        "pagination[page]": params.page || 1,
+        "pagination[pageSize]": params.pageSize || 10,
       };
 
       const endpoint = buildEndpointUrl(API_ENDPOINTS.POSTS_LIST, queryParams);
       const response = await Fetcher(endpoint);
+
+      // The posts API returns a custom structure, let's normalize it to match other services
+      // Posts API returns: { data: [...], currentPage, length, total, limit }
+      // We want to return the same structure as formatStrapiResponse for consistency
+      if (response && response.data && Array.isArray(response.data)) {
+        return {
+          data: response.data.map((item) => ({
+            id: item.id,
+            title: item.title,
+            body: item.body,
+            short_description: item.short_description,
+            publishedAt: item.publishedAt,
+            createdAt: item.createdAt,
+            post_date: item.post_date,
+            locale: item.locale,
+            cover: item.cover,
+            post_categories: item.post_categories,
+            post_topics: item.post_topics,
+            // Add metadata
+            _locale: item.locale,
+          })),
+          meta: {
+            pagination: {
+              page: response.currentPage || 1,
+              pageSize: response.limit || 10,
+              pageCount: Math.ceil(
+                (response.total || 0) / (response.limit || 10)
+              ),
+              total: response.total || 0,
+            },
+          },
+        };
+      }
+
       return response;
     } catch (error) {
       console.error("Error fetching posts list:", error);
@@ -76,7 +136,6 @@ export const postsService = {
         locale: "mn",
         "pagination[page]": params.page || 1,
         "pagination[pageSize]": params.pageSize || 10,
-        ...params,
       };
       const endpoint = buildEndpointUrl(API_ENDPOINTS.STATEMENTS, queryParams);
       const response = await Fetcher(endpoint);
@@ -98,7 +157,6 @@ export const eventsService = {
         locale: "mn",
         "pagination[page]": params.page || 1,
         "pagination[pageSize]": params.pageSize || 10,
-        ...params,
       };
 
       const endpoint = buildEndpointUrl(API_ENDPOINTS.EVENTS, queryParams);
@@ -134,7 +192,6 @@ export const actionsService = {
         locale: "mn",
         "pagination[page]": params.page || 1,
         "pagination[pageSize]": params.pageSize || 10,
-        ...params,
       };
 
       const endpoint = buildEndpointUrl(API_ENDPOINTS.ACTIONS, queryParams);
@@ -171,7 +228,6 @@ export const videosService = {
         locale: "mn",
         "pagination[page]": params.page || 1,
         "pagination[pageSize]": params.pageSize || 10,
-        ...params,
       };
 
       const endpoint = buildEndpointUrl(API_ENDPOINTS.VIDEOS, queryParams);
@@ -193,7 +249,6 @@ export const librariesService = {
         locale: "mn",
         "pagination[page]": params.page || 1,
         "pagination[pageSize]": params.pageSize || 10,
-        ...params,
       };
 
       const endpoint = buildEndpointUrl(API_ENDPOINTS.LIBRARIES, queryParams);
@@ -229,7 +284,6 @@ export const faqsService = {
         locale: "mn",
         "pagination[page]": params.page || 1,
         "pagination[pageSize]": params.pageSize || 10,
-        ...params,
       };
 
       const endpoint = buildEndpointUrl(API_ENDPOINTS.FAQS, queryParams);
@@ -260,16 +314,12 @@ export const faqsService = {
 export const slideshowsService = {
   async getSlideshows(params = {}) {
     try {
-      // Extract pagination params to avoid conflicts
-      const { page, pageSize, ...otherParams } = params;
-
       const queryParams = {
         populate: "*",
         locale: "mn",
-        "pagination[page]": page || 1,
-        "pagination[pageSize]": pageSize || 10,
+        "pagination[page]": params.page || 1,
+        "pagination[pageSize]": params.pageSize || 10,
         sort: "publishedAt:desc",
-        ...otherParams, // Only spread non-pagination params
       };
 
       const endpoint = buildEndpointUrl(API_ENDPOINTS.SLIDESHOWS, queryParams);
@@ -324,7 +374,6 @@ export const reportsService = {
         locale: "mn",
         "pagination[page]": params.page || 1,
         "pagination[pageSize]": params.pageSize || 10,
-        ...params,
       };
       const endpoint = buildEndpointUrl(API_ENDPOINTS.REPORTS, queryParams);
       const response = await Fetcher(endpoint);
@@ -359,7 +408,6 @@ export const campaignsService = {
         locale: "mn",
         "pagination[page]": params.page || 1,
         "pagination[pageSize]": params.pageSize || 10,
-        ...params,
       };
 
       const endpoint = buildEndpointUrl(
@@ -439,7 +487,6 @@ export const merchService = {
         locale: "mn",
         "pagination[page]": params.page || 1,
         "pagination[pageSize]": params.pageSize || 10,
-        ...params,
       };
       const endpoint = buildEndpointUrl(
         API_ENDPOINTS.MERCHANDISES,

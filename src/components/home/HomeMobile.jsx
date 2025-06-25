@@ -10,7 +10,7 @@ import { getImageUrl } from "@/utils/fetcher";
 export default function HomeMobile() {
   // State for API data
   const [postsData, setPostsData] = useState([]);
-  const [faqsData, setFaqsData] = useState([]);
+  const [eventsData, setEventsData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -21,23 +21,29 @@ export default function HomeMobile() {
       setError(null);
 
       try {
-        // Use the working posts API
+        console.log("Fetching posts data...");
+        // Use the correct posts/list API endpoint
         const posts = await apiService.posts.getPostsList({
           page: 1,
           pageSize: 6,
-          sort: "publishedAt:desc",
         });
         console.log("Posts response:", posts);
-        setPostsData(posts.data || []);
 
-        // Use the working FAQs API
-        const faqs = await apiService.faqs.getFaqs({
-          "pagination[page]": 1,
-          "pagination[pageSize]": 4,
-          sort: "publishedAt:desc",
+        // Handle the consistent data structure
+        const postsArray = Array.isArray(posts) ? posts : posts?.data || [];
+        setPostsData(postsArray);
+
+        console.log("Fetching events data...");
+        // Use events instead of FAQs for the about section
+        const events = await apiService.events.getEvents({
+          page: 1,
+          pageSize: 4,
         });
-        console.log("FAQs response:", faqs);
-        setFaqsData(faqs.data || []);
+        console.log("Events response:", events);
+
+        // Handle the consistent data structure
+        const eventsArray = Array.isArray(events) ? events : events?.data || [];
+        setEventsData(eventsArray);
       } catch (err) {
         console.error("Error fetching data:", err);
         setError(err);
@@ -50,27 +56,26 @@ export default function HomeMobile() {
   }, []);
 
   // Convert posts data to the format expected by the component
-  const newsItems = postsData.map((post) => ({
-    id: post.id,
-    title: post.attributes?.title || post.title || "ᠭᠠᠷᠴᠢᠭ ᠦᠭᠡᠢ",
-    image:
-      getImageUrl(post.attributes?.cover || post.cover) || "/images/news1.png",
-    body:
-      post.attributes?.short_description ||
-      post.short_description ||
-      post.attributes?.body ||
-      post.body ||
-      "",
-  }));
+  const newsItems = postsData.map((post) => {
+    console.log("Processing post:", post.id, post);
+    return {
+      id: post.id,
+      title: post.title || "ᠭᠠᠷᠴᠢᠭ ᠦᠭᠡᠢ",
+      image: getImageUrl(post.cover) || "/images/news1.png",
+      body: post.short_description || post.body || "",
+    };
+  });
 
-  // Convert FAQs data to about items format
-  const aboutItems = faqsData.map((faq) => ({
-    id: faq.id,
-    title: faq.attributes?.question || faq.question || "ᠠᠰᠠᠭᠤᠯᠲᠠ",
-    body: faq.attributes?.answer || faq.answer || "ᠬᠠᠷᠢᠭᠤᠯᠲᠠ ᠦᠭᠡᠢ",
-    image:
-      getImageUrl(faq.attributes?.image || faq.image) || "/images/about1.png",
-  }));
+  // Convert events data to about items format
+  const aboutItems = eventsData.map((event) => {
+    console.log("Processing event:", event.id, event);
+    return {
+      id: event.id,
+      title: event.title || "ᠠᠷᠪᠢᠳᠠᠯ",
+      body: event.description || event.body || "ᠠᠷᠪᠢᠳᠠᠯ ᠤ᠋ᠨ ᠳᠡᠯᠭᠡᠷᠡᠩᢉᠦᠢ",
+      image: getImageUrl(event.cover) || "/images/about1.png",
+    };
+  });
 
   // Loading state
   if (isLoading) {
@@ -128,7 +133,7 @@ export default function HomeMobile() {
             }
           />
           <div className="flex flex-row gap-4 overflow-x-auto">
-            {newsItems.slice(0, 6).map((item) => (
+            {newsItems.map((item) => (
               <div
                 key={item.id}
                 className="w-full min-w-max flex items-end space-x-2"
@@ -168,24 +173,19 @@ export default function HomeMobile() {
                 />
               </div>
             ))}
-            {/* Fill empty slots if we have less than 6 posts */}
-            {Array.from({ length: Math.max(0, 6 - newsItems.length) }).map(
-              (_, index) => (
-                <div
-                  key={`empty-${index}`}
-                  className="min-w-[200px] min-h-[200px] flex items-center justify-center border border-gray-200 rounded-xl"
+            {/* Show message if no posts available */}
+            {newsItems.length === 0 && (
+              <div className="min-w-[200px] min-h-[200px] flex items-center justify-center border border-gray-200 rounded-xl">
+                <p
+                  className="text-gray-400 text-[10px]"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
                 >
-                  <p
-                    className="text-gray-400 text-[10px]"
-                    style={{
-                      writingMode: "vertical-lr",
-                      textOrientation: "upright",
-                    }}
-                  >
-                    ᠮᠡᠳᠡᢉᠡ ᠦᠭᠡᠢ
-                  </p>
-                </div>
-              )
+                  ᠮᠡᠳᠡᢉᠡ ᠦᠭᠡᠢ
+                </p>
+              </div>
             )}
           </div>
         </div>
@@ -211,7 +211,7 @@ export default function HomeMobile() {
       </div>
       <div className="min-h-[400px] w-full overflow-x-auto p-1">
         <div className="h-full grid grid-cols-2 grid-rows-2 gap-[5px]">
-          {aboutItems.slice(0, 4).map((item) => (
+          {aboutItems.map((item) => (
             <div
               key={item.id}
               className="max-h-[200px] w-full flex flex-row justify-between border border-[#E3E3E3] rounded-xl p-2 gap-1"
@@ -258,24 +258,19 @@ export default function HomeMobile() {
               </div>
             </div>
           ))}
-          {/* Fill empty slots if we have less than 4 FAQs */}
-          {Array.from({ length: Math.max(0, 4 - aboutItems.length) }).map(
-            (_, index) => (
-              <div
-                key={`empty-${index}`}
-                className="max-h-[200px] w-full flex items-center justify-center border border-gray-200 rounded-xl"
+          {/* Show message if no events available */}
+          {aboutItems.length === 0 && (
+            <div className="col-span-2 row-span-2 max-h-[200px] w-full flex items-center justify-center border border-gray-200 rounded-xl">
+              <p
+                className="text-gray-400 text-[10px]"
+                style={{
+                  writingMode: "vertical-lr",
+                  textOrientation: "upright",
+                }}
               >
-                <p
-                  className="text-gray-400 text-[10px]"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                >
-                  ᠮᠡᠳᠡᢉᠡ ᠦᠭᠡᠢ
-                </p>
-              </div>
-            )
+                ᠠᠷᠪᠢᠳᠠᠯ ᠦᠭᠡᠢ
+              </p>
+            </div>
           )}
         </div>
       </div>
