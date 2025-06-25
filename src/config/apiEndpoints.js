@@ -41,20 +41,20 @@ export const API_ENDPOINTS = {
   // Online Lessons
   ONLINE_LESSONS: "/online-lessons",
   ONLINE_LESSON_GROUPS: "/online-lesson-groups",
-  FEATURED_ONLINE_LESSONS: "/featured-online-lessons",
+  FEATURED_ONLINE_LESSONS: "/featured-online-lesson",
 
   // Tests and FAQ
   TESTS: "/tests",
-  MEMBER_TESTS: "/member-tests",
+  MEMBER_TESTS: "/member-test",
   FAQS: "/faqs",
 
-  // Homepage content
-  HOMEPAGE_SLIDERS: "/homepage-sliders",
-  FEATURED_LIBRARIES: "/featured-libraries",
+  // Homepage content - singleType endpoints use singular form
+  HOMEPAGE_SLIDERS: "/homepage-slider",
+  FEATURED_LIBRARIES: "/featured-library",
 
   // Settings
-  ACTION_SETTINGS: "/action-settings",
-  PODCAST_SETTINGS: "/podcast-settings",
+  ACTION_SETTINGS: "/action-setting",
+  PODCAST_SETTINGS: "/podcast-setting",
 };
 
 // Default query parameters - using correct Strapi v4 format

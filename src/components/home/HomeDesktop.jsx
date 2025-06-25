@@ -3,53 +3,78 @@ import Button from "@/components/common/Button";
 import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import SectionTitle from "@/components/common/SectionTitle";
-import { useGetPostsQuery, useGetFaqsQuery } from "@/redux/services/apiService";
-import { getImageUrl } from "@/config/api";
+import { useState, useEffect } from "react";
+import apiService from "@/services/apiService";
+import { getImageUrl } from "@/utils/fetcher";
 
 export default function HomeDesktop() {
-  // Fetch posts for news section (limit to 6 for layout)
-  const {
-    data: postsData,
-    error: postsError,
-    isLoading: postsLoading,
-  } = useGetPostsQuery({
-    pageSize: 6,
-    sort: "publishedAt:desc",
-  });
+  // State for API data
+  const [postsData, setPostsData] = useState([]);
+  const [faqsData, setFaqsData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Fetch FAQs for about section (limit to 4 for layout)
-  const {
-    data: faqsData,
-    error: faqsError,
-    isLoading: faqsLoading,
-  } = useGetFaqsQuery({
-    pageSize: 4,
-    sort: "publishedAt:desc",
-  });
+  // Fetch data on component mount
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        // Use the working posts API
+        const posts = await apiService.posts.getPostsList({
+          page: 1,
+          pageSize: 6,
+          sort: "publishedAt:desc",
+        });
+        console.log("Posts response:", posts);
+        setPostsData(posts.data || []);
+
+        // Use the working FAQs API
+        const faqs = await apiService.faqs.getFaqs({
+          "pagination[page]": 1,
+          "pagination[pageSize]": 4,
+          sort: "publishedAt:desc",
+        });
+        console.log("FAQs response:", faqs);
+        setFaqsData(faqs.data || []);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   // Convert posts data to the format expected by the component
-  const newsItems = postsData
-    ? postsData.map((post) => ({
-        id: post.id,
-        title: post.title || "ᠭᠠᠷᠴᠢᠭ ᠦᠭᠡᠢ",
-        image: getImageUrl(post.cover) || "/images/news1.png", // fallback image
-        body: post.short_description || post.body || "",
-        category: "news",
-      }))
-    : [];
+  const newsItems = postsData.map((post) => ({
+    id: post.id,
+    title: post.attributes?.title || post.title || "ᠭᠠᠷᠴᠢᠭ ᠦᠭᠡᠢ",
+    image:
+      getImageUrl(post.attributes?.cover || post.cover) || "/images/news1.png",
+    body:
+      post.attributes?.short_description ||
+      post.short_description ||
+      post.attributes?.body ||
+      post.body ||
+      "",
+    category: "news",
+  }));
 
   // Convert FAQs data to about items format
-  const aboutItems = faqsData
-    ? faqsData.map((faq) => ({
-        id: faq.id,
-        title: faq.question || "ᠠᠰᠠᠭᠤᠯᠲᠠ",
-        body: faq.answer || "ᠬᠠᠷᠢᠭᠤᠯᠲᠠ ᠦᠭᠡᠢ",
-        image: getImageUrl(faq.image) || "/images/about1.png", // fallback image
-      }))
-    : [];
+  const aboutItems = faqsData.map((faq) => ({
+    id: faq.id,
+    title: faq.attributes?.question || faq.question || "ᠠᠰᠠᠭᠤᠯᠲᠠ",
+    body: faq.attributes?.answer || faq.answer || "ᠬᠠᠷᠢᠭᠤᠯᠲᠠ ᠦᠭᠡᠢ",
+    image:
+      getImageUrl(faq.attributes?.image || faq.image) || "/images/about1.png",
+  }));
 
   // Loading state
-  if (postsLoading || faqsLoading) {
+  if (isLoading) {
     return (
       <div className="h-full gap-10 overflow-x-auto w-auto flex-shrink-0 hidden md:flex items-center justify-center">
         <div className="text-center">
@@ -66,7 +91,7 @@ export default function HomeDesktop() {
   }
 
   // Error state
-  if (postsError || faqsError) {
+  if (error) {
     return (
       <div className="h-full gap-10 overflow-x-auto w-auto flex-shrink-0 hidden md:flex items-center justify-center">
         <div className="text-center text-red-600">
@@ -80,7 +105,7 @@ export default function HomeDesktop() {
 
   return (
     <div className="h-full gap-10 overflow-x-auto w-auto flex-shrink-0 hidden md:flex">
-      <BannerSlider images={bannerImages} width="90rem" useDynamic={true} />
+      <BannerSlider width="90rem" useDynamic={true} />
       <div className="h-full p-4">
         <div className="h-full flex gap-10">
           <SectionTitle

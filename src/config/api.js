@@ -11,8 +11,10 @@ export const API_CONFIG = {
 
   // API endpoints - using actual CMS structure
   ENDPOINTS: {
-    // Standard Strapi endpoints - Posts endpoint should be /posts not custom endpoints
-    POSTS: "/posts",
+    POSTS_LIST: "/posts/list",
+    POSTS_GET: "/posts/get",
+    POSTS_RECOMMENDED: "/posts/recommended",
+    STATEMENTS: "/statements",
     EVENTS: "/events",
     ACTIONS: "/actions",
     VIDEOS: "/videos",
@@ -22,7 +24,7 @@ export const API_CONFIG = {
     SLIDESHOWS: "/slideshows",
     PODCASTS: "/podcasts",
     REPORTS: "/reports",
-    HOMEPAGE_SLIDERS: "/homepage-sliders",
+    HOMEPAGE_SLIDERS: "/homepage-slider",
     COMPANY_WORK: "/company-works",
     COMPANY_WORK_FEATURES: "/company-work-features",
   },

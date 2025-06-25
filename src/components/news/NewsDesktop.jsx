@@ -34,40 +34,33 @@ export default function NewsDesktop() {
       try {
         switch (activeCategory) {
           case "news":
-            if (postsData.length === 0) {
-              // Only fetch if not already loaded
-              const posts = await apiService.posts.getPostsList({
-                page: currentPage,
-                pageSize: itemsPerPage,
-                "sort[publishedAt]": "desc",
-                populate: "deep",
-              });
-              setPostsData(posts.data || []);
-            }
+            // Use the working posts API
+            const posts = await apiService.posts.getPostsList({
+              page: currentPage,
+              pageSize: itemsPerPage,
+            });
+            console.log("Posts response:", posts);
+            setPostsData(posts.data || []);
             break;
 
           case "reports":
-            if (videosData.length === 0) {
-              // Only fetch if not already loaded
-              const videos = await apiService.videos.getVideos({
-                page: currentPage,
-                pageSize: itemsPerPage,
-                "sort[publishedAt]": "desc",
-              });
-              setVideosData(videos || []);
-            }
+            // Use the working videos API
+            const videos = await apiService.videos.getVideos({
+              "pagination[page]": currentPage,
+              "pagination[pageSize]": itemsPerPage,
+            });
+            console.log("Videos response:", videos);
+            setVideosData(videos.data || []);
             break;
 
           case "special":
-            if (librariesData.length === 0) {
-              // Only fetch if not already loaded
-              const libraries = await apiService.libraries.getLibraries({
-                page: currentPage,
-                pageSize: itemsPerPage,
-                "sort[amnesty_published_at]": "desc",
-              });
-              setLibrariesData(libraries || []);
-            }
+            // Use the working libraries API
+            const libraries = await apiService.libraries.getLibraries({
+              "pagination[page]": currentPage,
+              "pagination[pageSize]": itemsPerPage,
+            });
+            console.log("Libraries response:", libraries);
+            setLibrariesData(libraries.data || []);
             break;
         }
       } catch (err) {
@@ -99,27 +92,34 @@ export default function NewsDesktop() {
   }
 
   // Convert data to unified format
-  const newsItems = currentData.map((item) => {
+  const newsItems = currentData.map((item, index) => {
     let title, image, description;
 
     switch (activeCategory) {
       case "news":
-        title = item.title || "ᠭᠠᠷᠴᠢᠭ ᠦᠭᠡᠢ";
-        image = getImageUrl(item.cover) || "/images/news1.png";
-        description = item.short_description || "";
+        title = item.attributes?.title || item.title || `ᠭᠠᠷᠴᠢᠭ ${index + 1}`;
+        image =
+          getImageUrl(item.attributes?.cover || item.cover) ||
+          "/images/news1.png";
+        description =
+          item.attributes?.short_description || item.short_description || "";
         break;
       case "reports":
-        title = item.title || "ᠦᠵᠡᠮᠡᠯ ᠦᠭᠡᠢ";
-        image = getImageUrl(item.thumbnail) || "/images/news1.png";
-        description = item.description || "";
+        title = item.attributes?.title || item.title || `ᠦᠵᠡᠮᠡᠯ ${index + 1}`;
+        image =
+          getImageUrl(item.attributes?.thumbnail || item.thumbnail) ||
+          "/images/news1.png";
+        description = item.attributes?.description || item.description || "";
         break;
       case "special":
-        title = item.title || "ᠨᠣᠮ ᠦᠭᠡᠢ";
-        image = getImageUrl(item.cover) || "/images/news1.png";
-        description = item.description || "";
+        title = item.attributes?.title || item.title || `ᠨᠣᠮ ${index + 1}`;
+        image =
+          getImageUrl(item.attributes?.cover || item.cover) ||
+          "/images/news1.png";
+        description = item.attributes?.description || item.description || "";
         break;
       default:
-        title = "ᠭᠠᠷᠴᠢᠭ ᠦᠭᠡᠢ";
+        title = `ᠭᠠᠷᠴᠢᠭ ${index + 1}`;
         image = "/images/news1.png";
         description = "";
     }
@@ -197,6 +197,7 @@ export default function NewsDesktop() {
           <p style={{ writingMode: "vertical-lr", textOrientation: "upright" }}>
             ᠮᠡᠳᠡᢉᠡ ᠠᠴᠢᠶᠠᠯᠠᠬᠤ ᠳ᠋ᠤ ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠪᠠ
           </p>
+          <p className="mt-2 text-sm">{error.message}</p>
         </div>
       </div>
     );

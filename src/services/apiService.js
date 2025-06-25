@@ -220,6 +220,100 @@ export const librariesService = {
   },
 };
 
+// FAQs Service - Using standard routes
+export const faqsService = {
+  async getFaqs(params = {}) {
+    try {
+      const queryParams = {
+        populate: "*",
+        locale: "mn",
+        "pagination[page]": params.page || 1,
+        "pagination[pageSize]": params.pageSize || 10,
+        ...params,
+      };
+
+      const endpoint = buildEndpointUrl(API_ENDPOINTS.FAQS, queryParams);
+      const response = await Fetcher(endpoint);
+      return formatStrapiResponse(response);
+    } catch (error) {
+      console.error("Error fetching FAQs:", error);
+      throw error;
+    }
+  },
+
+  async getFaqById(id) {
+    try {
+      const endpoint = buildEndpointUrl(`${API_ENDPOINTS.FAQS}/${id}`, {
+        populate: "*",
+        locale: "mn",
+      });
+      const response = await Fetcher(endpoint);
+      return formatStrapiResponse(response);
+    } catch (error) {
+      console.error("Error fetching FAQ by ID:", error);
+      throw error;
+    }
+  },
+};
+
+// Slideshows Service - Using standard routes
+export const slideshowsService = {
+  async getSlideshows(params = {}) {
+    try {
+      // Extract pagination params to avoid conflicts
+      const { page, pageSize, ...otherParams } = params;
+
+      const queryParams = {
+        populate: "*",
+        locale: "mn",
+        "pagination[page]": page || 1,
+        "pagination[pageSize]": pageSize || 10,
+        sort: "publishedAt:desc",
+        ...otherParams, // Only spread non-pagination params
+      };
+
+      const endpoint = buildEndpointUrl(API_ENDPOINTS.SLIDESHOWS, queryParams);
+      const response = await Fetcher(endpoint);
+      return formatStrapiResponse(response);
+    } catch (error) {
+      console.error("Error fetching slideshows:", error);
+      throw error;
+    }
+  },
+
+  async getHomepageSliders(params = {}) {
+    try {
+      const queryParams = {
+        populate: "deep",
+        locale: "mn",
+        ...params,
+      };
+
+      const endpoint = buildEndpointUrl(
+        API_ENDPOINTS.HOMEPAGE_SLIDERS,
+        queryParams
+      );
+      const response = await Fetcher(endpoint);
+
+      // Extract posts data from homepage-slider singleType (matching SvelteKit app structure)
+      // SvelteKit: sliders?.data?.attributes?.posts?.data || []
+      const slidersData = response?.data?.attributes?.posts?.data || [];
+
+      return {
+        data: slidersData,
+        meta: response?.meta || {},
+      };
+    } catch (error) {
+      console.error("Error fetching homepage sliders:", error);
+      // Return empty array if homepage-slider content doesn't exist yet
+      return {
+        data: [],
+        meta: {},
+      };
+    }
+  },
+};
+
 // Reports Service - Using standard routes
 export const reportsService = {
   async getReports(params = {}) {
@@ -371,4 +465,6 @@ export default {
   campaigns: campaignsService,
   settings: settingsService,
   merch: merchService,
+  faqs: faqsService,
+  slideshows: slideshowsService,
 };

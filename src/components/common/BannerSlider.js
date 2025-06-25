@@ -1,54 +1,192 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import Button from "@/components/common/Button";
-import { useGetSlideshowsQuery } from "@/redux/services/apiService";
-import { getImageUrl } from "@/config/api";
+import apiService from "@/services/apiService";
+import { getImageUrl } from "@/utils/fetcher";
 
 export default function BannerSlider({
   images,
   width = "100%",
   useDynamic = false,
 }) {
+  console.log("=== BannerSlider Props ===");
+  console.log("images:", images);
+  console.log("width:", width);
+  console.log("useDynamic:", useDynamic);
+  console.log("========================");
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [slideshowData, setSlideshowData] = useState([]);
+  const [slideshowLoading, setSlideshowLoading] = useState(false);
+  const [slideshowError, setSlideshowError] = useState(null);
   const timeoutRef = useRef(null);
 
   // Fetch dynamic slideshow data if useDynamic is true
-  const {
-    data: slideshowData,
-    error: slideshowError,
-    isLoading: slideshowLoading,
-  } = useGetSlideshowsQuery(
-    {
-      pageSize: 10,
-      sort: "publishedAt:desc",
-    },
-    { skip: !useDynamic }
-  );
+  useEffect(() => {
+    console.log("useEffect triggered, useDynamic:", useDynamic);
+    console.log("apiService:", apiService);
+    console.log("apiService.slideshows:", apiService.slideshows);
+
+    if (useDynamic) {
+      console.log("Starting to fetch slideshows...");
+
+      const fetchSlideshows = async () => {
+        console.log("fetchSlideshows function called");
+        setSlideshowLoading(true);
+        setSlideshowError(null);
+
+        try {
+          console.log("Making API call to slideshows...");
+          console.log(
+            "Calling apiService.slideshows.getSlideshows with params:",
+            {
+              page: 1,
+              pageSize: 10,
+              sort: "publishedAt:desc",
+            }
+          );
+
+          // Use regular slideshows endpoint since content is in slideshows collection
+          const response = await apiService.slideshows.getSlideshows({
+            page: 1,
+            pageSize: 10,
+            sort: "publishedAt:desc",
+          });
+
+          console.log("API Response received:", response);
+          console.log("Response type:", typeof response);
+          console.log("Response.data:", response?.data);
+          console.log("Response.data length:", response?.data?.length);
+
+          // The slideshowsService.getSlideshows() uses formatStrapiResponse()
+          // which returns the data directly as an array, not wrapped in response.data
+          const slideshowsData = Array.isArray(response)
+            ? response
+            : response?.data || [];
+
+          setSlideshowData(slideshowsData);
+          console.log("setSlideshowData called with:", slideshowsData);
+        } catch (error) {
+          console.error("Error fetching slideshows:", error);
+          console.error("Error details:", error.message, error.stack);
+          setSlideshowError(error);
+        } finally {
+          console.log("Setting loading to false");
+          setSlideshowLoading(false);
+        }
+      };
+
+      console.log("About to call fetchSlideshows()");
+      fetchSlideshows();
+      console.log("fetchSlideshows() called");
+    } else {
+      console.log("useDynamic is false, skipping API call");
+    }
+  }, [useDynamic]);
 
   // Convert slideshow data to banner format
   const dynamicImages = slideshowData
-    ? slideshowData.map((slide) => ({
-        id: slide.id,
-        src: getImageUrl(slide.image) || "/images/news1.png",
-        alt: slide.title || `Slideshow ${slide.id}`,
-        caption:
-          slide.title || slide.description
-            ? {
+    ? slideshowData.flatMap((slide) => {
+        console.log("Processing slide:", slide.id, slide);
+
+        // formatStrapiResponse flattens the structure, so properties are directly on slide
+        // Instead of slide.attributes.title, it's slide.title
+        console.log("Slide title:", slide.title);
+        console.log("Slide body:", slide.body);
+        console.log("Slide cover:", slide.cover);
+        console.log("Slide images:", slide.images);
+
+        const images = [];
+
+        // Use cover image if available - no .attributes needed after formatStrapiResponse
+        const coverImage =
+          slide.cover?.data?.attributes ||
+          slide.cover?.attributes ||
+          slide.cover;
+        console.log("Cover image data:", coverImage);
+
+        if (coverImage) {
+          const coverImageUrl =
+            coverImage?.formats?.large?.url ||
+            coverImage?.formats?.medium?.url ||
+            coverImage?.formats?.small?.url ||
+            coverImage?.url;
+
+          console.log("Cover image URL:", coverImageUrl);
+
+          if (coverImageUrl) {
+            const coverSlide = {
+              id: `${slide.id}-cover`,
+              src: `http://localhost:1337${coverImageUrl}`,
+              alt: slide.title || `Slideshow ${slide.id} Cover`,
+              caption: {
                 title:
                   slide.title ||
                   "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠤ᠋ᠨ ᠰᠢᠮᠫᠤᠽᠢᠦᠮ ᠒᠐᠒᠕",
                 description:
-                  slide.description ||
+                  slide.body?.replace(/<[^>]*>/g, "") ||
                   "«ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠤ᠋ᠨ ᠰᠢᠮᠫᠤᠽᠢᠦᠮ ᠒᠐᠒᠕- ᠳ᠋ᠤ» ᠢᠯᠡᠳᢈᠡᠯ ᠲᠠᠨᠢᠯᠴᠠᠭᠤᠯᠬᠤ",
-              }
-            : null,
-      }))
+              },
+            };
+            console.log("Adding cover slide:", coverSlide);
+            images.push(coverSlide);
+          }
+        }
+
+        // Add additional images from the images array - no .attributes needed after formatStrapiResponse
+        const slideImages = slide.images?.data || slide.images || [];
+        console.log("Additional images data:", slideImages);
+
+        slideImages.forEach((image, index) => {
+          console.log(`Processing additional image ${index}:`, image);
+          const imageAttrs = image.attributes || image;
+          const imageUrl =
+            imageAttrs?.formats?.large?.url ||
+            imageAttrs?.formats?.medium?.url ||
+            imageAttrs?.formats?.small?.url ||
+            imageAttrs?.url;
+
+          console.log(`Additional image ${index} URL:`, imageUrl);
+
+          if (imageUrl) {
+            const additionalSlide = {
+              id: `${slide.id}-img-${index}`,
+              src: `http://localhost:1337${imageUrl}`,
+              alt:
+                imageAttrs?.alternativeText ||
+                slide.title ||
+                `Slideshow ${slide.id} Image ${index + 1}`,
+              caption: {
+                title:
+                  slide.title ||
+                  "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠤ᠋ᠨ ᠰᠢᠮᠫᠤᠽᠢᠦᠮ ᠒᠐᠒᠕",
+                description:
+                  slide.body?.replace(/<[^>]*>/g, "") ||
+                  "«ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠤ᠋ᠨ ᠰᠢᠮᠫᠤᠽᠢᠦᠮ ᠒᠐᠒᠕- ᠳ᠋ᠤ» ᠢᠯᠡᠳᢈᠡᠯ ᠲᠠᠨᠢᠯᠴᠠᠭᠤᠯᠬᠤ",
+              },
+            };
+            console.log(`Adding additional slide ${index}:`, additionalSlide);
+            images.push(additionalSlide);
+          }
+        });
+
+        console.log("Final images array for this slide:", images);
+        return images;
+      })
     : [];
+
+  console.log("=== FINAL RESULTS ===");
+  console.log("Slideshow data:", slideshowData);
+  console.log("Dynamic images:", dynamicImages);
+  console.log("Static images:", images);
 
   // Use dynamic images if available and useDynamic is true, otherwise use static images
   const displayImages =
     useDynamic && dynamicImages.length > 0 ? dynamicImages : images;
+
+  console.log("Display images:", displayImages);
+  console.log("Using dynamic:", useDynamic && dynamicImages.length > 0);
 
   const nextSlide = useCallback(() => {
     if (displayImages && displayImages.length > 0) {
