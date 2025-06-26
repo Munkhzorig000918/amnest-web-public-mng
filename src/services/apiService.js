@@ -275,6 +275,42 @@ export const librariesService = {
   },
 };
 
+// Stories Service - Using standard routes
+export const storiesService = {
+  async getStories(params = {}) {
+    try {
+      const queryParams = {
+        populate: "*",
+        sort: "publishedAt:desc",
+        locale: "mn",
+        "pagination[page]": params.page || 1,
+        "pagination[pageSize]": params.pageSize || 10,
+      };
+
+      const endpoint = buildEndpointUrl(API_ENDPOINTS.STORIES, queryParams);
+      const response = await Fetcher(endpoint);
+      return formatStrapiResponse(response);
+    } catch (error) {
+      console.error("Error fetching stories:", error);
+      throw error;
+    }
+  },
+
+  async getStoryById(id) {
+    try {
+      const endpoint = buildEndpointUrl(`${API_ENDPOINTS.STORIES}/${id}`, {
+        populate: "*",
+        locale: "mn",
+      });
+      const response = await Fetcher(endpoint);
+      return formatStrapiResponse(response);
+    } catch (error) {
+      console.error("Error fetching story by ID:", error);
+      throw error;
+    }
+  },
+};
+
 // FAQs Service - Using standard routes
 export const faqsService = {
   async getFaqs(params = {}) {
@@ -508,6 +544,7 @@ export default {
   actions: actionsService,
   videos: videosService,
   libraries: librariesService,
+  stories: storiesService,
   reports: reportsService,
   campaigns: campaignsService,
   settings: settingsService,
