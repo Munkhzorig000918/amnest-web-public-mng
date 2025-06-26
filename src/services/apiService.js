@@ -537,6 +537,117 @@ export const merchService = {
   },
 };
 
+// Lessons Service - Using standard routes (missing from original)
+export const lessonsService = {
+  async getLessons(params = {}) {
+    try {
+      const queryParams = {
+        populate: "*",
+        sort: "id:desc",
+        locale: "mn",
+        "pagination[page]": params.page || 1,
+        "pagination[pageSize]": params.pageSize || 10,
+      };
+      const endpoint = buildEndpointUrl(API_ENDPOINTS.LESSONS, queryParams);
+      const response = await Fetcher(endpoint);
+      return formatStrapiResponse(response);
+    } catch (error) {
+      console.error("Error fetching lessons:", error);
+      throw error;
+    }
+  },
+
+  async getLessonById(id) {
+    try {
+      const endpoint = buildEndpointUrl(`${API_ENDPOINTS.LESSONS}/${id}`, {
+        populate: "*",
+        locale: "mn",
+      });
+      const response = await Fetcher(endpoint);
+      return formatStrapiResponse(response);
+    } catch (error) {
+      console.error("Error fetching lesson by ID:", error);
+      throw error;
+    }
+  },
+};
+
+// Online Lessons Service - Using standard routes (missing from original)
+export const onlineLessonsService = {
+  async getOnlineLessons(params = {}) {
+    try {
+      const queryParams = {
+        populate: "*",
+        sort: "id:desc",
+        locale: "mn",
+        "pagination[page]": params.page || 1,
+        "pagination[pageSize]": params.pageSize || 10,
+      };
+      const endpoint = buildEndpointUrl(
+        API_ENDPOINTS.ONLINE_LESSONS,
+        queryParams
+      );
+      const response = await Fetcher(endpoint);
+      return formatStrapiResponse(response);
+    } catch (error) {
+      console.error("Error fetching online lessons:", error);
+      throw error;
+    }
+  },
+
+  async getOnlineLessonById(id) {
+    try {
+      const endpoint = buildEndpointUrl(
+        `${API_ENDPOINTS.ONLINE_LESSONS}/${id}`,
+        {
+          populate: "*",
+          locale: "mn",
+        }
+      );
+      const response = await Fetcher(endpoint);
+      return formatStrapiResponse(response);
+    } catch (error) {
+      console.error("Error fetching online lesson by ID:", error);
+      throw error;
+    }
+  },
+};
+
+// Podcasts Service - Using standard routes (missing from original)
+export const podcastsService = {
+  async getPodcasts(params = {}) {
+    try {
+      const queryParams = {
+        populate: "*",
+        sort: "id:desc",
+        locale: "mn",
+        "pagination[page]": params.page || 1,
+        "pagination[pageSize]": params.pageSize || 10,
+      };
+      const endpoint = buildEndpointUrl(API_ENDPOINTS.PODCASTS, queryParams);
+      const response = await Fetcher(endpoint);
+      return formatStrapiResponse(response);
+    } catch (error) {
+      console.error("Error fetching podcasts:", error);
+      throw error;
+    }
+  },
+
+  async getPodcastById(id) {
+    try {
+      const endpoint = buildEndpointUrl(`${API_ENDPOINTS.PODCASTS}/${id}`, {
+        populate: "*",
+        locale: "mn",
+      });
+      const response = await Fetcher(endpoint);
+      return formatStrapiResponse(response);
+    } catch (error) {
+      console.error("Error fetching podcast by ID:", error);
+      throw error;
+    }
+  },
+};
+
 // Export all services
 export default {
   posts: postsService,
@@ -551,4 +662,7 @@ export default {
   merch: merchService,
   faqs: faqsService,
   slideshows: slideshowsService,
+  lessons: lessonsService,
+  onlineLessons: onlineLessonsService,
+  podcasts: podcastsService,
 };

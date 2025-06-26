@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
 import SectionTitle from "@/components/common/SectionTitle";
+import { getImageUrl } from "@/utils/fetcher";
 
 // Custom hook for Mongolian numeral conversion
 const useMongolianNumeral = () => {
@@ -49,6 +50,9 @@ export default function RightSwiper({
   const [isMobile, setIsMobile] = useState(false);
   const { toMongolianNumeral } = useMongolianNumeral();
 
+  console.log(`RightSwiper [${sectionTitle}] received data:`, data);
+  console.log(`RightSwiper [${sectionTitle}] data length:`, data?.length);
+
   // Check if screen is mobile size
   useEffect(() => {
     const checkMobile = () => {
@@ -64,16 +68,22 @@ export default function RightSwiper({
   // Process API data into slides format
   const slides = data.map((item, index) => {
     const itemAttrs = item.attributes || item;
+
+    // Get the image using the helper function - try different field names
+    const imageUrl =
+      getImageUrl(itemAttrs.thumbnail) ||
+      getImageUrl(itemAttrs.cover) ||
+      getImageUrl(itemAttrs.image) ||
+      getImageUrl(itemAttrs.featured_image) ||
+      "/images/dummy-image.png";
+
     return {
       id: item.id || index + 1,
       title: itemAttrs.title || itemAttrs.name || "ᠦᠨᠡᠨ ᠦ᠋ ᠭᠠᠷᠴᠠᠭ",
-      image:
-        itemAttrs.image?.data?.attributes?.url ||
-        itemAttrs.featured_image?.data?.attributes?.url ||
-        itemAttrs.thumbnail?.data?.attributes?.url ||
-        "/images/dummy-image.png",
-      duration: itemAttrs.duration || "᠙᠐ ᠮᠢᠨ",
-      description: itemAttrs.description || itemAttrs.content,
+      image: imageUrl,
+      duration: itemAttrs.duration || itemAttrs.lesson_length || "᠙᠐ ᠮᠢᠨ",
+      description:
+        itemAttrs.description || itemAttrs.content || itemAttrs.introduction,
     };
   });
 

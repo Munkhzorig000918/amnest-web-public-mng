@@ -18,6 +18,7 @@ export const API_ENDPOINTS = {
   LIBRARY_GROUPS: "/library-groups",
   SLIDESHOWS: "/slideshows",
   PODCASTS: "/podcasts",
+  LESSONS: "/lessons",
   REPORTS: "/reports",
   MERCHANDISES: "/merchandises",
 

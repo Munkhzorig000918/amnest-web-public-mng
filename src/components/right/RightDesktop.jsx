@@ -5,8 +5,9 @@ import { useState, useEffect } from "react";
 import {
   videosService,
   librariesService,
-  actionsService,
-  storiesService,
+  lessonsService,
+  onlineLessonsService,
+  podcastsService,
 } from "@/services/apiService";
 
 export default function RightDesktop() {
@@ -21,51 +22,75 @@ export default function RightDesktop() {
     try {
       setLoading(true);
 
-      // Fetch all content types in parallel
-      const [libraries, videos, actions, stories] = await Promise.all([
-        librariesService.getLibraries({ pageSize: 6 }),
-        videosService.getVideos({ pageSize: 6 }),
-        actionsService.getActions({ pageSize: 6 }),
-        storiesService.getStories({ pageSize: 6 }),
-      ]);
+      // Fetch all content types in parallel (matching old knowrights page)
+      const [lessons, onlineLessons, libraries, videos, podcasts] =
+        await Promise.all([
+          lessonsService.getLessons({ pageSize: 6 }),
+          onlineLessonsService.getOnlineLessons({ pageSize: 6 }),
+          librariesService.getLibraries({ pageSize: 6 }),
+          videosService.getVideos({ pageSize: 6 }),
+          podcastsService.getPodcasts({ pageSize: 6 }),
+        ]);
 
-      console.log("Fetched content:", { libraries, videos, actions, stories });
+      console.log("Fetched content:", {
+        lessons,
+        onlineLessons,
+        libraries,
+        videos,
+        podcasts,
+      });
 
-      // Create swiper data structure
+      // Create swiper data structure (matching old knowrights page structure)
       const dynamicSwiperData = [
         {
           id: 1,
           title: "ᠰᠤᠷᠭᠠᠯᠲᠠ:",
           description:
-            'ᠲᠠ "ᠡᠷᢈᠡ ᠪᠡᠨ ᠮᠡᠳᠡᠶ᠎ᠡ" ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ᠂ ᠮᠡᠳᠡᠯᢉᠡ ᠶ᠋ᠢᠨ ᠴᠠᢈᠢᠮ ᠲᠠᠯᠠᠪᠤᠷ ᠠ᠋ᠴᠠ ᠡᠮᠨᠧᠰᠲ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠰᠢ ᠡᠷᢈᠢᠯᠡᠨ ᠭᠠᠷᠭᠠᠭᠰᠠᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠣᠯᠠᠨ ᠲᠣᠭᠠᠨ ᠤ᠋ ᠨᠣᠮ ᠲᠣᠪᢈᠢᠮᠠᠯ᠂ ᠸᠢᠳᠧᠣ᠋ ᠻᠣᠨ᠋ᠲ᠋ᠧᠨ᠋ᠲ ᠠ᠋ᠴᠠ ᢈᠦᠰᠡᢉᠰᠡᠨ ᠢ᠋ᠶᠡᠷ ᠢ᠋ᠶᠡᠨ ᠦᠵᠡᠵᠦ ᠰᠤᠳᠤᠯᠵᠤ ᠥᠪᠡᠷ ᠢ᠋ ᠪᠡᠨ ᠪᠣᠯᠤᠨ ᠪᠤᠰᠤᠳ ᠢ᠋ ᠡᠷᢈᠡ ᠪᠡᠨ ᠮᠡᠳᠡᠳᠡᢉ᠂ ᠡᠷᢈᠡ ᠪᠡᠨ ᠱᠠᠭᠠᠷᠳᠠᠳᠠᠭ᠂ ᠡᠷᢈᠡ ᠪᠡᠨ ᠬᠠᠮᠠᠭᠠᠯᠠᠳᠠᠭ ᢈᠦᠮᠦᠨ ᠪᠣᠯᠬᠤ ᠳ᠋ᠤ ᠲᠤᠰᠠᠯᠠᠭᠠᠷᠠᠢ᠃',
-          sectionTitle: "ᠣᠨᠴᠠᠯᠠᠬᠤ ᠰᠤᠷᠭᠠᠯᠲᠠ ᠨᠤᠭᠤᠳ",
-          data: stories?.data || [],
+            "ᠪᠢᠳ ᠪᠦᠬᠦ ᠨᠠᠰᠤᠨ ᠤ ᠬᠦᠮᠦᠨ ᠦ ᠵᠣᠷᠢᠯᠠᠭᠰᠠᠨ ᠬᠦᠮᠦᠨ ᠦ ᠡᠷᠬᠡ ᠶᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠤᠨ ᠮᠠᠲ᠋ᠧᠷᠢᠶᠠᠯ ᠪᠡᠯᠲᠡᠭᠡᠵᠦ᠂ ᠨᠢᠶᠭᠡᠮ ᠳᠦ ᠬᠦᠮᠦᠨ ᠦ ᠡᠷᠬᠡ ᠶᠢᠨ ᠲᠦᠯᠦᠭᠡ ᠲᠡᠮᠡᠴᠡᠯ ᠦᠳ ᠳᠦ ᠲᠤᠰᠠᠯᠠᠬᠤ ᠵᠣᠷᠢᠯᠭᠠ ᠂ ᠤᠭ ᠰᠤᠷᠭᠠᠯᠲᠤ ᠵᠢᠨ ᠭᠠᠷᠢᠨ ᠠᠪᠤᠯᠭᠠ᠂ ᠸᠢᠳᠧᠣ ᠪᠢᠴᠢᠯᠡᠭ ᠨᠢ ᠪᠡᠯᠲᠡᠭᠡᠳᠡᠭ᠃",
+          sectionTitle: "ᠣᠨᠴᠣᠯᠠᠬᠤ ᠰᠤᠷᠭᠠᠯᠲᠤ ᠨᠤᠭᠤᠳ",
+          data: lessons || [],
         },
         {
           id: 2,
-          title: "ᠴᠠᢈᠢᠮ ᠰᠤᠷᠭᠠᠯᠲᠠ:",
+          title: "ᠴᠠᠬᠢᠮ ᠰᠤᠷᠭᠠᠯᠲᠠ:",
           description:
-            "ᠮᠣᠩᠭᠣᠯ ᠪᠣᠯᠤᠨ ᠪᠤᠰᠤᠳ ᠒᠐ ᠭᠠᠷᠤᠢ ᠣᠷᠤᠨ ᠤ᠋ ᢈᠡᠯᠡ ᠳᠡᢉᠡᠷ᠎ᠡ ᠰᠤᠳᠤᠯᠬᠤ ᠪᠣᠯᠤᠮᠵᠢ ᠲᠠᠢ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠴᠠᢈᠢᠮ ᠰᠤᠷᠭᠠᠯᠲᠠ ᠨᠤᠭᠤᠳ ᠢ᠋ ᠰᠠᠨᠠᠯ ᠪᠣᠯᠭᠠᠵᠤ ᠪᠠᠶᠢᠨ᠎ᠠ᠃  ᠤᠭ ᠰᠤᠷᠭᠠᠯᠲᠠ ᠨᠤᠭᠤᠳ ᠨᠢ ᠦᠨ᠎ᠡ ᠲᠥᠯᠦᠪᠦᠷᠢ ᠦᢉᠡᠢ ᠪᠥᢉᠡᠳ ᠲᠠ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠲ ᠲᠦ ᠬᠣᠯᠪᠤᠭᠳᠠᠭᠰᠠᠨ ᠪᠠᠶᠢᠬᠤ ᠳ᠋ᠤ ᠯᠠ ᠬᠠᠩᠭᠠᠯᠲᠠᠲᠠᠢ᠃  ᠴᠠᢈᠢᠮ ᠰᠤᠷᠭᠠᠯᠲᠠ ᠶ᠋ᠢᠨ ᠦᠷᢉᠦᠯᠵᠢᠯᠡᢈᠦ ᠬᠤᠭᠤᠴᠠᠭᠠᠨ ᠠ᠋ᠴᠠ ᠬᠠᠮᠢᠶᠠᠷᠴᠤ ᠰᠧᠷᠲ᠋ᠢᠹᠢᠻᠠᠲ ᠣᠯᠭᠤᠨ᠎ᠠ᠃",
-          sectionTitle: "ᠣᠨᠴᠠᠯᠠᠬᠤ ᠴᠠᢈᠢᠮ ᠰᠤᠷᠭᠠᠯᠲᠠ ᠨᠤᠭᠤᠳ",
-          data: actions?.data || [],
+            "ᠮᠣᠨᠭᠣᠯ ᠪᠣᠯᠤᠨ ᠪᠤᠰᠤᠳ ᠒᠐ ᠭᠠᠷᠤᠢ ᠣᠷᠤᠨ ᠤ ᠬᠡᠯᠡ ᠳᠡᠭᠡᠷᠡ ᠰᠤᠳᠤᠯᠬᠤ ᠪᠣᠯᠣᠮᠵᠢᠲᠠᠢ ᠬᠦᠮᠦᠨ ᠦ ᠡᠷᠬᠡ ᠶᠢᠨ ᠴᠠᠬᠢᠮ ᠰᠤᠷᠭᠠᠯᠲᠤ ᠨᠤᠭᠤᠳ ᠢ ᠰᠠᠨᠠᠯ ᠪᠣᠯᠭᠠᠵᠤ ᠪᠠᠢᠨᠠ᠃ ᠤᠭ ᠰᠤᠷᠭᠠᠯᠲᠤ ᠨᠤᠭᠤᠳ ᠨᠢ ᠦᠨᠡ ᠲᠥᠯᠦᠪᠦᠷᠢ ᠦᠭᠡᠢ ᠪᠥᠭᠡᠳ ᠲᠠ ᠢᠨᠲᠧᠷᠨᠧᠲ ᠲᠦ ᠬᠣᠯᠪᠤᠭᠠᠳ ᠪᠠᠢᠬᠤ ᠳᠤ ᠯᠠ ᠬᠠᠩᠭᠠᠯᠲᠠᠢ᠃",
+          sectionTitle: "ᠣᠨᠴᠣᠯᠠᠬᠤ ᠴᠠᠬᠢᠮ ᠰᠤᠷᠭᠠᠯᠲᠤ ᠨᠤᠭᠤᠳ",
+          data: onlineLessons || [],
         },
         {
           id: 3,
-          title: "ᠨᠣᠮ ᠤ᠋ᠨ ᠰᠠᠩ:",
+          title: "ᠨᠣᠮ ᠤᠨ ᠰᠠᠩ:",
           description:
-            "ᠲᠠ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠡᠰᠢᠨᠡᠯ ᠡᠴᠡ ᠡᠷᢈᠢᠯᠡᠨ ᠭᠠᠷᠭᠠᠭᠰᠠᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠣᠯᠠᠨ ᠨᠣᠮ ᠲᠣᠪᢈᠢᠮᠠᠯ᠂ ᠰᠤᠳᠤᠯᠭ᠎ᠠ᠂ ᠭᠠᠷ ᠤ᠋ᠨ ᠠᠪᠤᠯᠭ᠎ᠠ᠂ ᠲᠠᠶᠢᠯᠤᠨ ᠠ᠋ᠴᠠ ᢈᠦᠰᠡᢉᠰᠡᠨ ᠢ᠋ᠶᠡᠷ ᠢ᠋ᠶᠡᠨ ᠦᠵᠡᠵᠦ ᠰᠤᠳᠤᠯᠵᠤ ᠥᠪᠡᠷ ᠢ᠋ ᠪᠡᠨ ᠪᠣᠯᠤᠨ ᠪᠤᠰᠤᠳ ᠢ᠋ ᠡᠷᢈᠡ ᠪᠡᠨ ᠮᠡᠳᠡᠳᠡᢉ᠂ ᠡᠷᢈᠡ ᠪᠡᠨ ᠱᠠᠭᠠᠷᠳᠠᠳᠠᠭ᠂ ᠡᠷᢈᠡ ᠪᠡᠨ ᠬᠠᠮᠠᠭᠠᠯᠠᠳᠠᠭ ᢈᠦᠮᠦᠨ ᠪᠣᠯᠬᠤ ᠳ᠋ᠤ ᠲᠤᠰᠠᠯᠠᠭᠠᠷᠠᠢ᠃",
-          sectionTitle: "ᠣᠨᠴᠠᠯᠠᠬᠤ ᠨᠣᠮ ᠲᠣᠪᢈᠢᠮᠠᠯ ᠤ᠋ᠳ",
-          data: libraries?.data || [],
+            "ᠲᠠ ᠡᠮᠨᠧᠰᠲᠢ ᠢᠨᠲᠧᠷᠨᠠᠰᠢᠶᠠᠨᠠᠯ ᠡᠴᠡ ᠡᠷᠬᠢᠯᠡᠨ ᠭᠠᠷᠭᠠᠭᠰᠠᠨ ᠬᠦᠮᠦᠨ ᠦ ᠡᠷᠬᠡ ᠶᠢᠨ ᠣᠯᠠᠨ ᠨᠣᠮ ᠲᠣᠪᠴᠢᠮᠠᠯ᠂ ᠰᠤᠳᠤᠯᠭᠠ᠂ ᠭᠠᠷᠢᠨ ᠠᠪᠤᠯᠭᠠ᠂ ᠲᠠᠢᠯᠠᠩ ᠠᠴᠠ ᠬᠦᠰᠡᠭᠰᠡᠨ ᠢᠶᠠᠷ ᠢᠶᠠᠨ ᠦᠵᠡᠵᠦ ᠰᠤᠳᠤᠯᠵᠤ ᠥᠪᠡᠷ ᠢ ᠪᠡᠨ ᠪᠣᠯᠤᠨ ᠪᠤᠰᠤᠳ ᠢ ᠡᠷᠬᠡ ᠪᠡᠨ ᠮᠡᠳᠡᠳᠡᠭ᠂ ᠡᠷᠬᠡ ᠪᠡᠨ ᠱᠠᠭᠠᠷᠳᠠᠳᠠᠭ᠂ ᠡᠷᠬᠡ ᠪᠡᠨ ᠬᠠᠮᠠᠭᠠᠯᠠᠳᠠᠭ ᠬᠦᠮᠦᠨ ᠪᠣᠯᠬᠤ ᠳᠤ ᠲᠤᠰᠠᠯᠠᠷᠠᠢ᠃",
+          sectionTitle: "ᠣᠨᠴᠣᠯᠠᠬᠤ ᠨᠣᠮ ᠲᠣᠪᠴᠢᠮᠠᠯ ᠤᠳ",
+          data: libraries || [],
         },
         {
           id: 4,
-          title: "ᠸᠢᠳᠧᠣ᠋:",
+          title: "ᠸᠢᠳᠧᠣ:",
           description:
-            "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠮᠡᠳᠡᠯᢉᠡ ᠣᠯᠭᠤᠬᠤ ᠪᠢᠴᠢᠯ ᠸᠢᠳᠧᠣ᠋᠂ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᢈᠢᠴᠢᠶᠡᠯ ᠦ᠋ᠳ᠂ ᠮᠣᠩᠭᠣᠯ ᠤ᠋ᠨ ᠡᠮᠨᠧᠰᠲ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠰᠢᠯ ᠤ᠋ᠨ ᠵᠣᢈᠢᠶᠠᠨ ᠪᠠᠶᠢᠭᠤᠯᠳᠠᠭ ᠦᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠤ᠋ ᠲᠣᠶᠢᠮᠤ ᠮᠡᠳᠡᢉᠡᠯᠡᠯ ᠵᠡᠷᢉᠡ ᠶ᠋ᠢ ᠳᠠᠷᠠᠭᠠᢈᠢ ᠴᠠᢈᠢᠮ ᠸᠢᠳᠧᠣ᠋ ᠰᠠᠩ ᠠ᠋ᠴᠠ ᢈᠦᠯᠢᠶᠡᠨ ᠠᠪᠴᠤ ᠦᠵᠡᠨ᠎ᠡ ᠦᠦ᠃",
-          sectionTitle: "ᠣᠨᠴᠠᠯᠠᠬᠤ ᠸᠢᠳᠧᠤᠨ ᠨᠤᠭᠤᠳ",
-          data: videos?.data || [],
+            "ᠬᠦᠮᠦᠨ ᠦ ᠡᠷᠬᠡ ᠶᠢᠨ ᠮᠡᠳᠡᠯᠡᠯ ᠣᠯᠭᠣᠬᠤ ᠪᠢᠴᠢᠯ ᠸᠢᠳᠧᠣ᠂ ᠬᠦᠮᠦᠨ ᠦ ᠡᠷᠬᠡ ᠶᠢᠨ ᠬᠢᠴᠢᠶᠡᠯ ᠦᠳ᠂ ᠮᠣᠨᠭᠣᠯ ᠤᠨ ᠡᠮᠨᠧᠰᠲᠢ ᠢᠨᠲᠧᠷᠨᠠᠰᠢᠶᠠᠨᠠᠯ ᠤᠨ ᠵᠣᠬᠢᠶᠠᠨ ᠪᠠᠢᠭᠤᠯᠠᠭᠰᠠᠨ ᠦᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠤ ᠲᠣᠢᠢᠮ ᠮᠡᠳᠡᠡᠯᠡᠯ ᠵᠡᠷᠭᠡ ᠶᠢ ᠳᠠᠷᠠᠭᠠᠬᠢ ᠴᠠᠬᠢᠮ ᠸᠢᠳᠧᠣ ᠰᠠᠩ ᠠᠴᠠ ᠬᠦᠯᠢᠶᠡᠨ ᠠᠪᠴᠤ ᠦᠵᠡᠨᠡ ᠦᠦ᠃",
+          sectionTitle: "ᠣᠨᠴᠣᠯᠠᠬᠤ ᠸᠢᠳᠧᠤ ᠨᠤᠭᠤᠳ",
+          data: videos || [],
+        },
+        {
+          id: 5,
+          title: "ᠫᠣᠳᠺᠠᠰᠲ:",
+          description:
+            "ᠮᠣᠨᠭᠣᠯ ᠤᠨ ᠡᠮᠨᠧᠰᠲᠢ ᠢᠨᠲᠧᠷᠨᠠᠰᠢᠶᠠᠨᠠᠯ ᠤᠨ ᠢᠳᠡᠪᠬᠢᠲᠡᠨ ᠦᠳ ᠬᠦᠲᠡᠯᠡᠨ ᠶᠠᠪᠤᠭᠤᠯᠳᠠᠭ᠂ ᠬᠦᠮᠦᠨ ᠦ ᠡᠷᠬᠡ ᠶᠢᠨ ᠲᠤᠬᠠᠢ ᠰᠢᠨ᠎ᠡ ᠮᠡᠳᠡᠡ᠂ ᠮᠡᠳᠡᠡᠯᠡᠯ᠂ ᠰᠣᠨᠢᠷᠬᠣᠯᠲᠠᠢ ᠵᠣᠴᠢᠳᠲᠠᠢ ᠶᠠᠷᠢᠯᠴᠠᠵᠤ᠂ ᠬᠦᠮᠦᠨ ᠦ ᠡᠷᠬᠡ ᠶᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠣᠯᠭᠣᠬᠤ ᠫᠣᠳᠺᠠᠰᠲ ᠤᠳ",
+          sectionTitle: "ᠣᠨᠴᠣᠯᠠᠬᠤ ᠫᠣᠳᠺᠠᠰᠲ ᠤᠳ",
+          data: podcasts || [],
         },
       ];
+
+      console.log(
+        "Dynamic swiper data before setting state:",
+        dynamicSwiperData
+      );
+      console.log("Videos data length:", videos?.length);
+      console.log("Online lessons data length:", onlineLessons?.length);
+      console.log("Podcasts data length:", podcasts?.length);
 
       setSwiperData(dynamicSwiperData);
     } catch (error) {
@@ -87,36 +112,36 @@ export default function RightDesktop() {
               className="text-2xl font-bold"
               style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
             >
-              ᠡᠷᢈᠡ ᠪᠡᠨ ᠮᠡᠳᠡᠶ᠎ᠡ
+              ᠡᠷᠬᠡ ᠪᠡᠨ ᠮᠡᠳᠡᠶᠡ
             </h1>
             <p
               className="text-sm font-bold"
               style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
             >
-              ᠮᠥᠨ ᠪᠢᠳᠡ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠡᠰᠢᠩᠯᠦ ᠶ᠋ᠢᠨ ᠵᠠᠢ ᠶ᠋ᠢᠨ ᠰᠤᠷᠭᠠᠯᠲᠠ ᠨᠤᠭᠤᠳ ᠢ᠋
-              ᠲᠠ ᠪᠦᢈᠦᠨ ᠳ᠋ᠦ ᠪᠡᠨ ᢈᠦᠷᢉᠡᠵᠦ ᠪᠠᠶᠢᠨ᠎ᠠ᠃
+              ᠮᠥᠨ ᠪᠢᠳᠡ ᠡᠮᠨᠧᠰᠲᠢ ᠢᠨᠲᠧᠷᠨᠧᠰᠢᠩᠯᠦ ᠶᠢᠨ ᠵᠠᠢ ᠶᠢᠨ ᠰᠤᠷᠭᠠᠯᠲᠤ ᠨᠤᠭᠤᠳ ᠢ ᠲᠠ
+              ᠪᠦᠬᠦᠨ ᠳᠦ ᠪᠡᠨ ᠬᠦᠷᠭᠡᠵᠦ ᠪᠠᠢᠨᠠ᠃
             </p>
             <p
               className="text-sm font-bold"
               style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
             >
-              ᠲᠠ "ᠡᠷᢈᠡ ᠪᠡᠨ ᠮᠡᠳᠡᠶ᠎ᠡ" ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ᠂ ᠮᠡᠳᠡᠯᢉᠡ ᠶ᠋ᠢᠨ
-              ᠴᠠᢈᠢᠮ ᠲᠠᠯᠠᠪᠤᠷ ᠠ᠋ᠴᠠ ᠡᠮᠨᠧᠰᠲ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠰᠢ ᠡᠷᢈᠢᠯᠡᠨ ᠭᠠᠷᠭᠠᠭᠰᠠᠨ ᢈᠦᠮᠦᠨ ᠦ᠋
-              ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠣᠯᠠᠨ ᠲᠣᠭᠠᠨ ᠤ᠋ ᠨᠣᠮ ᠲᠣᠪᢈᠢᠮᠠᠯ᠂ <br />
-              ᠸᠢᠳᠧᠣ᠋ ᠻᠣᠨ᠋ᠲ᠋ᠧᠨ᠋ᠲ ᠠ᠋ᠴᠠ ᢈᠦᠰᠡᢉᠰᠡᠨ ᠢ᠋ᠶᠡᠷ ᠢ᠋ᠶᠡᠨ ᠦᠵᠡᠵᠦ ᠰᠤᠳᠤᠯᠵᠤ ᠥᠪᠡᠷ ᠢ᠋
-              ᠪᠡᠨ ᠪᠣᠯᠤᠨ ᠪᠤᠰᠤᠳ ᠢ᠋ ᠡᠷᢈᠡ ᠪᠡᠨ ᠮᠡᠳᠡᠳᠡᢉ᠂ ᠡᠷᢈᠡ ᠪᠡᠨ ᠱᠠᠭᠠᠷᠳᠠᠳᠠᠭ᠂ ᠡᠷᢈᠡ ᠪᠡᠨ
-              ᠬᠠᠮᠠᠭᠠᠯᠠᠳᠠᠭ ᢈᠦᠮᠦᠨ ᠪᠣᠯᠬᠤ ᠳ᠋ᠤ <br />
-              ᠲᠤᠰᠠᠯᠠᠭᠠᠷᠠᠢ᠃
+              ᠲᠠ "ᠡᠷᠬᠡ ᠪᠡᠨ ᠮᠡᠳᠡᠶᠡ" ᠬᠦᠮᠦᠨ ᠦ ᠡᠷᠬᠡ ᠶᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ᠂ ᠮᠡᠳᠡᠯᠡᠯ ᠶᠢᠨ
+              ᠴᠠᠬᠢᠮ ᠲᠠᠯᠠᠪᠤᠷ ᠠᠴᠠ ᠡᠮᠨᠧᠰᠲᠢ ᠢᠨᠲᠧᠷᠨᠧᠰᠢ ᠡᠷᠬᠢᠯᠡᠨ ᠭᠠᠷᠭᠠᠭᠰᠠᠨ ᠬᠦᠮᠦᠨ ᠦ ᠡᠷᠬᠡ
+              ᠶᠢᠨ ᠣᠯᠠᠨ ᠲᠣᠭᠠᠨ ᠤ ᠨᠣᠮ ᠲᠣᠪᠴᠢᠮᠠᠯ᠂ <br />
+              ᠸᠢᠳᠧᠣ ᠹᠣᠨᠲᠧᠨᠲ ᠠᠴᠠ ᠬᠦᠰᠡᠭᠰᠡᠨ ᠢᠶᠠᠷ ᠢᠶᠠᠨ ᠦᠵᠡᠵᠦ ᠰᠤᠳᠤᠯᠵᠤ ᠥᠪᠡᠷ ᠢ ᠪᠡᠨ
+              ᠪᠣᠯᠤᠨ ᠪᠤᠰᠤᠳ ᠢ ᠡᠷᠬᠡ ᠪᠡᠨ ᠮᠡᠳᠡᠳᠡᠭ᠂ ᠡᠷᠬᠡ ᠪᠡᠨ ᠱᠠᠭᠠᠷᠳᠠᠳᠠᠭ᠂ ᠡᠷᠬᠡ ᠪᠡᠨ
+              ᠬᠠᠮᠠᠭᠠᠯᠠᠳᠠᠭ ᠬᠦᠮᠦᠨ ᠪᠣᠯᠬᠤ ᠳᠤ <br />
+              ᠲᠤᠰᠠᠯᠠᠷᠠᠢ᠃
             </p>
             <p
               className="text-sm font-bold"
               style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
             >
-              ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠢ᠋ᠶᠠᠷ ᠳᠠᠮᠵᠢᠭᠤᠯᠤᠨ ᠲᠠ ᠲᠡᢉᠰᠢ ᠡᠷᢈᠡ᠂
-              ᠨᠡᠷ᠎ᠡ ᢈᠦᠨᠳᠦ᠂ ᠬᠠᠷᠢᠯᠴᠠᠨ ᢈᠦᠨᠳᠦᠯᠡᠯ ᠢ᠋ ᠥᠪᠡᠷ ᠦ᠋ᠨ ᠣᠷᠴᠢᠨ ᠲᠣᠭᠤᠷᠢᠨ ᠳ᠋ᠤ᠂
-              ᠨᠡᠶᠢᢉᠡᠮ ᠳ᠋ᠦ᠂ ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᢈᠢᠨ ᠢ᠋ᠶᠠᠨ ᠲᠦᢉᠡᢉᠡᢈᠦ <br />
-              ᠤᠷ᠎ᠠ ᠴᠢᠳᠠᠪᠤᠷᠢ ᠬᠠᠨᠳᠤᠯᠭ᠎ᠠ ᠶ᠋ᠢ ᠥᠪᠡᠷ ᠲᠦ ᠪᠡᠨ ᠪᠣᠯᠤᠨ ᠪᠤᠰᠤᠳ ᠲᠤ
-              ᠲᠥᠯᠦᠪᠰᠢᢉᠦᠯᠵᠦ᠂ ᢈᠥᢉᠵᠢᢉᠦᠯᠵᠦ ᠴᠢᠳᠠᠨ᠎ᠠ᠃
+              ᠬᠦᠮᠦᠨ ᠦ ᠡᠷᠬᠡ ᠶᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠢᠶᠠᠷ ᠳᠠᠮᠵᠢᠭᠤᠯᠤᠨ ᠲᠠ ᠲᠡᠭᠰᠢ ᠡᠷᠬᠡ᠂ ᠨᠡᠷᠡ
+              ᠬᠦᠨᠳᠦ᠂ ᠬᠠᠷᠢᠯᠴᠠᠨ ᠬᠦᠨᠳᠦᠯᠡᠯ ᠢ ᠥᠪᠡᠷ ᠦᠨ ᠣᠷᠴᠢᠨ ᠲᠣᠭᠤᠷᠢᠨ ᠳᠤ᠂ ᠨᠢᠶᠭᠡᠮ ᠳᠦ᠂
+              ᠳᠡᠯᠡᠬᠡᠢ ᠳᠠᠬᠢᠨ ᠢᠶᠠᠨ ᠲᠦᠭᠡᠭᠡᠬᠦ <br />
+              ᠤᠷᠠ ᠴᠢᠳᠠᠪᠤᠷᠢ ᠬᠠᠨᠳᠤᠯᠭᠠ ᠶᠢ ᠥᠪᠡᠷ ᠲᠦ ᠪᠡᠨ ᠪᠣᠯᠤᠨ ᠪᠤᠰᠤᠳ ᠲᠤ ᠲᠥᠯᠦᠪᠰᠢᠬᠦᠯᠵᠦ᠂
+              ᠬᠥᠵᠢᠬᠦᠯᠵᠦ ᠴᠢᠳᠠᠨᠠ᠃
             </p>
           </div>
           {loading ? (
