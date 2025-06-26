@@ -38,7 +38,12 @@ const useMongolianNumeral = () => {
   return { toMongolianNumeral };
 };
 
-export default function AssemblySwiper({ title, description, sectionTitle }) {
+export default function ReportSwiper({
+  title,
+  description,
+  sectionTitle,
+  reports = [],
+}) {
   const swiperRef = useRef(null);
   const [currentSlide, setCurrentSlide] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
@@ -56,38 +61,48 @@ export default function AssemblySwiper({ title, description, sectionTitle }) {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const slides = [
-    {
-      id: 1,
-      title: "᠒᠐᠒᠔ ᠣᠨ: ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠤ᠋ ᠲᠠᠶᠢᠯᠤᠨ",
-      image: "/images/dummy-image.png",
-    },
-    {
-      id: 2,
-      title: "᠒᠐᠒᠔ ᠣᠨ: ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠤ᠋ ᠲᠠᠶᠢᠯᠤᠨ",
-      image: "/images/dummy-image.png",
-    },
-    {
-      id: 3,
-      title: "᠒᠐᠒᠔ ᠣᠨ: ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠤ᠋ ᠲᠠᠶᠢᠯᠤᠨ",
-      image: "/images/dummy-image.png",
-    },
-    {
-      id: 4,
-      title: "᠒᠐᠒᠔ ᠣᠨ: ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠤ᠋ ᠲᠠᠶᠢᠯᠤᠨ",
-      image: "/images/dummy-image.png",
-    },
-    {
-      id: 5,
-      title: "᠒᠐᠒᠔ ᠣᠨ: ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠤ᠋ ᠲᠠᠶᠢᠯᠤᠨ",
-      image: "/images/dummy-image.png",
-    },
-    {
-      id: 6,
-      title: "᠒᠐᠒᠔ ᠣᠨ: ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠤ᠋ ᠲᠠᠶᠢᠯᠤᠨ",
-      image: "/images/dummy-image.png",
-    },
-  ];
+  // Convert reports data to slides format
+  const slides =
+    reports.length > 0
+      ? reports.map((report, index) => {
+          const imageUrl =
+            report.attributes?.cover?.data?.attributes?.url ||
+            report.cover_url ||
+            "/images/dummy-image.png";
+
+          // Add base URL if the image URL is a relative path from the API
+          const fullImageUrl = imageUrl.startsWith("/uploads/")
+            ? `http://localhost:1337${imageUrl}`
+            : imageUrl;
+
+          const pdfUrl =
+            report.attributes?.pdf_file?.data?.attributes?.url ||
+            report.pdf_url;
+
+          // Add base URL if the PDF URL is a relative path from the API
+          const fullPdfUrl =
+            pdfUrl && pdfUrl.startsWith("/uploads/")
+              ? `http://localhost:1337${pdfUrl}`
+              : pdfUrl;
+
+          return {
+            id: report.id || index + 1,
+            title:
+              report.attributes?.title ||
+              report.title ||
+              `ᠲᠠᠶᠢᠯᠤᠨ ${index + 1}`,
+            image: fullImageUrl,
+            pdfUrl: fullPdfUrl,
+          };
+        })
+      : [
+          // Fallback slides when no reports data
+          {
+            id: 1,
+            title: "ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠤ᠋ ᠲᠠᠶᠢᠯᠤᠨ ᠦᠭᠡᠢ",
+            image: "/images/dummy-image.png",
+          },
+        ];
 
   const handlePrevSlide = () => {
     if (swiperRef.current) {
@@ -103,6 +118,12 @@ export default function AssemblySwiper({ title, description, sectionTitle }) {
 
   const handleSlideChange = (swiper) => {
     setCurrentSlide(swiper.activeIndex + 1);
+  };
+
+  const handleSlideClick = (slide) => {
+    if (slide.pdfUrl) {
+      window.open(slide.pdfUrl, "_blank");
+    }
   };
 
   return (
@@ -144,7 +165,12 @@ export default function AssemblySwiper({ title, description, sectionTitle }) {
         >
           {slides.map((slide) => (
             <SwiperSlide key={slide.id}>
-              <div className={`w-full h-full flex gap-4`}>
+              <div
+                className={`w-full h-full flex gap-4 ${
+                  slide.pdfUrl ? "cursor-pointer hover:opacity-80" : ""
+                }`}
+                onClick={() => handleSlideClick(slide)}
+              >
                 <div className="flex flex-col items-center gap-4 justify-between">
                   <p
                     className="text-sm font-bold"
@@ -158,12 +184,15 @@ export default function AssemblySwiper({ title, description, sectionTitle }) {
                 </div>
                 <img
                   src={slide.image}
-                  alt={""}
+                  alt={slide.title || ""}
                   className={`rounded-lg shadow-lg relative z-0 ${
                     isMobile
                       ? "w-full max-w-[200px] aspect-[16/9]"
                       : "min-w-[200px] aspect-[9/16]"
                   }`}
+                  onError={(e) => {
+                    e.target.src = "/images/dummy-image.png";
+                  }}
                 />
               </div>
             </SwiperSlide>

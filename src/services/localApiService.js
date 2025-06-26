@@ -50,7 +50,35 @@ export const localContactService = {
   },
 };
 
+// Reports Service
+export const localReportsService = {
+  // Get reports using local API
+  async getReports(params = {}) {
+    try {
+      const queryParams = new URLSearchParams(params);
+      const response = await makeApiCall("/reports", {
+        method: "GET",
+      });
+      return response;
+    } catch (error) {
+      console.error("Local reports fetch error:", error);
+      throw error;
+    }
+  },
+  // Get a specific report using local API
+  async getReportById(id) {
+    try {
+      const response = await makeApiCall(`/reports/${id}`);
+      return response;
+    } catch (error) {
+      console.error("Local report fetch error:", error);
+      throw error;
+    }
+  },
+};
+
 // Export the service
 export default {
   contact: localContactService,
+  reports: localReportsService,
 };
