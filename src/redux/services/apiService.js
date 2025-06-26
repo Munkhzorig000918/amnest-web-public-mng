@@ -26,17 +26,22 @@ export const apiService = createApi({
     "Library",
     "FAQ",
     "Slideshow",
+    "CompanyWork",
+    "CompanyWorkFeature",
   ],
   endpoints: (builder) => ({
     // Posts endpoints - using standard Strapi API
     getPosts: builder.query({
       query: (params = {}) => {
+        // Extract pageSize from params to avoid duplication
+        const { pageSize, page, sort, ...otherParams } = params;
+
         const url = buildApiUrl(API_CONFIG.ENDPOINTS.POSTS, {
           "pagination[pageSize]":
-            params.pageSize || API_CONFIG.PAGINATION.DEFAULT_PAGE_SIZE,
-          "pagination[page]": params.page || 1,
-          sort: params.sort || "publishedAt:desc",
-          ...params,
+            pageSize || API_CONFIG.PAGINATION.DEFAULT_PAGE_SIZE,
+          "pagination[page]": page || 1,
+          sort: sort || "publishedAt:desc",
+          ...otherParams,
         });
         return url.replace(API_CONFIG.BASE_URL, "");
       },
@@ -77,12 +82,15 @@ export const apiService = createApi({
     // Events endpoints - using standard Strapi API
     getEvents: builder.query({
       query: (params = {}) => {
+        // Extract pageSize from params to avoid duplication
+        const { pageSize, page, sort, ...otherParams } = params;
+
         const url = buildApiUrl(API_CONFIG.ENDPOINTS.EVENTS, {
           "pagination[pageSize]":
-            params.pageSize || API_CONFIG.PAGINATION.DEFAULT_PAGE_SIZE,
-          "pagination[page]": params.page || 1,
-          sort: params.sort || "start_date:asc",
-          ...params,
+            pageSize || API_CONFIG.PAGINATION.DEFAULT_PAGE_SIZE,
+          "pagination[page]": page || 1,
+          sort: sort || "start_date:asc",
+          ...otherParams,
         });
         return url.replace(API_CONFIG.BASE_URL, "");
       },
@@ -106,12 +114,15 @@ export const apiService = createApi({
     // Actions endpoints - using standard Strapi API
     getActions: builder.query({
       query: (params = {}) => {
+        // Extract pageSize from params to avoid duplication
+        const { pageSize, page, sort, ...otherParams } = params;
+
         const url = buildApiUrl(API_CONFIG.ENDPOINTS.ACTIONS, {
           "pagination[pageSize]":
-            params.pageSize || API_CONFIG.PAGINATION.DEFAULT_PAGE_SIZE,
-          "pagination[page]": params.page || 1,
-          sort: params.sort || "publishedAt:desc",
-          ...params,
+            pageSize || API_CONFIG.PAGINATION.DEFAULT_PAGE_SIZE,
+          "pagination[page]": page || 1,
+          sort: sort || "publishedAt:desc",
+          ...otherParams,
         });
         return url.replace(API_CONFIG.BASE_URL, "");
       },
@@ -135,12 +146,15 @@ export const apiService = createApi({
     // Videos endpoints - using standard Strapi API
     getVideos: builder.query({
       query: (params = {}) => {
+        // Extract pageSize from params to avoid duplication
+        const { pageSize, page, sort, ...otherParams } = params;
+
         const url = buildApiUrl(API_CONFIG.ENDPOINTS.VIDEOS, {
           "pagination[pageSize]":
-            params.pageSize || API_CONFIG.PAGINATION.DEFAULT_PAGE_SIZE,
-          "pagination[page]": params.page || 1,
-          sort: params.sort || "publishedAt:desc",
-          ...params,
+            pageSize || API_CONFIG.PAGINATION.DEFAULT_PAGE_SIZE,
+          "pagination[page]": page || 1,
+          sort: sort || "publishedAt:desc",
+          ...otherParams,
         });
         return url.replace(API_CONFIG.BASE_URL, "");
       },
@@ -164,12 +178,15 @@ export const apiService = createApi({
     // Stories endpoints - using standard Strapi API
     getStories: builder.query({
       query: (params = {}) => {
+        // Extract pageSize from params to avoid duplication
+        const { pageSize, page, sort, ...otherParams } = params;
+
         const url = buildApiUrl(API_CONFIG.ENDPOINTS.STORIES, {
           "pagination[pageSize]":
-            params.pageSize || API_CONFIG.PAGINATION.DEFAULT_PAGE_SIZE,
-          "pagination[page]": params.page || 1,
-          sort: params.sort || "publishedAt:desc",
-          ...params,
+            pageSize || API_CONFIG.PAGINATION.DEFAULT_PAGE_SIZE,
+          "pagination[page]": page || 1,
+          sort: sort || "publishedAt:desc",
+          ...otherParams,
         });
         return url.replace(API_CONFIG.BASE_URL, "");
       },
@@ -182,12 +199,15 @@ export const apiService = createApi({
     // Library endpoints - using standard Strapi API
     getLibraries: builder.query({
       query: (params = {}) => {
+        // Extract pageSize from params to avoid duplication
+        const { pageSize, page, sort, ...otherParams } = params;
+
         const url = buildApiUrl(API_CONFIG.ENDPOINTS.LIBRARIES, {
           "pagination[pageSize]":
-            params.pageSize || API_CONFIG.PAGINATION.DEFAULT_PAGE_SIZE,
-          "pagination[page]": params.page || 1,
-          sort: params.sort || "createdAt:desc",
-          ...params,
+            pageSize || API_CONFIG.PAGINATION.DEFAULT_PAGE_SIZE,
+          "pagination[page]": page || 1,
+          sort: sort || "createdAt:desc",
+          ...otherParams,
         });
         return url.replace(API_CONFIG.BASE_URL, "");
       },
@@ -235,12 +255,15 @@ export const apiService = createApi({
     // Slideshows endpoints - using standard Strapi API
     getSlideshows: builder.query({
       query: (params = {}) => {
+        // Extract pageSize from params to avoid duplication
+        const { pageSize, page, sort, ...otherParams } = params;
+
         const url = buildApiUrl(API_CONFIG.ENDPOINTS.SLIDESHOWS, {
           "pagination[pageSize]":
-            params.pageSize || API_CONFIG.PAGINATION.DEFAULT_PAGE_SIZE,
-          "pagination[page]": params.page || 1,
-          sort: params.sort || "publishedAt:desc",
-          ...params,
+            pageSize || API_CONFIG.PAGINATION.DEFAULT_PAGE_SIZE,
+          "pagination[page]": page || 1,
+          sort: sort || "publishedAt:desc",
+          ...otherParams,
         });
         return url.replace(API_CONFIG.BASE_URL, "");
       },
@@ -248,6 +271,72 @@ export const apiService = createApi({
         return formatStrapiResponse(response);
       },
       providesTags: ["Slideshow"],
+    }),
+
+    // Company Work endpoints - using standard Strapi API
+    getCompanyWorks: builder.query({
+      query: (params = {}) => {
+        // Extract pageSize from params to avoid duplication
+        const { pageSize, page, sort, ...otherParams } = params;
+
+        const url = buildApiUrl(API_CONFIG.ENDPOINTS.COMPANY_WORK, {
+          "pagination[pageSize]":
+            pageSize || API_CONFIG.PAGINATION.DEFAULT_PAGE_SIZE,
+          "pagination[page]": page || 1,
+          sort: sort || "publishedAt:desc",
+          ...otherParams,
+        });
+        return url.replace(API_CONFIG.BASE_URL, "");
+      },
+      transformResponse: (response) => {
+        return formatStrapiResponse(response);
+      },
+      providesTags: ["CompanyWork"],
+    }),
+
+    getCompanyWorkById: builder.query({
+      query: (id) => {
+        const url = buildApiUrl(`${API_CONFIG.ENDPOINTS.COMPANY_WORK}/${id}`);
+        return url.replace(API_CONFIG.BASE_URL, "");
+      },
+      transformResponse: (response) => {
+        return formatStrapiResponse(response);
+      },
+      providesTags: (result, error, id) => [{ type: "CompanyWork", id }],
+    }),
+
+    // Company Work Features endpoints - using standard Strapi API
+    getCompanyWorkFeatures: builder.query({
+      query: (params = {}) => {
+        // Extract pageSize from params to avoid duplication
+        const { pageSize, page, sort, ...otherParams } = params;
+
+        const url = buildApiUrl(API_CONFIG.ENDPOINTS.COMPANY_WORK_FEATURES, {
+          "pagination[pageSize]":
+            pageSize || API_CONFIG.PAGINATION.DEFAULT_PAGE_SIZE,
+          "pagination[page]": page || 1,
+          sort: sort || "publishedAt:desc",
+          ...otherParams,
+        });
+        return url.replace(API_CONFIG.BASE_URL, "");
+      },
+      transformResponse: (response) => {
+        return formatStrapiResponse(response);
+      },
+      providesTags: ["CompanyWorkFeature"],
+    }),
+
+    getCompanyWorkFeatureById: builder.query({
+      query: (id) => {
+        const url = buildApiUrl(
+          `${API_CONFIG.ENDPOINTS.COMPANY_WORK_FEATURES}/${id}`
+        );
+        return url.replace(API_CONFIG.BASE_URL, "");
+      },
+      transformResponse: (response) => {
+        return formatStrapiResponse(response);
+      },
+      providesTags: (result, error, id) => [{ type: "CompanyWorkFeature", id }],
     }),
 
     // Homepage content (combination of multiple content types)
@@ -284,5 +373,9 @@ export const {
   useGetFaqsQuery,
   useGetReportsQuery,
   useGetSlideshowsQuery,
+  useGetCompanyWorksQuery,
+  useGetCompanyWorkByIdQuery,
+  useGetCompanyWorkFeaturesQuery,
+  useGetCompanyWorkFeatureByIdQuery,
   useGetHomepageContentQuery,
 } = apiService;
