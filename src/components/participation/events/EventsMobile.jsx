@@ -1,10 +1,14 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { eventsService } from "@/services/apiService";
 
-export default function EventsDesktop() {
-  const [currentDate, setCurrentDate] = useState(new Date(2025, 3, 1)); // April 2025
+export default function EventsMobile() {
+  const [currentDate, setCurrentDate] = useState(new Date(2025, 5, 1)); // June 2025 to match test event
   const [showModal, setShowModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [events, setEvents] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const monthNames = [
     "ᠨᠢᠭᠡᠳᠦᠭᠡᠷ ᠰᠠᠷ᠎ᠠ",
@@ -33,62 +37,196 @@ export default function EventsDesktop() {
 
   // Convert Arabic numerals to Mongolian Bichig numerals
   const toMongolianNumerals = (num) => {
-    const mongolianDigits = ["᠐", "᠑", "᠒", "᠓", "᠔", "᠕", "᠖", "᠗", "᠘", "᠙"];
-    return num
-      .toString()
-      .split("")
-      .map((digit) => mongolianDigits[parseInt(digit)])
-      .join("");
+    try {
+      const mongolianDigits = [
+        "᠐",
+        "᠑",
+        "᠒",
+        "᠓",
+        "᠔",
+        "᠕",
+        "᠖",
+        "᠗",
+        "᠘",
+        "᠙",
+      ];
+      const result = num
+        .toString()
+        .split("")
+        .map((digit) => mongolianDigits[parseInt(digit)])
+        .join("");
+      return result || num.toString(); // Fallback to regular numbers if conversion fails
+    } catch (error) {
+      console.error("Error converting to Mongolian numerals:", error);
+      return num.toString(); // Fallback to regular numbers
+    }
   };
 
-  // Sample events data
-  const events = {
-    "2025-04-05": {
-      title: "ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠬᠤᠷᠠᠯ ᠤ᠋ᠨ ᠬᠤᠷᠢᠶᠠᠨ",
-      color: "bg-[#D9D9D9]",
-      type: "ᠵᠣᢈᠢᠶᠠᠭᠳᠠᠭᠰᠠᠨ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ",
-      startTime: "09:00",
-      endTime: "11:00",
-      description: "ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠬᠤᠷᠠᠯ ᠤ᠋ᠨ ᠰᠠᠷ᠎ᠠ ᠪᠦᠷᠢ ᠬᠤᠷᠢᠶᠠᠨ",
-      location: "ᠤᠯᠠᠭᠠᠨᠪᠠᠭᠠᠲᠤᠷ ᠬᠣᠲᠠ",
-    },
-    "2025-04-12": {
-      title: "ᠪᠦᠯᠦᢉ ᠦ᠋ᠨ ᠰᠢᠳᠤᠷᠭᠤ ᠶᠣᠰᠤ ᠰᠤᠷᠭᠠᠯ",
-      color: "bg-[#FB00FF]",
-      type: "ᠪᠠᠭ᠂ ᠪᠦᠯᠦᢉ᠂ ᠪᠦᢈᠦ ᢉᠡᠰᠢᢉᠦᠳ ᠦ᠋ᠨ ᠠᠭᠤᠯᠵᠠᠯᠲᠠ",
-      startTime: "14:00",
-      endTime: "16:00",
-      description: "ᠪᠦᠯᠦᢉ ᠦ᠋ᠨ ᠭᠢᠰᠦᠳ ᠦ᠋ᠨ ᠰᠢᠳᠤᠷᠭᠤ ᠶᠣᠰᠤ ᠰᠤᠷᠭᠠᠯ ᠰᠠᠯᠪᠤᠷᠢᠯᠠᠯᠲᠠ",
-      location: "ᠰᠢᠶᠠᠨ ᠣᠯᠠᠨ ᠠᠮᠵᠢᠯᠲᠠ ᠶ᠋ᠢᠨ ᠣᠷᠣᠨ",
-    },
-    "2025-04-18": {
-      title: "ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶ᠋ᠢᠨ ᠬᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠰᠤᠷᠭᠠᠯ",
-      color: "bg-[#FFFF00]",
-      type: "ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶ᠋ᠢᠨ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ",
-      startTime: "10:30",
-      endTime: "12:30",
-      description: "ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶ᠋ᠢᠨ ᠬᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠰᠤᠷᠭᠠᠯ ᠰᠠᠯᠪᠤᠷᠢᠯᠠᠯᠲᠠ",
-      location: "ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᠶ᠋ᠢᠨ ᠣᠷᠣᠨ",
-    },
-    "2025-04-22": {
-      title: "ᠠᠨᠬᠠᠨ ᠳᠤᠭᠠᠠᠷᠯᠠᠭ ᠬᠤᠪᠠᠠᠷᠢ",
-      color: "bg-[#D9D9D9]",
-      type: "ᠵᠣᢈᠢᠶᠠᠭᠳᠠᠭᠰᠠᠨ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ",
-      startTime: "17:00",
-      endTime: "18:00",
-      description: "ᠠᠨᠬᠠᠨ ᠳᠤᠭᠠᠠᠷᠯᠠᠭ ᠲᠦᠷᠦᠯ ᠦ᠋ᠨ ᠬᠤᠪᠠᠠᠷᠢ ᠪᠠ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ",
-      location: "ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠧᠱᠢᠨ᠋ᠯ ᠪᠠᠢᠷᠠᠨ",
-    },
-    "2025-04-25": {
-      title: "ᠨᠡᠶᠢᠲᠡ ᠶ᠋ᠢᠨ ᠤᠷᠤᠯᠴᠠᠯᠲᠠ ᠬᠤᠷᠠᠯ",
-      color: "bg-[#FFFF00]",
-      type: "ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶ᠋ᠢᠨ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ",
-      startTime: "13:00",
-      endTime: "15:00",
-      description: "ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶ᠋ᠢᠨ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠪᠠ ᠤᠷᠤᠯᠴᠠᠯᠲᠠ",
-      location: "ᠦᠨᠳᠦᠰᠦᠲᠡᠨ ᠦ᠋ ᠨᠠᠢᠷᠠᠮᠳᠠᠯ ᠤ᠋ᠨ ᠣᠷᠣᠨ",
-    },
+  // Fetch events data for the current month
+  const fetchEventsData = async (year, month) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Use the direct events API endpoint
+      const startDate = new Date(year, month, 1);
+      const endDate = new Date(year, month + 1, 0);
+
+      const params = {
+        "filters[start_date][$gte]": startDate.toISOString().split("T")[0],
+        "filters[start_date][$lte]": endDate.toISOString().split("T")[0],
+        sort: "start_date:asc",
+        populate: "*",
+        locale: "mn",
+      };
+
+      console.log("Mobile API request params:", params);
+      console.log("Mobile date range:", {
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        year,
+        month,
+      });
+
+      const response = await eventsService.getEvents(params);
+      console.log("Mobile API response:", response);
+      console.log("Mobile response type:", typeof response);
+      console.log("Mobile is array:", Array.isArray(response));
+
+      if (response && (response.data || Array.isArray(response))) {
+        const eventData = response.data || response;
+        console.log("Mobile event data to process:", eventData);
+        processEventsData(eventData);
+      } else {
+        console.log("No events found for this month (mobile)");
+        // No events found for this month
+        setEvents({});
+      }
+    } catch (err) {
+      console.error("Error fetching events (mobile):", err);
+      setError(err.message);
+      // Clear events on error
+      setEvents({});
+    } finally {
+      setLoading(false);
+    }
   };
+
+  // Process API response data into calendar format
+  const processEventsData = (eventData) => {
+    console.log("Processing events data (mobile):", eventData);
+    console.log("Event data length (mobile):", eventData.length);
+    const eventsMap = {};
+
+    eventData.forEach((event, index) => {
+      console.log(`Processing event ${index} (mobile):`, event);
+      console.log(`Event ${index} keys (mobile):`, Object.keys(event));
+      console.log(
+        `Event ${index} has attributes (mobile):`,
+        !!event.attributes
+      );
+      console.log(
+        `Event ${index} structure (mobile):`,
+        JSON.stringify(event, null, 2)
+      );
+
+      // Handle both possible event structures
+      const eventAttrs = event.attributes || event;
+      console.log(`Event ${index} attributes (mobile):`, eventAttrs);
+
+      const startDate = new Date(eventAttrs.start_date);
+      const endDate = new Date(eventAttrs.end_date);
+      const dateKey = startDate.toISOString().split("T")[0];
+
+      // For events in 2025, use a reference date in 2025 for comparison
+      const currentDate = new Date();
+      const referenceDate =
+        currentDate.getFullYear() < 2025 ? new Date(2025, 0, 1) : currentDate;
+      const isPastEvent = endDate < referenceDate;
+
+      console.log(`Event ${index} details (mobile):`, {
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        dateKey,
+        isPastEvent,
+        title: eventAttrs.title,
+        membersOnly: eventAttrs.members_only,
+        referenceDate: referenceDate.toISOString(),
+      });
+
+      // Color coding based on event type and status
+      let eventColor = "bg-[#D9D9D9]"; // Default/past events
+      if (!isPastEvent) {
+        if (eventAttrs.members_only) {
+          eventColor = "bg-[#FB00FF]"; // Members only - purple
+        } else {
+          eventColor = "bg-[#FFFF00]"; // Public events - yellow
+        }
+      }
+
+      console.log(`Event ${index} color assigned (mobile):`, eventColor);
+
+      const eventObj = {
+        id: event.id,
+        title: eventAttrs.title,
+        color: eventColor,
+        type: eventAttrs.event_type || "ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ",
+        startTime: formatTime(eventAttrs.start_date),
+        endTime: formatTime(eventAttrs.end_date),
+        description: eventAttrs.body || "",
+        location: eventAttrs.address || "",
+        membersOnly: eventAttrs.members_only || false,
+        isPast: isPastEvent,
+        startDate: eventAttrs.start_date,
+        endDate: eventAttrs.end_date,
+      };
+
+      // Handle multiple events on the same date
+      if (eventsMap[dateKey]) {
+        console.log(
+          `Multiple events on ${dateKey} (mobile), keeping the first one for now`
+        );
+        // For now, keep the first event (could be enhanced to show multiple)
+      } else {
+        eventsMap[dateKey] = eventObj;
+      }
+
+      // Also add events for multi-day events (if end date is different)
+      if (startDate.toDateString() !== endDate.toDateString()) {
+        const currentDateIter = new Date(startDate);
+        currentDateIter.setDate(currentDateIter.getDate() + 1);
+
+        while (currentDateIter <= endDate) {
+          const multiDayKey = currentDateIter.toISOString().split("T")[0];
+          if (!eventsMap[multiDayKey]) {
+            eventsMap[multiDayKey] = {
+              ...eventObj,
+              title: `${eventObj.title} (continued)`,
+            };
+          }
+          currentDateIter.setDate(currentDateIter.getDate() + 1);
+        }
+      }
+    });
+
+    console.log("Final events map (mobile):", eventsMap);
+    setEvents(eventsMap);
+  };
+
+  // Format time from ISO string
+  const formatTime = (isoString) => {
+    const date = new Date(isoString);
+    return date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+  };
+
+  // Fetch events when component mounts or date changes
+  useEffect(() => {
+    fetchEventsData(currentDate.getFullYear(), currentDate.getMonth());
+  }, [currentDate]);
 
   const getDaysInMonth = (date) => {
     return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
@@ -254,27 +392,43 @@ export default function EventsDesktop() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => navigateMonth(-1)}
-              className="hover:bg-gray-100 rounded-md transition-colors"
+              disabled={loading}
+              className="hover:bg-gray-100 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={() => navigateMonth(1)}
-              className="hover:bg-gray-100 rounded-md transition-colors"
+              disabled={loading}
+              className="hover:bg-gray-100 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
             <button
               onClick={navigateToToday}
-              className="px-2 py-1 hover:bg-gray-100 text-[10px] border rounded-md transition-colors"
+              disabled={loading}
+              className="px-2 py-1 hover:bg-gray-100 text-[10px] border rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <p>ᠥᠨᠥᠳᠦᠷ</p>
             </button>
           </div>
-          <h2 className="text-xs font-bold">
-            {monthNames[currentDate.getMonth()]}{" "}
-            {toMongolianNumerals(currentDate.getFullYear())}
-          </h2>
+          <div className="flex flex-col items-center gap-1">
+            <h2 className="text-xs font-bold">
+              {monthNames[currentDate.getMonth()]}{" "}
+              {toMongolianNumerals(currentDate.getFullYear())}
+            </h2>
+            {loading && (
+              <div className="flex items-center text-gray-500">
+                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-gray-600 mr-1"></div>
+                <span className="text-[10px]">ᠠᠴᠢᠯᠠᠭᠤᠯᠵᠤ...</span>
+              </div>
+            )}
+            {error && (
+              <div className="text-red-500 text-[10px] text-center">
+                ᠠᠯᠳᠠᠭ᠎ᠠ
+              </div>
+            )}
+          </div>
           <div></div>
         </div>
 
@@ -408,7 +562,11 @@ export default function EventsDesktop() {
                           ᠪᠤᠷᠲᠠᠯ ᠡᠬᠯᠠᠬᠤ:
                         </p>
                         <p className="text-base text-gray-900 mt-1">
-                          {formatDateToMongolian(selectedEvent.date)}{" "}
+                          {formatDateToMongolian(
+                            new Date(selectedEvent.startDate)
+                              .toISOString()
+                              .split("T")[0]
+                          )}{" "}
                           {selectedEvent.startTime}
                         </p>
                       </div>
@@ -424,7 +582,11 @@ export default function EventsDesktop() {
                           ᠪᠤᠷᠲᠠᠯ ᠳᠤᠤᠰᠠᠬᠤ:
                         </p>
                         <p className="text-base text-gray-900 mt-1">
-                          {formatDateToMongolian(selectedEvent.date)}{" "}
+                          {formatDateToMongolian(
+                            new Date(selectedEvent.endDate)
+                              .toISOString()
+                              .split("T")[0]
+                          )}{" "}
                           {selectedEvent.endTime}
                         </p>
                       </div>
@@ -440,9 +602,26 @@ export default function EventsDesktop() {
                           ᠬᠠᠭᠠᠢ:
                         </p>
                         <p className="text-base text-gray-900 mt-1">
-                          {selectedEvent.location}
+                          {selectedEvent.location || "ᠲᠣᠭᠲᠠᠭᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ"}
                         </p>
                       </div>
+
+                      {selectedEvent.membersOnly && (
+                        <div className="border-l-4 border-purple-500 pl-4">
+                          <p
+                            className="text-sm font-medium text-gray-600"
+                            style={{
+                              writingMode: "vertical-lr",
+                              textOrientation: "upright",
+                            }}
+                          >
+                            ᠠᠩᠭᠢᠯᠠᠯ:
+                          </p>
+                          <p className="text-base text-purple-900 mt-1 font-medium">
+                            ᠪᠠᠭ᠂ ᠪᠦᠯᠦᢉ᠂ ᠪᠦᢈᠦ ᢉᠡᠰᠢᢉᠦᠳ ᠦ᠋ᠨ ᠠᠭᠤᠯᠵᠠᠯᠲᠠ
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -456,15 +635,27 @@ export default function EventsDesktop() {
                     >
                       ᠲᠠᠨᠢᠯᠴᠤᠤᠯᠭ᠎ᠠ:
                     </h4>
-                    <p
-                      className="text-base text-gray-700 leading-relaxed"
-                      style={{
-                        writingMode: "vertical-lr",
-                        textOrientation: "upright",
-                      }}
-                    >
-                      {selectedEvent.description}
-                    </p>
+                    {selectedEvent.description ? (
+                      <p
+                        className="text-base text-gray-700 leading-relaxed"
+                        style={{
+                          writingMode: "vertical-lr",
+                          textOrientation: "upright",
+                        }}
+                      >
+                        {selectedEvent.description}
+                      </p>
+                    ) : (
+                      <p
+                        className="text-base text-gray-500 italic leading-relaxed"
+                        style={{
+                          writingMode: "vertical-lr",
+                          textOrientation: "upright",
+                        }}
+                      >
+                        ᠲᠠᠨᠢᠯᠴᠤᠤᠯᠭ᠎ᠠ ᠦᠭᠡᠢ
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -472,16 +663,37 @@ export default function EventsDesktop() {
               {/* Right Side - Google Map */}
               <div className="w-1/2 p-6">
                 <div className="h-full bg-gray-200 rounded-lg overflow-hidden shadow-inner">
-                  <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2673.8007304077376!2d106.91693431534425!3d47.918754779196805!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5d9692d9c6bfde3d%3A0x8c1a7ac1e1b5f234!2sUlaanbaatar%2C%20Mongolia!5e0!3m2!1sen!2s!4v1645123456789!5m2!1sen!2s"
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen=""
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title="Event Location Map"
-                  ></iframe>
+                  {selectedEvent.location ? (
+                    <iframe
+                      src={`https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=${encodeURIComponent(
+                        selectedEvent.location
+                      )}`}
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      allowFullScreen=""
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      title="Event Location Map"
+                      onError={(e) => {
+                        // Fallback to search query if place API fails
+                        e.target.src = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2673.8007304077376!2d106.91693431534425!3d47.918754779196805!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5d9692d9c6bfde3d%3A0x8c1a7ac1e1b5f234!2s${encodeURIComponent(
+                          selectedEvent.location
+                        )}!5e0!3m2!1sen!2s!4v1645123456789!5m2!1sen!2s`;
+                      }}
+                    ></iframe>
+                  ) : (
+                    <iframe
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2673.8007304077376!2d106.91693431534425!3d47.918754779196805!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5d9692d9c6bfde3d%3A0x8c1a7ac1e1b5f234!2sUlaanbaatar%2C%20Mongolia!5e0!3m2!1sen!2s!4v1645123456789!5m2!1sen!2s"
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      allowFullScreen=""
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      title="Default Location Map"
+                    ></iframe>
+                  )}
                 </div>
               </div>
             </div>
