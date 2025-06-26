@@ -163,8 +163,12 @@ export const MOCK_DATA = {
 export const buildApiUrl = (endpoint, params = {}) => {
   const url = new URL(`${API_CONFIG.BASE_URL}${endpoint}`);
 
-  // Add default parameters for standard endpoints
-  if (!endpoint.startsWith("/posts/")) {
+  // Add default parameters for standard endpoints (not for posts endpoints)
+  if (
+    endpoint &&
+    typeof endpoint === "string" &&
+    !endpoint.startsWith("/posts/")
+  ) {
     Object.entries(API_CONFIG.DEFAULT_PARAMS).forEach(([key, value]) => {
       url.searchParams.append(key, value);
     });

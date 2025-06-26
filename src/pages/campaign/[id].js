@@ -12,7 +12,7 @@ export default function CampaignDetail() {
   const router = useRouter();
   const { id } = router.query;
 
-  // Fetch company work by static_id
+  // Fetch company work by static_id with deep population (includes posts)
   const {
     data: companyWorksData,
     error: companyWorkError,
@@ -24,7 +24,7 @@ export default function CampaignDetail() {
           $eq: id,
         },
       },
-      populate: "deep",
+      populate: "deep", // This will include posts if they exist
     },
     {
       skip: !id, // Skip the query if id is not available yet
@@ -37,26 +37,27 @@ export default function CampaignDetail() {
       ? companyWorksData[0]
       : null;
 
-  // Fetch related posts/news for this company work
+  // Get posts from the populated company work data
+  const companyWorkPosts = companyWork?.posts || [];
+
+  // Fetch recent posts as fallback when no company work posts exist
   const {
-    data: postsData,
+    data: recentPostsData,
     error: postsError,
     isLoading: postsLoading,
   } = useGetPostsQuery(
     {
-      filters: {
-        company_work: {
-          $eq: companyWork?.id,
-        },
-      },
-      populate: "*",
-      pageSize: 6,
+      "pagination[pageSize]": 6,
       sort: "publishedAt:desc",
     },
     {
-      skip: !companyWork?.id, // Skip until we have company work data
+      skip: companyWorkPosts.length > 0, // Skip if company work has posts
     }
   );
+
+  // Use company work posts if available, otherwise use recent posts
+  const postsData =
+    companyWorkPosts.length > 0 ? companyWorkPosts : recentPostsData || [];
 
   // Loading state
   if (companyWorkLoading || !id) {
@@ -179,7 +180,7 @@ export default function CampaignDetail() {
               ᠬᠠᠮᠠᠭᠠᠷᠠᠯᠲᠠᠢ ᠮᠡᠳᠡᠭᠡᠯᠡᠯ
             </h2>
             <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-              {postsData.map((post) => (
+              {postsData.slice(0, 6).map((post) => (
                 <div
                   key={post.id}
                   className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer"
@@ -202,8 +203,9 @@ export default function CampaignDetail() {
                       {post.title}
                     </h3>
                     <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                      {post.description ||
-                        post.content?.substring(0, 100) + "..."}
+                      {post.short_description ||
+                        post.description ||
+                        post.body?.substring(0, 100) + "..."}
                     </p>
                     <div className="flex justify-between items-center text-xs text-gray-500">
                       <span>
@@ -221,7 +223,7 @@ export default function CampaignDetail() {
         )}
 
         {/* No Related News */}
-        {postsData && postsData.length === 0 && (
+        {(!postsData || postsData.length === 0) && (
           <div className="mt-12 text-center">
             <p className="text-gray-600 text-lg">
               ᠡᠨᠡ ᠻᠠᠮᠫᠠᠨᠢᠲᠤ ᠳ᠋ᠤ ᠬᠠᠮᠠᠭᠠᠷᠠᠯᠲᠠᠢ ᠮᠡᠳᠡᠭᠡᠯᠡᠯ ᠦᠭᠡᠢ ᠪᠠᠶᠢᠨ᠎ᠠ
