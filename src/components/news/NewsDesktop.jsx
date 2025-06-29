@@ -244,14 +244,14 @@ export default function NewsDesktop() {
             </button>
           </div>
           <div className="h-full flex gap-4">
-            <div className="grid grid-cols-3 grid-rows-3 gap-10 flex-1">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] grid-rows-3 gap-4 max-w-[900px]">
               {newsItems.slice(0, 9).map((item) => (
                 <div
                   key={item.id}
                   className="w-full h-full flex items-end space-x-4"
                 >
                   <h3
-                    className="w-16 h-full text-sm"
+                    className="max-w-16 line-clamp-3 h-full text-sm"
                     style={{
                       writingMode: "vertical-lr",
                       textOrientation: "upright",
@@ -262,12 +262,12 @@ export default function NewsDesktop() {
                       ? `${item.title.substring(0, 50)}...`
                       : item.title}
                   </h3>
-                  <div className="relative w-full h-full max-w-[420px] min-w-[420px] aspect-square flex-shrink-0">
+                  <div className="relative h-[300px] w-[300px] aspect-square shadow-md">
                     <Image
                       src={item.image}
                       alt={item.title}
                       fill
-                      className="object-cover rounded-xl"
+                      className="object-cover rounded-xl w-full h-full"
                       onError={(e) => {
                         e.target.src = "/images/news1.png"; // fallback image
                       }}
@@ -285,25 +285,6 @@ export default function NewsDesktop() {
                   />
                 </div>
               ))}
-              {/* Fill empty slots if we have less than 9 items */}
-              {Array.from({ length: Math.max(0, 9 - newsItems.length) }).map(
-                (_, index) => (
-                  <div
-                    key={`empty-${index}`}
-                    className="w-full h-full flex items-center justify-center border border-gray-200 rounded-xl"
-                  >
-                    <p
-                      className="text-gray-400"
-                      style={{
-                        writingMode: "vertical-lr",
-                        textOrientation: "upright",
-                      }}
-                    >
-                      ᠮᠡᠳᠡᢉᠡ ᠦᠭᠡᠢ
-                    </p>
-                  </div>
-                )
-              )}
             </div>
 
             {/* Pagination Controls */}

@@ -126,7 +126,7 @@ export default function HomeDesktop() {
             containerClassName="h-full flex flex-col items-center justify-between border border-[#E3E3E3] rounded-xl p-8"
             button={<Button text={"ᠪᠦᢈᠦ ᠮᠡᠳᠡᢉᠡ ᠶ᠋ᠢ ᠦᠵᠡᢈᠦ"} type="primary" />}
           />
-          <div className="h-full grid grid-cols-2 grid-rows-3 gap-10">
+          <div className="h-full grid grid-cols-[repeat(auto-fit,minmax(270px,1fr))] grid-rows-3 gap-10 max-w-[540px]">
             {newsItems.map((item) => (
               <div
                 key={item.id}

@@ -62,7 +62,7 @@ export default function MerchItem({ merchItem }) {
         alt={title}
         width={270}
         height={270}
-        className="w-full h-full aspect-square min-w-[270px] min-h-[270px]"
+        className="w-full h-full aspect-square min-w-[270px] min-h-[270px] rounded-xl shadow-md"
       />
       <div className="mt-2 flex items-center justify-center">
         <a

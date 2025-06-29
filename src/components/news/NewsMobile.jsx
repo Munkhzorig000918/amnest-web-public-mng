@@ -4,105 +4,116 @@ import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
-import {
-  useGetPostsQuery,
-  useGetVideosQuery,
-  useGetLibrariesQuery,
-} from "@/redux/services/apiService";
-import { getImageUrl } from "@/config/api";
+import apiService from "@/services/apiService";
+import { getImageUrl } from "@/utils/fetcher";
 
 export default function NewsMobile() {
   const [currentPage, setCurrentPage] = useState(1);
   const [activeCategory, setActiveCategory] = useState("news");
   const itemsPerPage = 6; // Fewer items per page on mobile
 
-  // Fetch different content types based on active category
-  const {
-    data: postsData,
-    error: postsError,
-    isLoading: postsLoading,
-  } = useGetPostsQuery(
-    {
-      pageSize: itemsPerPage,
-      page: currentPage,
-      sort: "publishedAt:desc",
-    },
-    { skip: activeCategory !== "news" }
-  );
+  // State for API data
+  const [postsData, setPostsData] = useState([]);
+  const [videosData, setVideosData] = useState([]);
+  const [librariesData, setLibrariesData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const {
-    data: videosData,
-    error: videosError,
-    isLoading: videosLoading,
-  } = useGetVideosQuery(
-    {
-      pageSize: itemsPerPage,
-      page: currentPage,
-      sort: "publishedAt:desc",
-    },
-    { skip: activeCategory !== "reports" }
-  );
+  // Fetch data based on active category
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
 
-  const {
-    data: librariesData,
-    error: librariesError,
-    isLoading: librariesLoading,
-  } = useGetLibrariesQuery(
-    {
-      pageSize: itemsPerPage,
-      page: currentPage,
-      sort: "amnesty_published_at:desc",
-    },
-    { skip: activeCategory !== "special" }
-  );
+      try {
+        switch (activeCategory) {
+          case "news":
+            // Use the working posts API
+            const posts = await apiService.posts.getPostsList({
+              page: currentPage,
+              pageSize: itemsPerPage,
+            });
+            console.log("Posts response:", posts);
+            setPostsData(posts.data || []);
+            break;
+
+          case "reports":
+            // Use the working videos API
+            const videos = await apiService.videos.getVideos({
+              "pagination[page]": currentPage,
+              "pagination[pageSize]": itemsPerPage,
+            });
+            console.log("Videos response:", videos);
+            setVideosData(videos.data || []);
+            break;
+
+          case "special":
+            // Use the working libraries API
+            const libraries = await apiService.libraries.getLibraries({
+              "pagination[page]": currentPage,
+              "pagination[pageSize]": itemsPerPage,
+            });
+            console.log("Libraries response:", libraries);
+            setLibrariesData(libraries.data || []);
+            break;
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [activeCategory, currentPage]);
 
   // Determine current data based on active category
   let currentData = [];
-  let isLoading = false;
-  let error = null;
 
   switch (activeCategory) {
     case "news":
-      currentData = postsData || [];
-      isLoading = postsLoading;
-      error = postsError;
+      currentData = postsData;
       break;
     case "reports":
-      currentData = videosData || [];
-      isLoading = videosLoading;
-      error = videosError;
+      currentData = videosData;
       break;
     case "special":
-      currentData = librariesData || [];
-      isLoading = librariesLoading;
-      error = librariesError;
+      currentData = librariesData;
       break;
     default:
       currentData = [];
   }
 
   // Convert data to unified format
-  const newsItems = currentData.map((item) => {
+  const newsItems = currentData.map((item, index) => {
     let title, image, description;
 
     switch (activeCategory) {
       case "news":
-        title = item.title || "ᠭᠠᠷᠴᠢᠭ ᠦᠭᠡᠢ";
-        image = getImageUrl(item.cover) || "/images/news1.png";
-        description = item.short_description || "";
+        title = item.attributes?.title || item.title || `ᠭᠠᠷᠴᠢᠭ ${index + 1}`;
+        image =
+          getImageUrl(item.attributes?.cover || item.cover) ||
+          "/images/news1.png";
+        description =
+          item.attributes?.short_description || item.short_description || "";
         break;
       case "reports":
-        title = item.title || "ᠦᠵᠡᠮᠡᠯ ᠦᠭᠡᠢ";
-        image = getImageUrl(item.thumbnail) || "/images/news1.png";
-        description = item.description || "";
+        title = item.attributes?.title || item.title || `ᠦᠵᠡᠮᠡᠯ ${index + 1}`;
+        image =
+          getImageUrl(item.attributes?.thumbnail || item.thumbnail) ||
+          "/images/news1.png";
+        description = item.attributes?.description || item.description || "";
         break;
       case "special":
-        title = item.title || "ᠨᠣᠮ ᠦᠭᠡᠢ";
-        image = getImageUrl(item.cover) || "/images/news1.png";
-        description = item.description || "";
+        title = item.attributes?.title || item.title || `ᠨᠣᠮ ${index + 1}`;
+        image =
+          getImageUrl(item.attributes?.cover || item.cover) ||
+          "/images/news1.png";
+        description = item.attributes?.description || item.description || "";
         break;
       default:
-        title = "ᠭᠠᠷᠴᠢᠭ ᠦᠭᠡᠢ";
+        title = `ᠭᠠᠷᠴᠢᠭ ${index + 1}`;
         image = "/images/news1.png";
         description = "";
     }
@@ -180,49 +191,61 @@ export default function NewsMobile() {
     <div className="block sm:hidden h-full overflow-y-auto">
       <BannerSlider images={bannerImages} width="100%" />
 
-      <div className="p-4">
+      <div className="p-4 flex gap-5">
         {/* Category Buttons */}
-        <div className="flex gap-2 mb-4 overflow-x-auto">
+        <div className="flex flex-col gap-2 overflow-x-auto">
           <button
             onClick={() => handleCategoryChange("news")}
-            className={`px-2 py-1 rounded-lg text-xs whitespace-nowrap transition-colors ${
+            className={`py-3 pl-2 pr-1 rounded-lg text-[10px] whitespace-nowrap transition-colors ${
               activeCategory === "news"
                 ? "bg-[#2D2D2D] text-white"
                 : "bg-white border border-[#E3E3E3] text-black hover:bg-gray-50"
             }`}
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
           >
             ᠮᠡᠳᠡᢉᠡ
           </button>
           <button
             onClick={() => handleCategoryChange("reports")}
-            className={`px-2 py-1 rounded-lg text-xs whitespace-nowrap transition-colors ${
+            className={`py-3 pl-2 pr-1 rounded-lg text-[10px] whitespace-nowrap transition-colors ${
               activeCategory === "reports"
                 ? "bg-[#2D2D2D] text-white"
                 : "bg-white border border-[#E3E3E3] text-black hover:bg-gray-50"
             }`}
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
           >
             ᠮᠡᠳᠡᢉᠳᠡᠯ᠂ ᠪᠠᠶᠢᠷᠢ ᠰᠠᠭᠤᠷᠢ
           </button>
           <button
             onClick={() => handleCategoryChange("special")}
-            className={`px-2 py-1 rounded-lg text-xs whitespace-nowrap transition-colors ${
+            className={`py-3 pl-2 pr-1 rounded-lg text-[10px] whitespace-nowrap transition-colors ${
               activeCategory === "special"
                 ? "bg-[#2D2D2D] text-white"
                 : "bg-white border border-[#E3E3E3] text-black hover:bg-gray-50"
             }`}
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
           >
             ᠣᠨᠴᠠᠯᠠᠬᠤ ᠮᠡᠳᠡᢉᠡ
           </button>
         </div>
 
         {/* News Grid */}
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-4">
           {newsItems.map((item) => (
-            <div
-              key={item.id}
-              className="bg-white rounded-lg overflow-hidden border border-[#E3E3E3]"
-            >
-              <div className="relative aspect-square">
+            <div key={item.id} className="w-full flex gap-2 max-h-[150px]">
+              <h3
+                className="text-[10px] line-clamp-4"
+                style={{
+                  writingMode: "vertical-lr",
+                  textOrientation: "upright",
+                }}
+                title={item.title}
+              >
+                {item.title.length > 80
+                  ? `${item.title.substring(0, 80)}...`
+                  : item.title}
+              </h3>
+              <div className="relative aspect-square w-[150px] h-[150px] shadow-md">
                 <Image
                   src={item.image}
                   alt={item.title}
@@ -239,39 +262,8 @@ export default function NewsMobile() {
                 />
               </div>
               <div className="p-3 flex items-end">
-                <h3
-                  className="text-xs mb-2 max-h-[100px] w-full line-clamp-6"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                  title={item.title}
-                >
-                  {item.title.length > 80
-                    ? `${item.title.substring(0, 80)}...`
-                    : item.title}
-                </h3>
                 <Button text={"ᠤᠩᠰᠢᠬᠤ"} type="secondary" />
               </div>
-            </div>
-          ))}
-          {/* Fill empty slots if we have less items than expected */}
-          {Array.from({
-            length: Math.max(0, itemsPerPage - newsItems.length),
-          }).map((_, index) => (
-            <div
-              key={`empty-${index}`}
-              className="bg-white rounded-lg overflow-hidden border border-gray-200 flex items-center justify-center aspect-square"
-            >
-              <p
-                className="text-gray-400 text-xs"
-                style={{
-                  writingMode: "vertical-lr",
-                  textOrientation: "upright",
-                }}
-              >
-                ᠮᠡᠳᠡᢉᠡ ᠦᠭᠡᠢ
-              </p>
             </div>
           ))}
         </div>

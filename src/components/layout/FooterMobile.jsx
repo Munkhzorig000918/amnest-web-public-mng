@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function FooterMobile() {
   return (
-    <div className="w-full bg-[#2D2D2D] text-white py-8 px-4 overflow-hidden flex flex-col items-start gap-y-6">
+    <div className="w-full bg-[#2D2D2D] text-white py-8 px-4 overflow-hidden flex flex-col items-start gap-y-6 mt-auto">
       <div className="flex items-start gap-x-3">
         <div className="flex items-start gap-x-2">
           <Link
