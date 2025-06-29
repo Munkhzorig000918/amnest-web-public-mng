@@ -141,7 +141,7 @@ export default function SingleNews() {
 
   return (
     <Layout>
-      <div className="sm:h-screen flex flex-col overflow-hidden">
+      <div className="sm:h-screen flex flex-col overflow-hidden flex-1">
         {/* Hero Section */}
         <div className="relative h-[200px] sm:h-[300px] w-full flex-shrink-0">
           <Image

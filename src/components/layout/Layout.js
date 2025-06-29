@@ -28,7 +28,7 @@ export default function Layout({ children }) {
       {/* Desktop Layout */}
       <div className="h-screen items-center justify-start hidden md:flex">
         <Header />
-        <div className="flex-1">{children}</div>
+        {children}
         <Footer />
       </div>
 
