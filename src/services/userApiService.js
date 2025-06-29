@@ -350,6 +350,46 @@ export const memberService = {
 
 // Donation Services
 export const donationService = {
+  // Create anonymous donation
+  async createAnonymousDonation(donationData) {
+    try {
+      const response = await fetch("/api/donation/anonymous", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(donationData),
+      });
+      return await response.json();
+    } catch (error) {
+      console.error("Anonymous donation error:", error);
+      return {
+        success: false,
+        message: error.message,
+      };
+    }
+  },
+
+  // Check donation status
+  async checkDonationStatus(invoiceCode) {
+    try {
+      const response = await fetch("/api/donation/check", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ invoiceCode }),
+      });
+      return await response.json();
+    } catch (error) {
+      console.error("Donation check error:", error);
+      return {
+        success: false,
+        message: error.message,
+      };
+    }
+  },
+
   // Create QPay donation
   async createQPayDonation(donationData) {
     try {
@@ -368,15 +408,20 @@ export const donationService = {
   // Bank donation QPay
   async createBankQPayDonation(donationData) {
     try {
-      const response = await FetcherPost(
-        "/donation/bank/qpay",
-        donationData,
-        USER_API_BASE_URL
-      );
-      return response;
+      const response = await fetch("/api/donation/bank/qpay", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(donationData),
+      });
+      return await response.json();
     } catch (error) {
       console.error("Bank QPay donation error:", error);
-      throw error;
+      return {
+        success: false,
+        message: error.message,
+      };
     }
   },
 

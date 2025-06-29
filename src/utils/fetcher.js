@@ -82,6 +82,7 @@ export async function FetcherPost(url, body, baseUrl = API_BASE_URL) {
   try {
     const fullUrl = `${baseUrl}${url}`;
     console.log("POST request to:", fullUrl);
+    console.log("POST body:", body);
 
     const headers = {
       "Content-Type": "application/json",
@@ -99,17 +100,43 @@ export async function FetcherPost(url, body, baseUrl = API_BASE_URL) {
       body: JSON.stringify(body),
     });
 
-    if (response.status >= 400) {
-      if (response.status === 404) {
-        return await response.json();
+    console.log("Response status:", response.status);
+    console.log("Response headers:", response.headers);
+
+    // Get the response text first to check what we're dealing with
+    const responseText = await response.text();
+    console.log("Response text:", responseText);
+
+    // Try to parse as JSON
+    let responseData;
+    try {
+      responseData = JSON.parse(responseText);
+    } catch (parseError) {
+      console.error("Failed to parse response as JSON:", parseError);
+      console.error("Response was:", responseText);
+
+      // If it's an HTML response, it's likely a server error
+      if (
+        responseText.includes("<html") ||
+        responseText.includes("<!DOCTYPE")
+      ) {
+        throw new Error(
+          `Server returned HTML instead of JSON. Status: ${response.status}`
+        );
       }
-      const errorData = await response.json();
+
       throw new Error(
-        `API Error ${response.status}: ${JSON.stringify(errorData)}`
+        `Invalid JSON response: ${responseText.substring(0, 200)}...`
       );
     }
 
-    return await response.json();
+    if (response.status >= 400) {
+      throw new Error(
+        `API Error ${response.status}: ${JSON.stringify(responseData)}`
+      );
+    }
+
+    return responseData;
   } catch (e) {
     console.error("FetcherPost Error:", e);
     throw e;

@@ -4,10 +4,45 @@ import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
+import { countryData } from "@/utils/countryList";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function DonationDesktop() {
+export default function DonationDesktop({
+  // Form data
+  amount,
+  setAmount,
+  firstName,
+  setFirstName,
+  lastName,
+  setLastName,
+  email,
+  setEmail,
+  phoneNumber,
+  setPhoneNumber,
+  selectedCountryCode,
+  setSelectedCountryCode,
+
+  // Payment states
+  isLoading,
+  invoiceData,
+  qpayData,
+  paid,
+  checkPaid,
+
+  // Error handling
+  fullField,
+  errorMessage,
+
+  // Functions
+  chooseDonation,
+  handleDonate,
+  handleQPay,
+  navToRecurringDonation,
+}) {
+  // Amount options for donation
+  const amountOptions = [20000, 50000, 100000];
+
   return (
     <div className="h-full flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-hidden">
       <BannerSlider images={bannerImages} width="90rem" />
@@ -62,8 +97,50 @@ export default function DonationDesktop() {
               textOrientation: "upright",
             }}
           >
-            ᠬᠣᠯᠪᠤᠭ᠎ᠠ ᠪᠠᠷᠢᠬᠤ
+            ᠬᠠᠨᠳᠢᠪ ᠥᢉᢉᠦ
           </h2>
+
+          {/* Amount Selection */}
+          <div className="flex gap-2">
+            <p
+              className="text-sm"
+              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+            >
+              ᠳᠦᠨ*
+            </p>
+            <div className="flex flex-col gap-2">
+              {amountOptions.map((amountOption) => (
+                <button
+                  key={amountOption}
+                  onClick={() => chooseDonation(amountOption)}
+                  className={`border rounded-md p-2 w-20 text-sm ${
+                    amount === amountOption.toString()
+                      ? "bg-blue-500 text-white border-blue-500"
+                      : "border-gray-300 text-black bg-white hover:bg-gray-100"
+                  }`}
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                >
+                  {amountOption.toLocaleString()}₮
+                </button>
+              ))}
+              <input
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="ᠪᠤᠰᠤᠳ ᠳᠦᠨ"
+                className="border border-gray-300 rounded-md p-2 w-20 text-black"
+                style={{
+                  writingMode: "vertical-lr",
+                  textOrientation: "upright",
+                }}
+              />
+            </div>
+          </div>
+
+          {/* First Name */}
           <div className="flex gap-2">
             <p
               className="text-sm"
@@ -73,75 +150,176 @@ export default function DonationDesktop() {
             </p>
             <input
               type="text"
-              className="border border-gray-300 rounded-md p-2 w-20 text-black"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              className={`border rounded-md p-2 w-20 text-black ${
+                fullField && !firstName ? "border-red-500" : "border-gray-300"
+              }`}
               style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
             />
           </div>
+
+          {/* Last Name */}
           <div className="flex gap-2">
             <p
               className="text-sm"
               style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
             >
-              ᠢᠮᠡᠶᠢᠯ ᠬᠠᠶᠢᠭ*
+              ᠣᠪᠤᠭ*
             </p>
             <input
               type="text"
-              className="border border-gray-300 rounded-md p-2 w-20 text-black"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              className={`border rounded-md p-2 w-20 text-black ${
+                fullField && !lastName ? "border-red-500" : "border-gray-300"
+              }`}
               style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
             />
           </div>
+
+          {/* Email */}
           <div className="flex gap-2">
             <p
               className="text-sm"
               style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
             >
-              ᠭᠠᠷᠴᠠᠭ
+              ᠢᠮᠡᠶᠢᠯ*
             </p>
             <input
-              type="text"
-              className="border border-gray-300 rounded-md p-2 w-20 text-black"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={`border rounded-md p-2 w-20 text-black ${
+                fullField && !email ? "border-red-500" : "border-gray-300"
+              }`}
               style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
             />
           </div>
+
+          {/* Phone Number */}
           <div className="flex gap-2">
             <p
               className="text-sm"
               style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
             >
-              ᠤᠲᠠᠰᠤᠨ ᠤ᠋ ᠳ᠋ᠤᠭᠠᠷ (ᠵᠠᠪᠠᠯ ᠪᠢᠰᠢ)
+              ᠤᠲᠠᠰᠤᠨ*
             </p>
             <input
-              type="text"
-              className="border border-gray-300 rounded-md p-2 w-20 text-black"
+              type="tel"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              className={`border rounded-md p-2 w-20 text-black ${
+                fullField && !phoneNumber ? "border-red-500" : "border-gray-300"
+              }`}
               style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
             />
           </div>
+
+          {/* Country Selection */}
           <div className="flex gap-2">
             <p
               className="text-sm"
               style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
             >
-              ᠶᠠᠮᠠᠷ ᠠᠰᠠᠭᠤᠳᠠᠯ ᠢ᠋ᠶᠠᠷ?
+              ᠤᠯᠤᠰ
             </p>
-            <input
-              type="text"
+            <select
+              value={selectedCountryCode}
+              onChange={(e) => setSelectedCountryCode(e.target.value)}
               className="border border-gray-300 rounded-md p-2 w-20 text-black"
               style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
-            />
-          </div>
-          <div className="flex gap-2">
-            <p
-              className="text-sm"
-              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
             >
-              ᠮᠧᠰᠰᠧᠵᠢ
-            </p>
-            <textarea
-              type="text"
-              className="border border-gray-300 rounded-md p-2 w-60 text-black"
-              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+              {countryData.map((country) => (
+                <option key={country.code} value={country.code}>
+                  {country.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex gap-2">
+            <Button
+              text={isLoading ? "ᠢᠯᠭᠡᠵᠦ ᠪᠠᠢᠨ᠎ᠠ..." : "ᠬᠠᠨᠳᠢᠪ ᠥᢉᢉᠦ"}
+              onClick={handleDonate}
+              disabled={isLoading}
+              className={`${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
             />
           </div>
+
+          {/* Error Message */}
+          {errorMessage && (
+            <div className="flex gap-2">
+              <p
+                className="text-sm text-red-400"
+                style={{
+                  writingMode: "vertical-lr",
+                  textOrientation: "upright",
+                }}
+              >
+                {errorMessage}
+              </p>
+            </div>
+          )}
+
+          {/* Payment Status */}
+          {invoiceData && !paid && (
+            <div className="flex gap-2">
+              <p
+                className="text-sm text-yellow-400"
+                style={{
+                  writingMode: "vertical-lr",
+                  textOrientation: "upright",
+                }}
+              >
+                ᠲᠥᠯᠪᠦᠷᠢ ᠬᠦᠯᠢᠶᠡᠵᠦ ᠪᠠᠢᠨ᠎ᠠ...
+              </p>
+              <Button
+                text="QPay ᠢ᠋ ᠬᠡᠷᠡᠭᠯᠡ"
+                onClick={handleQPay}
+                disabled={isLoading}
+                className="text-sm"
+              />
+            </div>
+          )}
+
+          {/* QPay QR Code */}
+          {qpayData && (
+            <div className="flex gap-2">
+              <p
+                className="text-sm"
+                style={{
+                  writingMode: "vertical-lr",
+                  textOrientation: "upright",
+                }}
+              >
+                QR ᠬᠣᠳ
+              </p>
+              <div className="bg-white p-2 rounded">
+                <img
+                  src={`data:image/png;base64,${qpayData.qrImage}`}
+                  alt="QPay QR Code"
+                  className="w-32 h-32"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Success Message */}
+          {paid && (
+            <div className="flex gap-2">
+              <p
+                className="text-sm text-green-400"
+                style={{
+                  writingMode: "vertical-lr",
+                  textOrientation: "upright",
+                }}
+              >
+                ᠬᠠᠨᠳᠢᠪ ᠠᠮᠵᠢᠯᠲᠠᠢ ᠪᠣᠯᠣᠪᠠ!
+              </p>
+            </div>
+          )}
         </div>
       </div>
       <div className="flex gap-5 px-14 py-4 bg-[#F1F1F1]">
