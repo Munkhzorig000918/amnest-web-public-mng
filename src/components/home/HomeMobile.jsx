@@ -6,8 +6,10 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import apiService from "@/services/apiService";
 import { getImageUrl } from "@/utils/fetcher";
+import { useRouter } from "next/router";
 
 export default function HomeMobile() {
+  const router = useRouter();
   // State for API data
   const [postsData, setPostsData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -85,6 +87,10 @@ export default function HomeMobile() {
     };
   });
 
+  const handleNewsClick = (newsId) => {
+    router.push(`/news/${newsId}`);
+  };
+
   // Loading state
   if (isLoading) {
     return (
@@ -144,7 +150,8 @@ export default function HomeMobile() {
             {newsItems.map((item) => (
               <div
                 key={item.id}
-                className="w-full min-w-max flex items-end space-x-2"
+                className="w-full min-w-max flex items-end space-x-2 cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={() => handleNewsClick(item.id)}
               >
                 <h3
                   className="text-[10px] max-h-[200px] py-2"

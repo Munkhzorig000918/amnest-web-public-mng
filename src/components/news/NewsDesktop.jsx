@@ -9,10 +9,12 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import apiService from "@/services/apiService";
 import { getImageUrl } from "@/utils/fetcher";
 
 export default function NewsDesktop() {
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
   const [activeCategory, setActiveCategory] = useState("news");
@@ -172,6 +174,10 @@ export default function NewsDesktop() {
     setCurrentPage(1); // Reset to first page when changing category
   };
 
+  const handleNewsClick = (newsId) => {
+    router.push(`/news/${newsId}`);
+  };
+
   // Loading state
   if (isLoading) {
     return (
@@ -248,7 +254,8 @@ export default function NewsDesktop() {
               {newsItems.slice(0, 9).map((item) => (
                 <div
                   key={item.id}
-                  className="w-full h-full flex items-end space-x-4"
+                  className="w-full h-full flex items-end space-x-4 cursor-pointer hover:opacity-80 transition-opacity"
+                  onClick={() => handleNewsClick(item.id)}
                 >
                   <h3
                     className="max-w-16 line-clamp-3 h-full text-sm"

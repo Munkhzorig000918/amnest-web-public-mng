@@ -5,6 +5,58 @@ const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:1337/api";
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY || process.env.STRAPI_API_KEY;
 
+// Mongolian Bichig number mapping
+const mongolianNumbers = {
+  0: "᠐",
+  1: "᠑",
+  2: "᠒",
+  3: "᠓",
+  4: "᠔",
+  5: "᠕",
+  6: "᠖",
+  7: "᠗",
+  8: "᠘",
+  9: "᠙",
+};
+
+// Helper function to convert regular numbers to Mongolian Bichig numbers
+export const toMongolianNumbers = (number) => {
+  if (number === null || number === undefined) return "";
+
+  return String(number)
+    .split("")
+    .map((digit) => {
+      return mongolianNumbers[digit] || digit;
+    })
+    .join("");
+};
+
+// Helper function to format date with Mongolian Bichig numbers
+export const formatMongolianDate = (
+  dateString,
+  format = "YYYY/MM/DD HH:mm"
+) => {
+  if (!dateString) return "";
+
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "";
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+
+  let formattedDate = format
+    .replace("YYYY", toMongolianNumbers(year))
+    .replace("MM", toMongolianNumbers(month))
+    .replace("DD", toMongolianNumbers(day))
+    .replace("HH", toMongolianNumbers(hours))
+    .replace("mm", toMongolianNumbers(minutes));
+
+  return formattedDate;
+};
+
 export default async function Fetcher(url, baseUrl = API_BASE_URL) {
   try {
     const fullUrl = `${baseUrl}${url}`;

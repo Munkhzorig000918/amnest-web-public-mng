@@ -4,10 +4,12 @@ import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import SectionTitle from "@/components/common/SectionTitle";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import apiService from "@/services/apiService";
 import { getImageUrl } from "@/utils/fetcher";
 
 export default function HomeDesktop() {
+  const router = useRouter();
   // State for API data
   const [postsData, setPostsData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -86,6 +88,10 @@ export default function HomeDesktop() {
     };
   });
 
+  const handleNewsClick = (newsId) => {
+    router.push(`/news/${newsId}`);
+  };
+
   // Loading state
   if (isLoading) {
     return (
@@ -130,7 +136,8 @@ export default function HomeDesktop() {
             {newsItems.map((item) => (
               <div
                 key={item.id}
-                className="w-full h-full flex items-end space-x-4"
+                className="w-full h-full flex items-end space-x-4 cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={() => handleNewsClick(item.id)}
               >
                 <h3
                   className="w-16 h-full text-sm"

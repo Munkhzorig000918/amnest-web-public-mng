@@ -4,10 +4,12 @@ import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import apiService from "@/services/apiService";
 import { getImageUrl } from "@/utils/fetcher";
 
 export default function NewsMobile() {
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [activeCategory, setActiveCategory] = useState("news");
   const itemsPerPage = 6; // Fewer items per page on mobile
@@ -154,6 +156,10 @@ export default function NewsMobile() {
     setCurrentPage(1); // Reset to first page when changing category
   };
 
+  const handleNewsClick = (newsId) => {
+    router.push(`/news/${newsId}`);
+  };
+
   // Loading state
   if (isLoading) {
     return (
@@ -232,7 +238,11 @@ export default function NewsMobile() {
         {/* News Grid */}
         <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-4">
           {newsItems.map((item) => (
-            <div key={item.id} className="w-full flex gap-2 max-h-[150px]">
+            <div
+              key={item.id}
+              className="w-full flex gap-2 max-h-[150px] cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => handleNewsClick(item.id)}
+            >
               <h3
                 className="text-[10px] line-clamp-4"
                 style={{
