@@ -188,7 +188,7 @@ export default function NewsDesktop() {
   };
 
   // Loading state
-  if (isLoading) {
+  if (isLoading && currentData.length === 0) {
     return (
       <div className="h-full hidden sm:flex gap-10 overflow-x-auto overflow-y-hidden w-auto flex-shrink-0 max-h-screen items-center justify-center">
         <div className="text-center">
@@ -259,50 +259,86 @@ export default function NewsDesktop() {
             </button>
           </div>
           <div className="h-full flex gap-4">
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] grid-rows-3 gap-4 max-w-[900px]">
-              {newsItems.slice(0, 9).map((item) => (
-                <div
-                  key={item.id}
-                  className="w-full h-full flex items-end space-x-4 cursor-pointer hover:opacity-80 transition-opacity"
-                  onClick={() => handleNewsClick(item.id)}
-                >
-                  <h3
-                    className="max-w-16 line-clamp-3 h-full text-sm"
-                    style={{
-                      writingMode: "vertical-lr",
-                      textOrientation: "upright",
-                    }}
-                    title={item.title}
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] grid-rows-3 gap-4 max-w-[900px] min-h-[900px]">
+              {isLoading ? (
+                // Loading placeholders to maintain layout
+                Array.from({ length: 9 }).map((_, index) => (
+                  <div
+                    key={`loading-${index}`}
+                    className="w-full h-full flex items-end space-x-4"
                   >
-                    {item.title.length > 50
-                      ? `${item.title.substring(0, 50)}...`
-                      : item.title}
-                  </h3>
-                  <div className="relative h-[300px] w-[300px] aspect-square shadow-md">
-                    <Image
-                      src={item.image}
-                      alt={item.title}
-                      fill
-                      className="object-cover rounded-xl w-full h-full"
-                      onError={(e) => {
-                        e.target.src = "/images/news1.png"; // fallback image
+                    <div className="max-w-16 h-full bg-gray-200 animate-pulse rounded"></div>
+                    <div className="relative h-[300px] w-[300px] aspect-square shadow-md bg-gray-200 animate-pulse rounded-xl"></div>
+                    <div className="w-12 h-48 bg-gray-200 animate-pulse rounded"></div>
+                  </div>
+                ))
+              ) : newsItems.length > 0 ? (
+                newsItems.slice(0, 9).map((item) => (
+                  <div
+                    key={item.id}
+                    className="w-full h-full flex items-end space-x-4"
+                  >
+                    <h3
+                      className="max-w-16 line-clamp-3 h-full text-sm"
+                      style={{
+                        writingMode: "vertical-lr",
+                        textOrientation: "upright",
                       }}
-                    />
+                      title={item.title}
+                    >
+                      {item.title.length > 50
+                        ? `${item.title.substring(0, 50)}...`
+                        : item.title}
+                    </h3>
+                    <div className="relative h-[300px] w-[300px] aspect-square shadow-md">
+                      <Image
+                        src={item.image}
+                        alt={item.title}
+                        fill
+                        className="object-cover rounded-xl w-full h-full"
+                        onError={(e) => {
+                          e.target.src = "/images/news1.png"; // fallback image
+                        }}
+                      />
+                      <Button
+                        text={
+                          activeCategory === "statements"
+                            ? "ᠮᠡᠳᠡᠭᠳᠡᠯ"
+                            : "ᠮᠡᠳᠡᢉᠡ"
+                        }
+                        type="primary"
+                        className="absolute top-0 right-0 text-black cursor-pointer hover:opacity-80 transition-opacity"
+                        onClick={() => handleNewsClick(item.id)}
+                      />
+                    </div>
                     <Button
-                      text={
-                        activeCategory === "statements" ? "ᠮᠡᠳᠡᠭᠳᠡᠯ" : "ᠮᠡᠳᠡᢉᠡ"
-                      }
-                      type="primary"
-                      className="absolute top-0 right-0 text-black"
+                      text={"ᠤᠩᠰᠢᠬᠤ"}
+                      type="secondary"
+                      className="text-black h-48 cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={() => handleNewsClick(item.id)}
                     />
                   </div>
-                  <Button
-                    text={"ᠤᠩᠰᠢᠬᠤ"}
-                    type="secondary"
-                    className="text-black h-48"
-                  />
+                ))
+              ) : (
+                // No data available - show message instead of empty placeholders
+                <div className="col-span-full flex items-center justify-center h-[400px]">
+                  <div className="text-center">
+                    <p
+                      className="text-gray-500 text-lg"
+                      style={{
+                        writingMode: "vertical-lr",
+                        textOrientation: "upright",
+                      }}
+                    >
+                      {activeCategory === "good_news"
+                        ? "ᠣᠨᠴᠤᠯᠠᠬᠤ ᠮᠡᠳᠡᢉᠡ ᠦᠭᠡᠢ"
+                        : activeCategory === "statements"
+                        ? "ᠮᠡᠳᠡᠭᠳᠡᠯ ᠦᠭᠡᠢ"
+                        : "ᠮᠡᠳᠡᢉᠡ ᠦᠭᠡᠢ"}
+                    </p>
+                  </div>
                 </div>
-              ))}
+              )}
             </div>
 
             {/* Pagination Controls */}

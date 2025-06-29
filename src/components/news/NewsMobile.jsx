@@ -170,7 +170,7 @@ export default function NewsMobile() {
   };
 
   // Loading state
-  if (isLoading) {
+  if (isLoading && currentData.length === 0) {
     return (
       <div className="block sm:hidden h-full overflow-y-auto flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -246,51 +246,81 @@ export default function NewsMobile() {
 
         {/* News Grid */}
         <div className="flex-1">
-          <div className="grid grid-cols-1 gap-4">
-            {newsItems.slice(0, 6).map((item) => (
-              <div
-                key={item.id}
-                className="flex gap-4 cursor-pointer hover:opacity-80 transition-opacity"
-                onClick={() => handleNewsClick(item.id)}
-              >
-                <div className="relative w-24 h-24 flex-shrink-0">
-                  <Image
-                    src={item.image}
-                    alt={item.title}
-                    fill
-                    className="object-cover rounded"
-                    onError={(e) => {
-                      e.target.src = "/images/news1.png"; // fallback image
-                    }}
-                  />
-                  <Button
-                    text={
-                      activeCategory === "statements" ? "ᠮᠡᠳᠡᠭᠳᠡᠯ" : "ᠮᠡᠳᠡᢉᠡ"
-                    }
-                    type="primary"
-                    className="absolute -top-1 -right-1 text-black text-xs px-1 py-0.5"
-                  />
+          <div className="grid grid-cols-1 gap-4 min-h-[600px]">
+            {isLoading ? (
+              // Loading placeholders to maintain layout
+              Array.from({ length: 6 }).map((_, index) => (
+                <div key={`loading-${index}`} className="flex gap-4">
+                  <div className="relative w-24 h-24 flex-shrink-0 bg-gray-200 animate-pulse rounded"></div>
+                  <div className="flex-1">
+                    <div className="h-8 bg-gray-200 animate-pulse rounded mb-2"></div>
+                    <div className="h-6 w-16 bg-gray-200 animate-pulse rounded"></div>
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <h3
-                    className="text-sm font-medium line-clamp-2 mb-2"
+              ))
+            ) : newsItems.length > 0 ? (
+              newsItems.slice(0, 6).map((item) => (
+                <div key={item.id} className="flex gap-4">
+                  <div className="relative w-24 h-24 flex-shrink-0">
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      className="object-cover rounded"
+                      onError={(e) => {
+                        e.target.src = "/images/news1.png"; // fallback image
+                      }}
+                    />
+                    <Button
+                      text={
+                        activeCategory === "statements" ? "ᠮᠡᠳᠡᠭᠳᠡᠯ" : "ᠮᠡᠳᠡᢉᠡ"
+                      }
+                      type="primary"
+                      className="absolute -top-1 -right-1 text-black text-xs px-1 py-0.5 cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={() => handleNewsClick(item.id)}
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <h3
+                      className="text-sm font-medium line-clamp-2 mb-2"
+                      style={{
+                        writingMode: "vertical-lr",
+                        textOrientation: "upright",
+                      }}
+                    >
+                      {item.title.length > 40
+                        ? `${item.title.substring(0, 40)}...`
+                        : item.title}
+                    </h3>
+                    <Button
+                      text={"ᠤᠩᠰᠢᠬᠤ"}
+                      type="secondary"
+                      className="text-black text-xs px-2 py-1 cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={() => handleNewsClick(item.id)}
+                    />
+                  </div>
+                </div>
+              ))
+            ) : (
+              // No data available - show message
+              <div className="flex items-center justify-center h-[200px]">
+                <div className="text-center">
+                  <p
+                    className="text-gray-500 text-sm"
                     style={{
                       writingMode: "vertical-lr",
                       textOrientation: "upright",
                     }}
                   >
-                    {item.title.length > 40
-                      ? `${item.title.substring(0, 40)}...`
-                      : item.title}
-                  </h3>
-                  <Button
-                    text={"ᠤᠩᠰᠢᠬᠤ"}
-                    type="secondary"
-                    className="text-black text-xs px-2 py-1"
-                  />
+                    {activeCategory === "good_news"
+                      ? "ᠣᠨᠴᠤᠯᠠᠬᠤ ᠮᠡᠳᠡᢉᠡ ᠦᠭᠡᠢ"
+                      : activeCategory === "statements"
+                      ? "ᠮᠡᠳᠡᠭᠳᠡᠯ ᠦᠭᠡᠢ"
+                      : "ᠮᠡᠳᠡᢉᠡ ᠦᠭᠡᠢ"}
+                  </p>
                 </div>
               </div>
-            ))}
+            )}
           </div>
 
           {/* Pagination Controls */}
