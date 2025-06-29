@@ -22,8 +22,8 @@ export default function NewsDesktop() {
 
   // State for API data
   const [postsData, setPostsData] = useState([]);
-  const [videosData, setVideosData] = useState([]);
-  const [librariesData, setLibrariesData] = useState([]);
+  const [statementsData, setStatementsData] = useState([]);
+  const [goodNewsData, setGoodNewsData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -36,7 +36,7 @@ export default function NewsDesktop() {
       try {
         switch (activeCategory) {
           case "news":
-            // Use the working posts API
+            // Regular news posts
             const posts = await apiService.posts.getPostsList({
               page: currentPage,
               pageSize: itemsPerPage,
@@ -45,24 +45,25 @@ export default function NewsDesktop() {
             setPostsData(posts.data || []);
             break;
 
-          case "reports":
-            // Use the working videos API
-            const videos = await apiService.videos.getVideos({
-              "pagination[page]": currentPage,
-              "pagination[pageSize]": itemsPerPage,
+          case "statements":
+            // Statements/position papers
+            const statements = await apiService.statements.getStatements({
+              page: currentPage,
+              pageSize: itemsPerPage,
             });
-            console.log("Videos response:", videos);
-            setVideosData(videos.data || []);
+            console.log("Statements response:", statements);
+            setStatementsData(statements.data || []);
             break;
 
-          case "special":
-            // Use the working libraries API
-            const libraries = await apiService.libraries.getLibraries({
-              "pagination[page]": currentPage,
-              "pagination[pageSize]": itemsPerPage,
+          case "good_news":
+            // Good news/special posts - using posts API with category filter
+            const goodNews = await apiService.posts.getPostsList({
+              page: currentPage,
+              pageSize: itemsPerPage,
+              post_category: "good_news",
             });
-            console.log("Libraries response:", libraries);
-            setLibrariesData(libraries.data || []);
+            console.log("Good news response:", goodNews);
+            setGoodNewsData(goodNews.data || []);
             break;
         }
       } catch (err) {
@@ -83,11 +84,11 @@ export default function NewsDesktop() {
     case "news":
       currentData = postsData;
       break;
-    case "reports":
-      currentData = videosData;
+    case "statements":
+      currentData = statementsData;
       break;
-    case "special":
-      currentData = librariesData;
+    case "good_news":
+      currentData = goodNewsData;
       break;
     default:
       currentData = [];
@@ -97,8 +98,16 @@ export default function NewsDesktop() {
   const newsItems = currentData.map((item, index) => {
     let title, image, description;
 
+    // Debug logging
+    if (activeCategory === "statements") {
+      console.log("Processing statement item:", item);
+      console.log("Item has attributes?", !!item.attributes);
+      console.log("Item keys:", Object.keys(item));
+    }
+
     switch (activeCategory) {
       case "news":
+      case "good_news":
         title = item.attributes?.title || item.title || `ᠭᠠᠷᠴᠢᠭ ${index + 1}`;
         image =
           getImageUrl(item.attributes?.cover || item.cover) ||
@@ -106,19 +115,15 @@ export default function NewsDesktop() {
         description =
           item.attributes?.short_description || item.short_description || "";
         break;
-      case "reports":
-        title = item.attributes?.title || item.title || `ᠦᠵᠡᠮᠡᠯ ${index + 1}`;
-        image =
-          getImageUrl(item.attributes?.thumbnail || item.thumbnail) ||
-          "/images/news1.png";
-        description = item.attributes?.description || item.description || "";
-        break;
-      case "special":
-        title = item.attributes?.title || item.title || `ᠨᠣᠮ ${index + 1}`;
-        image =
-          getImageUrl(item.attributes?.cover || item.cover) ||
-          "/images/news1.png";
-        description = item.attributes?.description || item.description || "";
+      case "statements":
+        // Handle both flattened (formatStrapiResponse) and nested (raw) formats
+        title = item.title || item.attributes?.title || `ᠮᠡᠳᠡᠭᠳᠡᠯ ${index + 1}`;
+
+        // For statements, the data is already flattened by formatStrapiResponse
+        // So item.cover should be the cover data directly
+        const coverData = item.cover || item.attributes?.cover;
+        image = getImageUrl(coverData) || "/images/news1.png";
+        description = item.description || item.attributes?.description || "";
         break;
       default:
         title = `ᠭᠠᠷᠴᠢᠭ ${index + 1}`;
@@ -175,7 +180,11 @@ export default function NewsDesktop() {
   };
 
   const handleNewsClick = (newsId) => {
-    router.push(`/news/${newsId}`);
+    if (activeCategory === "statements") {
+      router.push(`/news/statement/${newsId}`);
+    } else {
+      router.push(`/news/${newsId}`);
+    }
   };
 
   // Loading state
@@ -227,26 +236,26 @@ export default function NewsDesktop() {
               ᠮᠡᠳᠡᢉᠡ
             </button>
             <button
-              onClick={() => handleCategoryChange("reports")}
+              onClick={() => handleCategoryChange("statements")}
               className={`w-full h-full flex justify-center items-center text-center text-2xl font-bold rounded-xl p-8 transition-colors cursor-pointer ${
-                activeCategory === "reports"
+                activeCategory === "statements"
                   ? "text-white bg-[#2D2D2D] border border-[#2D2D2D]"
                   : "text-black bg-white border border-[#E3E3E3] hover:bg-gray-50"
               }`}
               style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
             >
-              ᠦᠵᠡᠮᠡᠯ
+              ᠮᠡᠳᠡᠭᠳᠡᠯ ᠪᠠᠶᠢᠷ ᠰᠤᠤᠷᠢ
             </button>
             <button
-              onClick={() => handleCategoryChange("special")}
+              onClick={() => handleCategoryChange("good_news")}
               className={`w-full h-full flex justify-center items-center text-center text-2xl font-bold rounded-xl p-8 transition-colors cursor-pointer ${
-                activeCategory === "special"
+                activeCategory === "good_news"
                   ? "text-white bg-[#2D2D2D] border border-[#2D2D2D]"
                   : "text-black bg-white border border-[#E3E3E3] hover:bg-gray-50"
               }`}
               style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
             >
-              ᠨᠣᠮ ᠦᠨ ᠰᠠᠩ
+              ᠣᠨᠴᠤᠯᠠᠬᠤ ᠮᠡᠳᠡᢉᠡ
             </button>
           </div>
           <div className="h-full flex gap-4">
@@ -280,7 +289,9 @@ export default function NewsDesktop() {
                       }}
                     />
                     <Button
-                      text={"ᠮᠡᠳᠡᢉᠡ"}
+                      text={
+                        activeCategory === "statements" ? "ᠮᠡᠳᠡᠭᠳᠡᠯ" : "ᠮᠡᠳᠡᢉᠡ"
+                      }
                       type="primary"
                       className="absolute top-0 right-0 text-black"
                     />

@@ -52,6 +52,18 @@ export const postsService = {
         "pagination[pageSize]": params.pageSize || 10,
       };
 
+      // Add filters directly to queryParams (not nested)
+      if (params.filters) {
+        Object.keys(params.filters).forEach((key) => {
+          queryParams[key] = params.filters[key];
+        });
+      }
+
+      // Add post_category filter if provided
+      if (params.post_category) {
+        queryParams.post_category = params.post_category;
+      }
+
       const endpoint = buildEndpointUrl(API_ENDPOINTS.POSTS_LIST, queryParams);
       const response = await Fetcher(endpoint);
 
@@ -648,6 +660,46 @@ export const podcastsService = {
   },
 };
 
+// Statements Service - Using standard routes
+export const statementsService = {
+  async getStatements(params = {}) {
+    try {
+      const queryParams = {
+        populate: "*",
+        sort: "id:desc",
+        locale: "mn",
+        "pagination[page]": params.page || 1,
+        "pagination[pageSize]": params.pageSize || 10,
+      };
+      const endpoint = buildEndpointUrl(API_ENDPOINTS.STATEMENTS, queryParams);
+      const response = await Fetcher(endpoint);
+
+      // Return proper structure with data and meta
+      return {
+        data: formatStrapiResponse(response),
+        meta: response.meta || {},
+      };
+    } catch (error) {
+      console.error("Error fetching statements:", error);
+      throw error;
+    }
+  },
+
+  async getStatementById(id) {
+    try {
+      const endpoint = buildEndpointUrl(`${API_ENDPOINTS.STATEMENTS}/${id}`, {
+        populate: "*",
+        locale: "mn",
+      });
+      const response = await Fetcher(endpoint);
+      return formatStrapiResponse(response);
+    } catch (error) {
+      console.error("Error fetching statement by ID:", error);
+      throw error;
+    }
+  },
+};
+
 // Export all services
 export default {
   posts: postsService,
@@ -665,4 +717,5 @@ export default {
   lessons: lessonsService,
   onlineLessons: onlineLessonsService,
   podcasts: podcastsService,
+  statements: statementsService,
 };

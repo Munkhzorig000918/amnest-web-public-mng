@@ -16,8 +16,8 @@ export default function NewsMobile() {
 
   // State for API data
   const [postsData, setPostsData] = useState([]);
-  const [videosData, setVideosData] = useState([]);
-  const [librariesData, setLibrariesData] = useState([]);
+  const [statementsData, setStatementsData] = useState([]);
+  const [goodNewsData, setGoodNewsData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -30,7 +30,7 @@ export default function NewsMobile() {
       try {
         switch (activeCategory) {
           case "news":
-            // Use the working posts API
+            // Regular news posts
             const posts = await apiService.posts.getPostsList({
               page: currentPage,
               pageSize: itemsPerPage,
@@ -39,24 +39,25 @@ export default function NewsMobile() {
             setPostsData(posts.data || []);
             break;
 
-          case "reports":
-            // Use the working videos API
-            const videos = await apiService.videos.getVideos({
-              "pagination[page]": currentPage,
-              "pagination[pageSize]": itemsPerPage,
+          case "statements":
+            // Statements/position papers
+            const statements = await apiService.statements.getStatements({
+              page: currentPage,
+              pageSize: itemsPerPage,
             });
-            console.log("Videos response:", videos);
-            setVideosData(videos.data || []);
+            console.log("Statements response:", statements);
+            setStatementsData(statements.data || []);
             break;
 
-          case "special":
-            // Use the working libraries API
-            const libraries = await apiService.libraries.getLibraries({
-              "pagination[page]": currentPage,
-              "pagination[pageSize]": itemsPerPage,
+          case "good_news":
+            // Good news/special posts - using posts API with category filter
+            const goodNews = await apiService.posts.getPostsList({
+              page: currentPage,
+              pageSize: itemsPerPage,
+              post_category: "good_news",
             });
-            console.log("Libraries response:", libraries);
-            setLibrariesData(libraries.data || []);
+            console.log("Good news response:", goodNews);
+            setGoodNewsData(goodNews.data || []);
             break;
         }
       } catch (err) {
@@ -77,11 +78,11 @@ export default function NewsMobile() {
     case "news":
       currentData = postsData;
       break;
-    case "reports":
-      currentData = videosData;
+    case "statements":
+      currentData = statementsData;
       break;
-    case "special":
-      currentData = librariesData;
+    case "good_news":
+      currentData = goodNewsData;
       break;
     default:
       currentData = [];
@@ -91,8 +92,16 @@ export default function NewsMobile() {
   const newsItems = currentData.map((item, index) => {
     let title, image, description;
 
+    // Debug logging
+    if (activeCategory === "statements") {
+      console.log("Processing statement item:", item);
+      console.log("Item has attributes?", !!item.attributes);
+      console.log("Item keys:", Object.keys(item));
+    }
+
     switch (activeCategory) {
       case "news":
+      case "good_news":
         title = item.attributes?.title || item.title || `ᠭᠠᠷᠴᠢᠭ ${index + 1}`;
         image =
           getImageUrl(item.attributes?.cover || item.cover) ||
@@ -100,19 +109,15 @@ export default function NewsMobile() {
         description =
           item.attributes?.short_description || item.short_description || "";
         break;
-      case "reports":
-        title = item.attributes?.title || item.title || `ᠦᠵᠡᠮᠡᠯ ${index + 1}`;
-        image =
-          getImageUrl(item.attributes?.thumbnail || item.thumbnail) ||
-          "/images/news1.png";
-        description = item.attributes?.description || item.description || "";
-        break;
-      case "special":
-        title = item.attributes?.title || item.title || `ᠨᠣᠮ ${index + 1}`;
-        image =
-          getImageUrl(item.attributes?.cover || item.cover) ||
-          "/images/news1.png";
-        description = item.attributes?.description || item.description || "";
+      case "statements":
+        // Handle both flattened (formatStrapiResponse) and nested (raw) formats
+        title = item.title || item.attributes?.title || `ᠮᠡᠳᠡᠭᠳᠡᠯ ${index + 1}`;
+
+        // For statements, the data is already flattened by formatStrapiResponse
+        // So item.cover should be the cover data directly
+        const coverData = item.cover || item.attributes?.cover;
+        image = getImageUrl(coverData) || "/images/news1.png";
+        description = item.description || item.attributes?.description || "";
         break;
       default:
         title = `ᠭᠠᠷᠴᠢᠭ ${index + 1}`;
@@ -157,7 +162,11 @@ export default function NewsMobile() {
   };
 
   const handleNewsClick = (newsId) => {
-    router.push(`/news/${newsId}`);
+    if (activeCategory === "statements") {
+      router.push(`/news/statement/${newsId}`);
+    } else {
+      router.push(`/news/${newsId}`);
+    }
   };
 
   // Loading state
@@ -199,97 +208,102 @@ export default function NewsMobile() {
 
       <div className="p-4 flex gap-5">
         {/* Category Buttons */}
-        <div className="flex flex-col gap-2 overflow-x-auto">
+        <div className="flex flex-col gap-2">
           <button
             onClick={() => handleCategoryChange("news")}
-            className={`py-3 pl-2 pr-1 rounded-lg text-[10px] whitespace-nowrap transition-colors ${
+            className={`px-4 py-2 text-xs font-bold rounded transition-colors cursor-pointer ${
               activeCategory === "news"
-                ? "bg-[#2D2D2D] text-white"
-                : "bg-white border border-[#E3E3E3] text-black hover:bg-gray-50"
+                ? "text-white bg-[#2D2D2D] border border-[#2D2D2D]"
+                : "text-black bg-white border border-[#E3E3E3] hover:bg-gray-50"
             }`}
             style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
           >
             ᠮᠡᠳᠡᢉᠡ
           </button>
           <button
-            onClick={() => handleCategoryChange("reports")}
-            className={`py-3 pl-2 pr-1 rounded-lg text-[10px] whitespace-nowrap transition-colors ${
-              activeCategory === "reports"
-                ? "bg-[#2D2D2D] text-white"
-                : "bg-white border border-[#E3E3E3] text-black hover:bg-gray-50"
+            onClick={() => handleCategoryChange("statements")}
+            className={`px-4 py-2 text-xs font-bold rounded transition-colors cursor-pointer ${
+              activeCategory === "statements"
+                ? "text-white bg-[#2D2D2D] border border-[#2D2D2D]"
+                : "text-black bg-white border border-[#E3E3E3] hover:bg-gray-50"
             }`}
             style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
           >
-            ᠮᠡᠳᠡᢉᠳᠡᠯ᠂ ᠪᠠᠶᠢᠷᠢ ᠰᠠᠭᠤᠷᠢ
+            ᠮᠡᠳᠡᠭᠳᠡᠯ ᠪᠠᠶᠢᠷ ᠰᠤᠤᠷᠢ
           </button>
           <button
-            onClick={() => handleCategoryChange("special")}
-            className={`py-3 pl-2 pr-1 rounded-lg text-[10px] whitespace-nowrap transition-colors ${
-              activeCategory === "special"
-                ? "bg-[#2D2D2D] text-white"
-                : "bg-white border border-[#E3E3E3] text-black hover:bg-gray-50"
+            onClick={() => handleCategoryChange("good_news")}
+            className={`px-4 py-2 text-xs font-bold rounded transition-colors cursor-pointer ${
+              activeCategory === "good_news"
+                ? "text-white bg-[#2D2D2D] border border-[#2D2D2D]"
+                : "text-black bg-white border border-[#E3E3E3] hover:bg-gray-50"
             }`}
             style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
           >
-            ᠣᠨᠴᠠᠯᠠᠬᠤ ᠮᠡᠳᠡᢉᠡ
+            ᠣᠨᠴᠤᠯᠠᠬᠤ ᠮᠡᠳᠡᢉᠡ
           </button>
         </div>
 
         {/* News Grid */}
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-4">
-          {newsItems.map((item) => (
-            <div
-              key={item.id}
-              className="w-full flex gap-2 max-h-[150px] cursor-pointer hover:opacity-80 transition-opacity"
-              onClick={() => handleNewsClick(item.id)}
-            >
-              <h3
-                className="text-[10px] line-clamp-4"
-                style={{
-                  writingMode: "vertical-lr",
-                  textOrientation: "upright",
-                }}
-                title={item.title}
+        <div className="flex-1">
+          <div className="grid grid-cols-1 gap-4">
+            {newsItems.slice(0, 6).map((item) => (
+              <div
+                key={item.id}
+                className="flex gap-4 cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={() => handleNewsClick(item.id)}
               >
-                {item.title.length > 80
-                  ? `${item.title.substring(0, 80)}...`
-                  : item.title}
-              </h3>
-              <div className="relative aspect-square w-[150px] h-[150px] shadow-md">
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  fill
-                  className="object-cover"
-                  onError={(e) => {
-                    e.target.src = "/images/news1.png"; // fallback image
-                  }}
-                />
-                <Button
-                  text={"ᠮᠡᠳᠡᢉᠡ"}
-                  type="primary"
-                  className="absolute top-2 right-2 text-xs"
-                />
+                <div className="relative w-24 h-24 flex-shrink-0">
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    className="object-cover rounded"
+                    onError={(e) => {
+                      e.target.src = "/images/news1.png"; // fallback image
+                    }}
+                  />
+                  <Button
+                    text={
+                      activeCategory === "statements" ? "ᠮᠡᠳᠡᠭᠳᠡᠯ" : "ᠮᠡᠳᠡᢉᠡ"
+                    }
+                    type="primary"
+                    className="absolute -top-1 -right-1 text-black text-xs px-1 py-0.5"
+                  />
+                </div>
+                <div className="flex-1">
+                  <h3
+                    className="text-sm font-medium line-clamp-2 mb-2"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                  >
+                    {item.title.length > 40
+                      ? `${item.title.substring(0, 40)}...`
+                      : item.title}
+                  </h3>
+                  <Button
+                    text={"ᠤᠩᠰᠢᠬᠤ"}
+                    type="secondary"
+                    className="text-black text-xs px-2 py-1"
+                  />
+                </div>
               </div>
-              <div className="p-3 flex items-end">
-                <Button text={"ᠤᠩᠰᠢᠬᠤ"} type="secondary" />
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        {/* Pagination Controls */}
-        {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-4">
+          {/* Pagination Controls */}
+          <div className="flex justify-center items-center gap-4 mt-6">
             <Button
               text={<ChevronLeft />}
               type="chevron"
               onClick={handlePrevPage}
               disabled={currentPage === 1}
             />
-            <span className="text-sm">
+            <p className="text-sm">
               {toMongolianNumeral(currentPage)}/{toMongolianNumeral(totalPages)}
-            </span>
+            </p>
             <Button
               text={<ChevronRight />}
               type="chevron"
@@ -297,7 +311,7 @@ export default function NewsMobile() {
               disabled={currentPage === totalPages}
             />
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
