@@ -85,15 +85,13 @@ export default function HeaderMobile() {
           showMenu ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="py-4 px-2">
-          <Image
-            src="/images/logo.png"
-            alt="logo"
-            width={60}
-            height={60}
-            className="object-contain"
-          />
-        </div>
+        <Image
+          src="/images/logo.png"
+          alt="logo"
+          width={60}
+          height={60}
+          className="w-full p-2"
+        />
 
         <div className="mt-4 px-4">
           {/* 2x4 Grid Layout for Mobile */}
