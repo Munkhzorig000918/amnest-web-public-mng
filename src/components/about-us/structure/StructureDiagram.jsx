@@ -1,59 +1,70 @@
-import Button from "@/components/common/Button";
 import Link from "next/link";
 
 export default function StructureDiagram() {
   return (
     <div className="relative">
       <img src="/images/structure-diagram.png" alt="" className="h-full z-0" />
-      <div className="flex gap-[202px] absolute top-[260px] left-[330px] w-full h-full">
+      <div className="z-10 flex gap-[202px] absolute top-[260px] left-[330px] w-full h-full">
         <div className="flex flex-col gap-[390px]">
-          <Link href="/about-us/structure/control-managers">
-            <Button
-              text={"ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ"}
-              type="secondary"
-              className="bg-white hover:bg-gray-100 transition-colors"
-            />
+          <Link
+            href="/about-us/structure/control-managers"
+            className="border border-solid border-[#E3E3E3] rounded-[8px] sm:rounded-[10px] w-6 sm:w-[50px] max-h-min whitespace-nowrap py-3 flex items-center justify-center hover:brightness-105 transition-all bg-white hover:bg-gray-100"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+          >
+            <p className="pl-1 sm:pl-2 font-bold text-[10px] sm:text-base">
+              ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ
+            </p>
           </Link>
-          <Link href="/about-us/structure/chapter-members">
-            <Button
-              text={"ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ"}
-              type="secondary"
-              className="bg-white hover:bg-gray-100 transition-colors"
-            />
+          <Link
+            href="/about-us/structure/chapter-members"
+            className="border border-solid border-[#E3E3E3] rounded-[8px] sm:rounded-[10px] w-6 sm:w-[50px] max-h-min whitespace-nowrap py-3 flex items-center justify-center hover:brightness-105 transition-all bg-white hover:bg-gray-100"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+          >
+            <p className="pl-1 sm:pl-2 font-bold text-[10px] sm:text-base">
+              ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ
+            </p>
           </Link>
         </div>
-        <Link href="/about-us/structure/managers">
-          <Button
-            text={"ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ"}
-            type="secondary"
-            className="bg-white mt-[245px] hover:bg-gray-100 transition-colors"
-          />
+        <Link
+          href="/about-us/structure/managers"
+          className="border border-solid border-[#E3E3E3] rounded-[8px] sm:rounded-[10px] w-6 sm:w-[50px] max-h-min whitespace-nowrap py-3 flex items-center justify-center hover:brightness-105 transition-all bg-white hover:bg-gray-100 mt-[245px]"
+          style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+        >
+          <p className="pl-1 sm:pl-2 font-bold text-[10px] sm:text-base">
+            ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ
+          </p>
         </Link>
-        <Link href="/about-us/structure/execute-managers">
-          <Button
-            text={"ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ"}
-            type="secondary"
-            className="bg-white mt-[255px] hover:bg-gray-100 transition-colors"
-          />
+        <Link
+          href="/about-us/structure/execute-managers"
+          className="border border-solid border-[#E3E3E3] rounded-[8px] sm:rounded-[10px] w-6 sm:w-[50px] max-h-min whitespace-nowrap py-3 flex items-center justify-center hover:brightness-105 transition-all bg-white hover:bg-gray-100 mt-[255px]"
+          style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+        >
+          <p className="pl-1 sm:pl-2 font-bold text-[10px] sm:text-base">
+            ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ
+          </p>
         </Link>
         <div className="flex flex-col gap-[390px]">
-          <Link href="/about-us/structure/control-managers">
-            <Button
-              text={"ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ"}
-              type="secondary"
-              className="bg-white hover:bg-gray-100 transition-colors"
-            />
+          <Link
+            href="/about-us/structure/control-managers"
+            className="border border-solid border-[#E3E3E3] rounded-[8px] sm:rounded-[10px] w-6 sm:w-[50px] max-h-min whitespace-nowrap py-3 flex items-center justify-center hover:brightness-105 transition-all bg-white hover:bg-gray-100"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+          >
+            <p className="pl-1 sm:pl-2 font-bold text-[10px] sm:text-base">
+              ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ
+            </p>
           </Link>
-          <Link href="/about-us/structure/chapter-members">
-            <Button
-              text={"ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ"}
-              type="secondary"
-              className="bg-white hover:bg-gray-100 transition-colors"
-            />
+          <Link
+            href="/about-us/structure/chapter-members"
+            className="border border-solid border-[#E3E3E3] rounded-[8px] sm:rounded-[10px] w-6 sm:w-[50px] max-h-min whitespace-nowrap py-3 flex items-center justify-center hover:brightness-105 transition-all bg-white hover:bg-gray-100"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+          >
+            <p className="pl-1 sm:pl-2 font-bold text-[10px] sm:text-base">
+              ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ
+            </p>
           </Link>
         </div>
       </div>
-      <div className="flex absolute top-[170px] left-[100px] w-full h-full whitespace-nowrap font-bold text-lg">
+      <div className="z-0 flex absolute top-[170px] left-[100px] w-full h-full whitespace-nowrap font-bold text-lg">
         <p
           className="text-black mt-[295px]"
           style={{
