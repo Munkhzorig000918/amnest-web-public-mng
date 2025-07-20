@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
-import localApiService from "@/services/localApiService";
+import { useSubmitContactFormMutation } from "../../../redux/services/apiService";
 import toast from "react-hot-toast";
 
 export default function ContactDesktop() {
-  const [loading, setLoading] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [submitContactForm, { isLoading }] = useSubmitContactFormMutation();
 
   const contactTypeOptions = [
     { value: 1, label: "ᠬᠦᠮᠦᠨ ᠦ ᠡᠷᠬᠡ" },
@@ -50,18 +50,16 @@ export default function ContactDesktop() {
   }, [isDropdownOpen]);
 
   const onSubmit = async (data) => {
-    if (loading) return;
-
-    setLoading(true);
+    if (isLoading) return;
 
     try {
-      const response = await localApiService.contact.submitContactRequest({
+      await submitContactForm({
         contactType: data.contactType,
         name: data.name,
         email: data.email,
         phone: data.phone,
         message: data.message,
-      });
+      }).unwrap();
 
       // Show success toast
       toast.success(
@@ -76,10 +74,8 @@ export default function ContactDesktop() {
       // Show error toast
       toast.error(
         "ᠬᠦᠰᠡᠯᠲᠡ ᠢᠯᠭᠡᠭᠡᠬᠦᠳ ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠯᠠᠭ᠎ᠠ: " +
-          (error.message || "Unknown error")
+          (error.data?.message || error.message || "Unknown error")
       );
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -385,9 +381,9 @@ export default function ContactDesktop() {
             <div className="flex gap-2">
               <button
                 type="submit"
-                disabled={loading}
+                disabled={isLoading}
                 className={`p-2 rounded-md text-sm font-bold ${
-                  loading
+                  isLoading
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                     : "bg-[#FFFF00] text-black hover:brightness-105 transition-all"
                 }`}
@@ -397,7 +393,7 @@ export default function ContactDesktop() {
                   width: "60px",
                 }}
               >
-                {loading ? "ᠢᠯᠭᠡᠭᠡᠵᠦ ᠪᠠᠢᠨ᠎ᠠ..." : "ᠢᠯᠭᠡᠭᠡᠬᠦ"}
+                {isLoading ? "ᠢᠯᠭᠡᠭᠡᠵᠦ ᠪᠠᠢᠨ᠎ᠠ..." : "ᠢᠯᠭᠡᠭᠡᠬᠦ"}
               </button>
             </div>
           </form>

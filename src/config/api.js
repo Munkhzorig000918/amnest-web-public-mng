@@ -3,6 +3,11 @@ export const API_CONFIG = {
   // Base URL for the Strapi CMS API
   BASE_URL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:1337/api",
 
+  // Users API URL for contact form and other user-related features
+  USERS_API_URL:
+    process.env.NEXT_PUBLIC_PROD_API_USERS_URL ||
+    "https://api.amnesty.mn/users",
+
   // Locale for content - using Cyrillic as primary with Mongol Bichig as additional field
   LOCALE: process.env.NEXT_PUBLIC_CMS_LOCALE || "mn",
 

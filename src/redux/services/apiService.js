@@ -28,8 +28,27 @@ export const apiService = createApi({
     "Slideshow",
     "CompanyWork",
     "CompanyWorkFeature",
+    "Contact",
   ],
   endpoints: (builder) => ({
+    // Contact form submission
+    submitContactForm: builder.mutation({
+      query: (data) => ({
+        url: `${API_CONFIG.USERS_API_URL}/contact-request/submit`,
+        method: "POST",
+        body: {
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          subject: "Contact Form Submission",
+          message: data.message,
+          type: data.contactType,
+          token: data.token,
+        },
+      }),
+      invalidatesTags: ["Contact"],
+    }),
+
     // Posts endpoints - using standard Strapi API
     getPosts: builder.query({
       query: (params = {}) => {
@@ -378,4 +397,5 @@ export const {
   useGetCompanyWorkFeaturesQuery,
   useGetCompanyWorkFeatureByIdQuery,
   useGetHomepageContentQuery,
+  useSubmitContactFormMutation,
 } = apiService;
