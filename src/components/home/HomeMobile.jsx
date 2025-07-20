@@ -141,6 +141,9 @@ export default function HomeMobile() {
                   writingMode: "vertical-lr",
                   textOrientation: "upright",
                 }}
+                onClick={() => {
+                  router.push("/news");
+                }}
               >
                 ᠪᠦᢈᠦ ᠮᠡᠳᠡᢉᠡ ᠶ᠋ᠢ ᠦᠵᠡᢈᠦ
               </button>

@@ -203,7 +203,7 @@ export default function NewsMobile() {
   }
 
   return (
-    <div className="block sm:hidden h-full overflow-y-auto">
+    <div className="block sm:hidden h-full overflow-y-auto overflow-x-hidden">
       <BannerSlider images={bannerImages} width="100%" />
 
       <div className="p-4 flex gap-5">
@@ -246,7 +246,7 @@ export default function NewsMobile() {
 
         {/* News Grid */}
         <div className="flex-1">
-          <div className="grid grid-cols-1 gap-4 min-h-[600px]">
+          <div className="grid grid-cols-1 gap-4">
             {isLoading ? (
               // Loading placeholders to maintain layout
               Array.from({ length: 6 }).map((_, index) => (
@@ -260,8 +260,19 @@ export default function NewsMobile() {
               ))
             ) : newsItems.length > 0 ? (
               newsItems.slice(0, 6).map((item) => (
-                <div key={item.id} className="flex gap-4">
-                  <div className="relative w-24 h-24 flex-shrink-0">
+                <div key={item.id} className="flex gap-4 max-h-[150px]">
+                  <h3
+                    className="text-sm font-medium line-clamp-3 mb-2"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                  >
+                    {item.title.length > 40
+                      ? `${item.title.substring(0, 40)}...`
+                      : item.title}
+                  </h3>
+                  <div className="relative aspect-square w-[150px] h-[150px] flex-shrink-0">
                     <Image
                       src={item.image}
                       alt={item.title}
@@ -280,25 +291,13 @@ export default function NewsMobile() {
                       onClick={() => handleNewsClick(item.id)}
                     />
                   </div>
-                  <div className="flex-1">
-                    <h3
-                      className="text-sm font-medium line-clamp-2 mb-2"
-                      style={{
-                        writingMode: "vertical-lr",
-                        textOrientation: "upright",
-                      }}
-                    >
-                      {item.title.length > 40
-                        ? `${item.title.substring(0, 40)}...`
-                        : item.title}
-                    </h3>
-                    <Button
-                      text={"ᠤᠩᠰᠢᠬᠤ"}
-                      type="secondary"
-                      className="text-black text-xs px-2 py-1 cursor-pointer hover:opacity-80 transition-opacity"
-                      onClick={() => handleNewsClick(item.id)}
-                    />
-                  </div>
+
+                  <Button
+                    text={"ᠤᠩᠰᠢᠬᠤ"}
+                    type="secondary"
+                    className="text-black text-xs px-2 py-1 cursor-pointer hover:opacity-80 transition-opacity"
+                    onClick={() => handleNewsClick(item.id)}
+                  />
                 </div>
               ))
             ) : (
