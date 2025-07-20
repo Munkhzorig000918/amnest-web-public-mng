@@ -71,7 +71,7 @@ export default function ReportDesktop() {
   return (
     <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-hidden">
       <BannerSlider images={bannerImages} width="90rem" useDynamic={true} />
-      <div className="flex gap-16 p-4 h-full">
+      <div className="flex gap-16 h-full">
         <ReportSwiper
           title={"ᠮᠣᠩᠭᠣᠯ ᠤ᠋ᠨ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠡᠰᠢᠨᠯ ᠦ᠋ᠨ ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭ᠎ᠠ"}
           description={
@@ -81,17 +81,17 @@ export default function ReportDesktop() {
           reports={reportItems}
         />
         <div
-          className={`h-full flex flex-col items-center justify-center border border-[#E3E3E3] rounded-xl`}
+          className={`flex flex-col items-center justify-center border border-[#E3E3E3] rounded-xl`}
         >
-          <div className="flex items-center justify-center w-full h-full rounded-t-xl bg-[#FFFF00] p-8">
+          <div className="h-1/2 flex items-center justify-center w-full rounded-t-xl bg-[#FFFF00] p-8">
             <h2
-              className={`text-lg font-bold pl-2`}
+              className={`text-lg font-bold pl-2 max-h-[400px]`}
               style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
             >
               ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢ ᠳᠡᢉᠡᠳᠦᠯᠡᠳᠡᢉ ᠳᠡᠯᠡᢈᠡᠢ ᠶᠢᠷᠲᠢᠨᠴᠦ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ
             </h2>
           </div>
-          <div className="flex items-start justify-center w-full h-full rounded-b-xl bg-black p-8">
+          <div className="h-1/2 flex items-start justify-center w-full rounded-b-xl bg-black p-8">
             <h2
               className={`text-lg font-bold pl-2 text-[#FFFF00]`}
               style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
@@ -99,7 +99,7 @@ export default function ReportDesktop() {
               ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠡᠰᠢᠨᠯ ᠦ᠋ᠨ
             </h2>
             <h2
-              className={`text-lg font-bold text-white pl-2`}
+              className={`text-lg font-bold text-white pl-2 max-h-[400px]`}
               style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
             >
               ᠨᠡᠩ ᠲᠡᠷᠢᢉᠦᠨ ᠳ᠋ᠦ ᠠᠩᠬᠠᠷᠴᠤ ᠠᠵᠢᠯᠯᠠᠬᠤ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠰᠲ᠋ᠷᠠᠲ᠋ᠧᢉᠢ
@@ -107,7 +107,7 @@ export default function ReportDesktop() {
             </h2>
           </div>
         </div>
-        <div className="flex gap-12">
+        <div className="flex gap-12 p-4">
           {staticItems.map((a, i) => (
             <div className="flex gap-7 max-h-screen">
               <div className="w-14 h-14 text-4xl font-bold aspect-square rounded-sm flex items-center justify-center bg-black text-[#FFFF00]">
@@ -134,7 +134,7 @@ export default function ReportDesktop() {
             </div>
           ))}
         </div>
-        <div className="flex gap-16">
+        <div className="flex gap-16 p-4">
           <div className="flex gap-7">
             <h2
               className="text-2xl font-bold"
