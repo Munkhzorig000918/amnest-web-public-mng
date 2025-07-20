@@ -13,6 +13,7 @@ import {
 import { useRef, useState, useEffect } from "react";
 import SectionTitle from "@/components/common/SectionTitle";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 // Custom hook for Mongolian numeral conversion
 const useMongolianNumeral = () => {
@@ -49,6 +50,7 @@ export default function ReportSwiper({
   const [currentSlide, setCurrentSlide] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
   const { toMongolianNumeral } = useMongolianNumeral();
+  const router = useRouter();
 
   // Check if screen is mobile size
   useEffect(() => {
@@ -122,35 +124,41 @@ export default function ReportSwiper({
   };
 
   const handleSlideClick = (slide) => {
-    if (slide.pdfUrl) {
-      window.open(slide.pdfUrl, "_blank");
+    if (slide.id) {
+      router.push(`/about-us/report/${slide.id}`);
     }
   };
 
   return (
     <div className="h-full flex flex-col sm:flex-row gap-8 p-4">
       <div className="flex gap-2 sm:gap-8 max-h-[150px] sm:max-h-max">
-        <h1
-          className="text-[10px] sm:text-2xl font-bold"
-          style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
-        >
-          {title}
-        </h1>
-        <p
-          className="text-[10px] sm:text-sm font-bold text-[#848382] sm:text-black"
-          style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
-        >
-          {description}
-        </p>
+        {title && (
+          <h1
+            className="text-[10px] sm:text-2xl font-bold"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+          >
+            {title}
+          </h1>
+        )}
+        {description && (
+          <p
+            className="text-[10px] sm:text-sm font-bold text-[#848382] sm:text-black"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+          >
+            {description}
+          </p>
+        )}
       </div>
       <SectionTitle title={sectionTitle} containerClassName="hidden sm:block" />
       <div className="flex flex-row gap-2">
-        <p
-          className="text-[10px] font-bold block sm:hidden"
-          style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
-        >
-          {sectionTitle}
-        </p>
+        {sectionTitle && (
+          <p
+            className="text-[10px] font-bold block sm:hidden"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+          >
+            {sectionTitle}
+          </p>
+        )}
         <Swiper
           direction={isMobile ? "horizontal" : "vertical"}
           slidesPerView={isMobile ? (slides.length === 1 ? 1 : 1.8) : 3}
@@ -167,9 +175,7 @@ export default function ReportSwiper({
           {slides.map((slide) => (
             <SwiperSlide key={slide.id}>
               <div
-                className={`w-full h-full flex gap-4 ${
-                  slide.pdfUrl ? "cursor-pointer hover:opacity-80" : ""
-                }`}
+                className={`w-full h-full flex gap-4 cursor-pointer hover:opacity-80 transition-opacity duration-300`}
                 onClick={() => handleSlideClick(slide)}
               >
                 <div className="flex flex-col items-center gap-4 justify-between">
@@ -188,7 +194,7 @@ export default function ReportSwiper({
                   alt={slide.title || ""}
                   width={200}
                   height={112.5}
-                  className={`rounded-lg shadow-lg relative z-0 w-full max-w-[130px] sm:max-w-[200px] aspect-[290/204]`}
+                  className={`rounded-lg shadow-lg relative z-0 w-full max-w-[130px] sm:min-w-[200px] sm:max-w-[200px] aspect-[290/204]`}
                   onError={(e) => {
                     e.target.src = "/images/dummy-image.png";
                   }}
