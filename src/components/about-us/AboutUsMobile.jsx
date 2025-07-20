@@ -2,9 +2,10 @@ import Image from "next/image";
 import Button from "@/components/common/Button";
 import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
-import SectionTitle from "@/components/common/SectionTitle";
+import { useRouter } from "next/router";
 
 export default function AboutUsMobile() {
+  const router = useRouter();
   return (
     <div className="h-full flex flex-col gap-7 w-auto flex-shrink-0 sm:hidden">
       <BannerSlider images={bannerImages} width="90rem" />
@@ -119,7 +120,20 @@ export default function AboutUsMobile() {
                   }`}
                 >
                   <div className={`w-1/2 flex flex-col gap-2`}>
-                    <p className="text-lg">{h.date}</p>
+                    <p className="text-lg">
+                      {i === 5 ? (
+                        <span
+                          style={{
+                            writingMode: "vertical-lr",
+                            textOrientation: "upright",
+                          }}
+                        >
+                          ᠥᠨᠦᠳᠦᠷ
+                        </span>
+                      ) : (
+                        h.date
+                      )}
+                    </p>
                     <p
                       className="text-[6px] flex-1 h-full w-full min-h-[150px] overflow-x-auto"
                       style={{
@@ -135,6 +149,20 @@ export default function AboutUsMobile() {
                         href="https://www.amnesty.org/en/"
                         target="_blank"
                         rel="noopener noreferrer"
+                        className="mt-2 border border-solid border-[#E3E3E3] rounded-[8px] sm:rounded-[10px] w-6 sm:w-[50px] max-h-min whitespace-nowrap py-3 flex items-center justify-center hover:brightness-105 transition-all mx-auto"
+                        style={{
+                          writingMode: "vertical-lr",
+                          textOrientation: "upright",
+                        }}
+                      >
+                        <p className="pl-1 sm:pl-2 font-bold text-[10px] sm:text-base">
+                          ᠳᠡᠯᠭᠡᠷᠡᠩᠭᠦᠢ
+                        </p>
+                      </a>
+                    )}
+                    {i === 5 && (
+                      <a
+                        href="/about-us/history"
                         className="mt-2 border border-solid border-[#E3E3E3] rounded-[8px] sm:rounded-[10px] w-6 sm:w-[50px] max-h-min whitespace-nowrap py-3 flex items-center justify-center hover:brightness-105 transition-all mx-auto"
                         style={{
                           writingMode: "vertical-lr",
@@ -175,6 +203,7 @@ export default function AboutUsMobile() {
           text={"ᠬᠠᠨᠳᠢᠪ ᠥᢉᢈᠦ"}
           type="primary"
           className="max-h-min whitespace-nowrap"
+          onClick={() => router.push("/donation")}
         />
       </div>
     </div>

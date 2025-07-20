@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
 import SectionTitle from "@/components/common/SectionTitle";
+import Image from "next/image";
 
 // Custom hook for Mongolian numeral conversion
 const useMongolianNumeral = () => {
@@ -152,7 +153,7 @@ export default function ReportSwiper({
         </p>
         <Swiper
           direction={isMobile ? "horizontal" : "vertical"}
-          slidesPerView={isMobile ? 1.3 : 3}
+          slidesPerView={isMobile ? (slides.length === 1 ? 1 : 1.8) : 3}
           spaceBetween={isMobile ? 20 : 40}
           navigation={false}
           pagination={false}
@@ -182,14 +183,12 @@ export default function ReportSwiper({
                     {slide.title}
                   </p>
                 </div>
-                <img
+                <Image
                   src={slide.image}
                   alt={slide.title || ""}
-                  className={`rounded-lg shadow-lg relative z-0 ${
-                    isMobile
-                      ? "w-full max-w-[200px] aspect-[16/9]"
-                      : "min-w-[200px] aspect-[9/16]"
-                  }`}
+                  width={200}
+                  height={112.5}
+                  className={`rounded-lg shadow-lg relative z-0 w-full max-w-[130px] sm:max-w-[200px] aspect-[290/204]`}
                   onError={(e) => {
                     e.target.src = "/images/dummy-image.png";
                   }}

@@ -1,16 +1,15 @@
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import Button from "@/components/common/Button";
 import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
-import SectionTitle from "@/components/common/SectionTitle";
-import RightSwiper from "@/components/right/RightSwiper";
 import ReportSwiper from "./ReportSwiper";
+import { useRouter } from "next/router";
 
 export default function ReportDesktop() {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -179,6 +178,7 @@ export default function ReportDesktop() {
               text={"ᠬᠠᠨᠳᠢᠪ ᠥᢉᢈᠦ"}
               type="primary"
               className="max-h-min whitespace-nowrap"
+              onClick={() => router.push("/donation")}
             />
           </div>
         </div>
