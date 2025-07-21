@@ -2,158 +2,206 @@ import Image from "next/image";
 import Link from "next/link";
 import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
-import SectionTitle from "@/components/common/SectionTitle";
-
+import Button from "@/components/common/Button";
+import { useRouter } from "next/router";
 export default function StructureChapterMembersDesktop() {
+  const router = useRouter();
   return (
-    <div className="h-full hidden sm:block">
+    <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen sm:overflow-y-hidden">
       <BannerSlider images={bannerImages} width="90rem" />
+      <div className="flex gap-20 p-4 h-full">
+        <div className="flex gap-10">
+          <h2
+            className="text-[10px] sm:text-2xl font-bold"
+            style={{
+              writingMode: "vertical-lr",
+            }}
+          >
+            ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠡᠰᠢᠯ ᠦ᠋ᠨ ᠪᠦᠯᠦᢉ ᠦ᠋ᠳ
+          </h2>
+          <p
+            className="text-[8px] sm:text-sm"
+            style={{
+              writingMode: "vertical-lr",
+            }}
+          >
+            ᠮᠣᠩᠭᠤᠯ ᠤ᠋ᠨ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠡᠰᠢᠨᠯ (ᠮᠡᠶᠢ) ᠨᠢ ᠪᠠᠶᠢᠭᠤᠯᠤᠭᠳᠠᠭᠰᠠᠨ ᠴᠠᠭ ᠠ᠋ᠴᠠ
+            ᠪᠠᠨ ᠡᢈᠢᠯᠡᠨ ᠥᠨᠦ ᠶ᠋ᠢ ᢈᠦᠷᠲᠡᠯ᠎ᠡ ᠣᠷᠤᠨ ᠳᠠᠶᠠᠭᠠᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠬᠠᠮᠠᠭᠠᠯᠠᠭᠴᠢ
+            ᠑᠐'᠐᠐᠐ ᠭᠠᠷᠤᠢ ᢉᠡᠰᠢᢉᠦᠳ᠂ ᠳᠡᠮᠵᠢᢉᠴᠢᠳ ᠲᠡᠢ ᠪᠣᠯᠤᠭᠰᠠᠨ᠃ ᢉᠡᠰᠢᢉᠦᠳ ᠳᠡᠮᠵᠢᢉᠴᠢᠳ
+            ᠪᠦᠯᠦᢉ ᠲᠦ ᠬᠤᠪᠢᠶᠠᠭᠳᠠᠨ ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠳ᠋ᠤ ᠣᠷᠤᠯᠴᠠᠳᠠᠭ᠃ ᠪᠦᠯᠦᢉ ᠲᠤᠰ ᠪᠦᠷᠢ
+            ᠬᠠᠷᠢᠭᠤᠴᠠᠭᠰᠠᠨ ᠠᠬᠠᠯᠠᠭᠴᠢ ᠲᠠᠢ ᠪᠥᢉᠡᠳ ᠪᠦᠯᠦᢉ ᠦ᠋ᠨ ᠬᠤᠷᠠᠯ ᠠᠭᠤᠯᠵᠠᠯᠲᠠ ᠲᠣᠭᠲᠠᠮᠠᠯ
+            ᠵᠣᢈᠢᠶᠠᠨ ᠪᠠᠶᠢᠭᠤᠯᠵᠤ ᢉᠡᠰᠢᢉᠦᠳ ᠢ᠋ᠶᠡᠨ ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠳ᠋ᠤ ᠲᠠᠲᠠᠨ
+            ᠣᠷᠤᠯᠴᠠᠭᠤᠯᠳᠠᠭ᠃ ᠪᠦᢈᠦ ᢉᠡᠰᠢᢉᠦᠳ ᠦ᠋ᠨ ᠠᠭᠤᠯᠵᠠᠯᠲᠠ ᠶ᠋ᠢ ᠵᠢᠯ ᠳ᠋ᠦ ᠔-ᠨ ᠤᠳᠠᠭ᠎ᠠ
+            ᠪᠥᢉᠡᠳ ᠤᠯᠠᠷᠢᠯ ᠳ᠋ᠤ ᠨᠢᢉᠡ ᠤᠳᠠᠭ᠎ᠠ ᠵᠣᢈᠢᠶᠠᠨ ᠪᠠᠶᠢᠭᠤᠯᠤᠭᠳᠠᠳᠠᠭ᠃ ᠣᠳᠤ ᠪᠠᠷ ᠒᠕-ᠨ
+            ᠪᠦᠯᠦᢉ ᠲᠡᠢ ᠪᠡᠷ ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭ᠎ᠠ ᠪᠠᠨ ᠶᠠᠪᠤᠭᠤᠯᠵᠤ ᠪᠠᠶᠢᠨ᠎ᠠ᠃ ᠮᠥᠨ ᠲᠡᢉᠦᠨᠴᠢᠯᠡᠨ
+            ᢈᠥᠳᠡᢉᠡ ᠣᠷᠤᠨ ᠨᠤᠲᠤᠭ ᠲᠤ᠂ ᠶᠧᠪᠰ᠂ ᠶᠡᢈᠡ ᠳᠡᢉᠡᠳᠦ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᠳᠡᢉᠡᠷ᠎ᠡ ᠪᠦᠯᠦᢉ᠂
+            ᠻᠯᠦ᠋ᠪ ᠪᠠᠶᠢᠭᠤᠯᠤᠨ ᠠᠵᠢᠯᠯᠠᠬᠤ ᠪᠣᠯᠤᠮᠵᠢ ᠲᠠᠢ᠃
+          </p>
+        </div>
 
-      <div className="mx-auto p-4 text-[18px] sm:p-6 md:p-8 lg:my-10 lg:w-[84%]">
-        <h4 className="py-2 text-[24px] font-semibold md:text-[32px]">
-          Эмнести Интернэшлийн бүлгүүд
-        </h4>
-
-        <p className="text-justify">
-          Монголын Эмнести Интернэшнл (МЭИ) нь байгуулагдсан цагаасаа эхлэн
-          өнөөг хүртэл орон даяар хүний эрх хамгаалагч 10'000 гаруй гишүүд,
-          дэмжигчидтэй болсон. Гишүүд дэмжигчид бүлэгт хуваагдан үйл ажиллагаанд
-          оролцдог. Бүлэг тус бүр хариуцсан ахлагчтай бөгөөд бүлгийн хурал
-          уулзалт тогтмол зохион байгуулж гишүүдээ үйл ажиллагаанд татан
-          оролцуулдаг. Бүх гишүүдийн уулзалтыг жилд 4-н удаа бөгөөд улиралд нэг
-          удаа зохион байгуулагддаг. Одоогоор 25-н бүлэгтэйгээр үйл ажиллагаагаа
-          явуулж байна. Мөн түүнчлэн хөдөө орон нутагт, ЕБС, Их дээд сургууль
-          дээр бүлэг, клуб байгуулан ажиллах боломжтой.
-        </p>
-      </div>
-
-      <div className="mx-auto max-w-[1900px] p-4 sm:w-[90%] sm:p-4 md:p-0 md:pb-4 md:pl-10 md:pt-4">
-        <div className="flex gap-4 justify-center">
-          <div className="w-[332px] rounded-[8px] border border-solid border-gray-700">
-            <div className="relative h-[271px] w-[332px]">
-              <Image
-                src="/images/aboutSub1/chapter/ZaluuchuudBulegFront.png"
-                alt="Залуучуудын бүлэг"
-                fill
-                className="object-cover rounded-t-[8px]"
-              />
-            </div>
+        <div className="flex flex-col gap-4 justify-center">
+          <div className="flex flex-row rounded-lg border border-solid border-[#CCCCCC]">
+            <Image
+              src="/images/aboutSub1/chapter/ZaluuchuudBulegFront.png"
+              alt="Залуучуудын бүлэг"
+              width={330}
+              height={271}
+              className="rounded-l-[8px] max-w-[330px] max-h-[271px] aspect-[330/271]"
+            />
             <Link
-              href="/participation/youthhumanrights"
-              className="mx-auto flex justify-center border-t-2 border-black p-4 text-[24px]"
+              href="/participation/youth"
+              className="mx-auto flex justify-center p-4 border-l-[1px] border-[#CCCCCC] text-[10px] sm:text-lg"
+              style={{
+                writingMode: "vertical-lr",
+              }}
             >
-              ЗАЛУУЧУУДЫН БҮЛЭГ
+              ᠵᠠᠯᠠᠭᠤᠴᠤᠤᠯ ᠤ᠋ᠨ ᠪᠦᠯᠦᢉ
             </Link>
           </div>
 
-          <div className="w-[332px] rounded-[8px] border border-solid border-gray-700">
-            <div className="relative h-[271px] w-[332px]">
-              <Image
-                src="/images/aboutSub1/chapter/mergejilten.png"
-                alt="Мэргэжилтнүүдийн бүлэг"
-                fill
-                className="object-cover rounded-t-[8px]"
-              />
-            </div>
-            <div className="mx-auto flex justify-center border-t-2 border-black p-4 text-[24px]">
-              МЭРГЭЖИЛТНҮҮДИЙН БҮЛЭГ
+          <div className="flex flex-row rounded-lg border border-solid border-[#CCCCCC]">
+            <Image
+              src="/images/aboutSub1/chapter/mergejilten.png"
+              alt="Мэргэжилтнүүдийн бүлэг"
+              width={330}
+              height={271}
+              className="rounded-l-[8px] max-w-[330px] max-h-[271px] aspect-[330/271]"
+            />
+            <div
+              className="mx-auto flex justify-center p-4 border-l-[1px] border-[#CCCCCC] text-[10px] sm:text-lg"
+              style={{
+                writingMode: "vertical-lr",
+              }}
+            >
+              ᠮᠡᠷᢉᠡᠵᠢᠯᠲᠡᠨ ᠨᠦ᠋ᢉᠦᠳ ᠦ᠋ᠨ ᠪᠦᠯᠦᢉ ᠦ᠋ᠨ
             </div>
           </div>
 
-          <div className="w-[332px] rounded-[8px] border border-solid border-gray-700">
-            <div className="relative h-[271px] w-[332px]">
-              <Image
-                src="/images/aboutSub1/chapter/gazriinremovebg-preview.png"
-                alt="Орон нутгийн бүлэг"
-                fill
-                className="object-cover rounded-t-[8px]"
-              />
-            </div>
+          <div className="flex flex-row rounded-lg border border-solid border-[#CCCCCC]">
+            <Image
+              src="/images/aboutSub1/chapter/gazriinremovebg-preview.png"
+              alt="Орон нутгийн бүлэг"
+              width={330}
+              height={271}
+              className="rounded-l-[8px] max-w-[330px] max-h-[271px] aspect-[330/271]"
+            />
             <Link
               href="#oronnutag"
-              className="mx-auto flex justify-center border-t-2 border-black p-4 text-[24px]"
+              className="mx-auto flex justify-center p-4 border-l-[1px] border-[#CCCCCC] text-[10px] sm:text-lg"
+              style={{
+                writingMode: "vertical-lr",
+              }}
             >
-              ОРОН НУТГИЙН БҮЛЭГ
+              ᠣᠷᠤᠨ ᠨᠤᠲᠤᠭ ᠤ᠋ᠨ ᠪᠦᠯᠦᢉ
             </Link>
           </div>
         </div>
-      </div>
 
-      <div className="mt-4 flex flex-col items-center" id="oronnutag">
-        <h3 className="h-[84px] items-center text-center text-[24px] sm:w-[901px] sm:text-[41px]">
-          ОРОН НУТГИЙН БҮЛЭГ
-        </h3>
-        <div className="relative w-full max-w-[300px] sm:max-w-[500px] md:w-full md:max-w-[640px] h-[400px]">
+        <div className="flex items-center gap-5" id="oronnutag">
+          <h3
+            className="text-xs sm:text-2xl font-bold"
+            style={{
+              writingMode: "vertical-lr",
+            }}
+          >
+            ᠣᠷᠤᠨ ᠨᠤᠲᠤᠭ ᠤ᠋ᠨ ᠪᠦᠯᠦᢉ
+          </h3>
           <Image
             src="/images/aboutSub1/chapter/gazriinremovebg-preview.png"
             alt="Монгол улсын газрын зураг"
-            fill
-            className="object-contain"
+            width={640}
+            height={314}
+            className="aspect-[640/314] min-w-[640px] min-h-[314px] max-w-[640px] max-h-[314px]"
           />
         </div>
-      </div>
 
-      <div>
-        <h4 className="mx-auto flex justify-center p-4 pt-8 text-center text-[24px] sm:w-[80%] md:py-20 md:text-[32px]">
-          Монголын Эмнести Интернэшнлийн дэмжигч болон гишүүнийн ялгаа нь юу вэ?
-        </h4>
-      </div>
-
-      <div className="mx-auto grid w-full pb-10 md:w-[80%] xl:grid-cols-2">
-        <div className="relative flex flex-col justify-center px-4">
-          <h4 className="flex py-2 text-[24px] sm:mx-auto sm:text-[32px]">
-            ДЭМЖИГЧ
-          </h4>
-          <p className="text-justify text-[18px] sm:px-14 sm:py-10">
-            Дэмжигч нь санхүүгийн хувьд хувь нэмрээ оруулж байгаа эсвэл Эмнести
-            Интернэшнлийн арга хэмжээ авч байгаа хүмүүс. Энэ нь сар бүр
-            хандивлагчаас авхуулаад онлайн өргөдөлд гарын үсэг зурсан хүн хүртэл
-            байж болно. Дэмжигчид хороодод элсэх, удирдах үүрэг гүйцэтгэх зэрэг
-            бидний хийдэг ихэнх зүйлд оролцож болох ч зарлагдсан албан тушаалд
-            нэр дэвших боломжгүй. Мөн дэмжигчид бүс нутгийн, жилийн болон ээлжит
-            бус гишүүдийн хуралд саналын эрхгүй оролцох боломжтой. Тэд бүсийн
-            шийдвэр, захирал, олон улсын төлөөлөгчийн сонгуульд санал өгөх
-            боломжгүй.
-          </p>
-          <Link
-            href="/participation"
-            className="mx-auto my-5 flex h-[64px] w-[264px] rounded-[5px] border border-gray-500 bg-[#fdff28] shadow-2xl sm:my-0 md:my-10"
+        <div>
+          <h4
+            className="text-xs sm:text-2xl font-bold"
+            style={{
+              writingMode: "vertical-lr",
+            }}
           >
-            <p className="mx-auto my-auto flex rounded-[15px] uppercase text-black">
-              активизмд оролцох
-            </p>
-          </Link>
-          <div className="xl:absolute xl:right-0 xl:h-full xl:border xl:border-dashed xl:border-gray-400"></div>
+            ᠮᠣᠩᠭᠣᠯ ᠤ᠋ᠨ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠡᠰᠢᠩᠯᠡ ᠶ᠋ᠢᠨ ᠳᠡᠮᠵᠢᢉᠴᠢ ᠪᠣᠯᠤᠨ ᢉᠡᠰᠢᢉᠦᠨ ᠦ᠋
+            ᠶ᠋ᠢᠨ ᠢᠯᠭᠠᠭ᠎ᠠ ᠨᠢ ᠶᠠᠭᠤ ᠪᠤᠢ?
+          </h4>
         </div>
 
-        <div className="relative flex flex-col justify-center px-4">
-          <h4 className="flex py-2 text-[24px] sm:mx-auto sm:text-[32px]">
-            ГИШҮҮН
-          </h4>
-          <p className="text-justify text-[18px] sm:px-14 sm:py-10">
-            Гишүүн засаглалтай холбоотой үйл ажиллагаанд бүрэн оролцох
-            боломжтой. Жилийн нэгдсэн хурал болон ээлжит бус хурлын талаар
-            зөвхөн гишүүдэд мэдэгддэг бөгөөд тэдгээр хуралдаанд зөвхөн гишүүд
-            санал өгөх эрхтэй. Гишүүд Удирдах Зөвлөлийн албан тушаалд нэр дэвших
-            эсвэл Дэлхийн Чуулга уулзалтад оролцох төлөөлөгчдийн бүрэлдэхүүнд
-            орох боломжтой бөгөөд тэдгээр сонгуульд санал өгөх боломжтой. Бүх
-            гишүүд өөрсдийн холбоо барих мэдээллээ засаглалтай холбоотой
-            тодорхой зорилгоор бусад гишүүдтэй хуваалцахыг зөвшөөрөх ёстой.
-          </p>
-          <Link
-            href="/member"
-            className="mx-auto my-5 flex h-[64px] w-[264px] rounded-[5px] border border-gray-500 bg-[#fdff28] shadow-2xl sm:my-0 md:my-10"
-          >
-            <p className="mx-auto my-auto flex rounded-[15px] uppercase text-black">
-              гишүүн болох
+        <div className="flex flex-col items-center justify-center gap-20">
+          <div className="relative flex flex-row gap-2 justify-center max-h-[250px]">
+            <h4
+              className="text-[10px] sm:text-2xl"
+              style={{
+                writingMode: "vertical-lr",
+              }}
+            >
+              ᠳᠡᠮᠵᠢᢉᠴᠢ
+            </h4>
+            <p
+              className="text-[8px] sm:text-base"
+              style={{
+                writingMode: "vertical-lr",
+              }}
+            >
+              ᠳᠡᠮᠵᠢᢉᠴᠢ ᠨᠢ ᠰᠠᠩᢈᠦᠦ ᠶ᠋ᠢᠨ ᠬᠤᠪᠢ ᠳ᠋ᠤ ᠬᠤᠪᠢ ᠨᠡᠮᠡᠷᠢ ᠪᠡᠨ ᠣᠷᠤᠭᠤᠯᠵᠤ ᠪᠠᠶᠢᠭ᠎ᠠ
+              ᠡᠰᠡᠪᠡᠯ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠡᠰᠢᠨᠯ ᠦ᠋ᠨ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠠᠪᠴᠤ ᠪᠠᠶᠢᠭ᠎ᠠ
+              ᢈᠦᠮᠦᠰ᠃ ᠡᠨᠡ ᠨᠢ ᠰᠠᠷ᠎ᠠ ᠪᠦᠷᠢ ᠬᠠᠨᠳᠢᠪᠯᠠᠭᠴᠢ ᠠ᠋ᠴᠠ ᠠᠪᠬᠤᠭᠤᠯᠤᠭᠠᠳ ᠣᠨ᠋ᠯᠠᠶᠢᠨ᠋
+              ᠡᠷᢉᠦᠳᠡᠯ ᠳ᠋ᠦ ᠭᠠᠷ ᠤ᠋ᠨ ᠦᠰᠦᢉ ᠵᠢᠷᠤᠭᠰᠠᠨ ᢈᠦᠮᠦᠨ ᢈᠦᠷᠲᠡᠯ᠎ᠡ ᠪᠠᠶᠢᠵᠤ ᠪᠣᠯᠤᠨ᠎ᠠ᠃
+              ᠳᠡᠮᠵᠢᢉᠴᠢᠳ ᠬᠣᠷᠢᠶᠠᠳ ᠲᠤ ᠡᠯᠰᠡᢈᠦ᠂ ᠤᠳᠤᠷᠢᠳᠬᠤ ᠡᢉᠦᠷᢉᠡ ᢉᠦᠢᠴᠡᠳᢈᠡᢈᠦ ᠵᠡᠷᢉᠡ
+              ᠪᠢᠳᠡᠨ ᠦ᠋ ᢈᠢᠳᠡᢉ ᠶᠡᢈᠡᠩᢈᠢ ᠵᠦᠢᠯ ᠳ᠋ᠦ ᠣᠷᠤᠯᠴᠠᠵᠤ ᠪᠣᠯᠬᠤ ᠴᠤ ᠵᠠᠷᠯᠠᠭᠳᠠᠭᠰᠠᠨ
+              ᠠᠯᠪᠠᠨ ᠲᠤᠰᠢᠶᠠᠯ ᠳ᠋ᠤ ᠨᠡᠷ᠎ᠡ ᠳᠡᠪᠰᠢᢈᠦ ᠪᠣᠯᠤᠮᠵᠢ ᠦᢉᠡᠢ᠃ ᠮᠥᠨ ᠳᠡᠮᠵᠢᢉᠴᠢᠳ ᠪᠦᠰᠡ
+              ᠨᠤᠲᠤᠭ ᠤ᠋ᠨ᠂ ᠵᠢᠯ ᠦ᠋ᠨ ᠪᠣᠯᠤᠨ ᠡᢉᠡᠯᠵᠢᠲᠦ ᠪᠤᠰᠤ ᢉᠡᠰᠢᢉᠦᠳ ᠦ᠋ᠨ ᠬᠤᠷᠠᠯ ᠳ᠋ᠤ ᠰᠠᠨᠠᠯ
+              ᠤ᠋ᠨ ᠡᠷᢈᠡ ᠦᢉᠡᠢ ᠣᠷᠤᠯᠴᠠᠬᠤ ᠪᠣᠯᠤᠮᠵᠢ ᠲᠠᠢ᠃ ᠲᠡᠳᠡ ᠪᠦᠰᠡ ᠶ᠋ᠢᠨ ᠰᠢᠢᠳᠪᠦᠷᠢ᠂
+              ᠵᠠᢈᠢᠷᠤᠯ᠂ ᠣᠯᠠᠨ ᠤᠯᠤᠰ ᠤ᠋ᠨ ᠲᠥᠯᠦᢉᠡᠯᠡᢉᠴᠢ ᠶ᠋ᠢᠨ ᠰᠣᠩᠭᠤᠭᠤᠯᠢ ᠳ᠋ᠤ ᠰᠠᠨᠠᠯ ᠥᢉᢈᠦ
+              ᠪᠣᠯᠤᠮᠵᠢ ᠦᢉᠡᠢ᠃
             </p>
-          </Link>
+            <Button
+              text={"ᠠᠻᠲ᠋ᠢᠸᠢᠰᠮ ᠳ᠋ᠤ ᠣᠷᠤᠯᠴᠠᠬᠤ"}
+              onClick={() => router.push("/participation")}
+            />
+          </div>
+          <div className="border-t-[1px] w-full h-[1px] border-dashed border-gray-400"></div>
+          <div className="relative flex flex-row gap-2 justify-center max-h-[250px]">
+            <h4
+              className="text-[10px] sm:text-2xl"
+              style={{
+                writingMode: "vertical-lr",
+              }}
+            >
+              ᢉᠡᠰᠢᢉᠦᠨ
+            </h4>
+            <p
+              className="text-[8px] sm:text-base"
+              style={{
+                writingMode: "vertical-lr",
+              }}
+            >
+              ᢉᠡᠰᠢᢉᠦᠨ ᠵᠠᠰᠠᠭᠯᠠᠯ ᠲᠠᠢ ᠬᠣᠯᠪᠤᠭᠠᠲᠠᠢ ᠦᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠳ᠋ᠤ ᠪᠦᠷᠢᠨ ᠣᠷᠤᠯᠴᠠᠬᠤ
+              ᠪᠣᠯᠤᠮᠵᠢ ᠲᠠᠢ᠃ ᠵᠢᠯ ᠦ᠋ᠨ ᠨᠢᢉᠡᠳᠦᢉᠰᠡᠨ ᠬᠤᠷᠠᠯ ᠪᠣᠯᠤᠨ ᠡᢉᠡᠯᠵᠢᠲᠦ ᠪᠤᠰᠤ ᠬᠤᠷᠠᠯ
+              ᠤ᠋ᠨ ᠲᠠᠯᠠᠭᠠᠷ ᠵᠥᠪᢈᠡᠨ ᢉᠡᠰᠢᢉᠦᠳ ᠲᠦ ᠮᠡᠳᠡᢉᠳᠡᠳᠡᢉ ᠪᠥᢉᠡᠳ ᠲᠡᠳᠡᢉᠡᠷ ᠬᠤᠷᠠᠯᠳᠤᠭᠠᠨ
+              ᠳ᠋ᠤ ᠵᠥᠪᢈᠡᠨ ᢉᠡᠰᠢᢉᠦᠳ ᠰᠠᠨᠠᠯ ᠥᢉᢈᠦ ᠡᠷᢈᠡ ᠲᠡᠢ᠃ ᢉᠡᠰᠢᢉᠦᠳ ᠤᠳᠤᠷᠢᠳᠬᠤ ᠵᠥᠪᠯᠡᠯ
+              ᠦ᠋ᠨ ᠠᠯᠪᠠᠨ ᠲᠤᠰᠢᠶᠠᠯ ᠳ᠋ᠤ ᠨᠡᠷ᠎ᠡ ᠳᠡᠪᠰᠢᢈᠦ ᠡᠰᠡᠪᠡᠯ ᠳᠡᠯᠡᢈᠡᠢ ᠶ᠋ᠢᠨ ᠴᠢᠭᠤᠯᠭ᠎ᠠ
+              ᠠᠭᠤᠯᠵᠠᠯᠲᠠ ᠳ᠋ᠤ ᠣᠷᠤᠯᠴᠠᠬᠤ ᠲᠥᠯᠦᢉᠡᠯᠡᢉᠴᠢᠳ ᠦ᠋ᠨ ᠪᠦᠷᠢᠯᠳᠦᢈᠦᠨ ᠳ᠋ᠦ ᠣᠷᠤᠬᠤ
+              ᠪᠣᠯᠤᠮᠵᠢ ᠲᠠᠢ ᠪᠥᢉᠡᠳ ᠲᠡᠳᠡᢉᠡᠷ ᠰᠣᠩᠭᠤᠭᠤᠯᠢ ᠳ᠋ᠤ ᠰᠠᠨᠠᠯ ᠥᢉᢈᠦ ᠪᠣᠯᠤᠮᠵᠢ ᠲᠠᠢ᠃
+              ᠪᠦᢈᠦ ᢉᠡᠰᠢᢉᠦᠳ ᠥᠪᠡᠷᠰᠡᠳ ᠦ᠋ᠨ ᠬᠣᠯᠪᠤᠭ᠎ᠠ ᠪᠠᠷᠢᠬᠤ ᠮᠡᠳᠡᢉᠡᠯᠡᠯ ᠢ᠋ᠶᠡᠨ ᠵᠠᠰᠠᠭᠯᠠᠯ
+              ᠲᠠᠢ ᠬᠣᠯᠪᠤᠭ᠎ᠠ ᠲᠠᠢ ᠲᠣᠳᠤᠷᠬᠠᠢ ᠵᠣᠷᠢᠯᠭ᠎ᠠ ᠪᠠᠷ ᠪᠤᠰᠤᠳ ᢉᠡᠰᠢᢉᠦᠳ ᠲᠡᠢ
+              ᠬᠤᠪᠢᠶᠠᠯᠴᠠᠬᠤ ᠶ᠋ᠢ ᠵᠥᠪᠰᠢᠶᠡᠷᠡᢈᠦ ᠶᠣᠰᠤᠲᠠᠢ᠃
+            </p>
+            <Button
+              text={"ᢉᠡᠰᠢᢉᠦᠨ ᠪᠣᠯᠬᠤ"}
+              onClick={() => router.push("/member")}
+            />
+          </div>
         </div>
-      </div>
-
-      <div className="mx-auto mb-5 flex w-[80%] items-center justify-center py-10 text-center text-[24px] xl:text-left">
-        Хэрэв танд асуулт байвал гишүүдийн үйлчилгээ рүү имэйл илгээнэ үү:
-        members@amnesty.mn
+        <div
+          className="text-xs sm:text-2xl text-center"
+          style={{
+            writingMode: "vertical-lr",
+          }}
+        >
+          ᢈᠡᠷᠪᠡ ᠲᠠᠨ ᠳ᠋ᠤ ᠠᠰᠠᠭᠤᠯᠲᠠ ᠪᠠᠶᠢᠪᠠᠯ ᢉᠡᠰᠢᢉᠦᠳ ᠦ᠋ᠨ ᠦᠢᠯᠡᠴᠢᠯᠡᢉᠡ ᠤᠷᠤᠭᠤ ᠢᠮᠡᠶᠢᠯ
+          ᠢᠯᠡᢉᠡᠨ᠎ᠡ ᠦᠦ: members@amnesty.mn
+        </div>
       </div>
     </div>
   );
