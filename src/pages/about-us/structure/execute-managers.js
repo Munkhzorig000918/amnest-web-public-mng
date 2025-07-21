@@ -1,12 +1,12 @@
-import Layout from "@/components/layout/Layout";
-import StructureExecuteManagersDesktop from "@/components/about-us/structure/detail/StructureExecuteManagersDesktop";
-import StructureExecuteManagersMobile from "@/components/about-us/structure/detail/StructureExecuteManagersMobile";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function StructureExecuteManagers() {
-  return (
-    <Layout>
-      <StructureExecuteManagersDesktop />
-      <StructureExecuteManagersMobile />
-    </Layout>
-  );
+  const router = useRouter();
+
+  useEffect(() => {
+    router.push("/about-us/structure/chapter-members");
+  }, [router]);
+
+  return null;
 }
