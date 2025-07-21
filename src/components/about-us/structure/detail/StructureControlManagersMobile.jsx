@@ -1,51 +1,11 @@
 import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import SectionTitle from "@/components/common/SectionTitle";
-import { useState, useEffect } from "react";
-import apiService from "@/services/apiService";
 import Image from "next/image";
 
 export default function StructureControlManagersMobile() {
-  // State for API data
-  const [controlManagersData, setControlManagersData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  // Fetch control managers data on component mount
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        console.log(
-          "Fetching control managers data for structure detail page..."
-        );
-        const controlManagers =
-          await apiService.controlManagers.getControlManagers({
-            page: 1,
-            pageSize: 10,
-            sort: "publishedAt:desc",
-          });
-        console.log("Control managers response:", controlManagers);
-
-        const controlManagersArray = Array.isArray(controlManagers)
-          ? controlManagers
-          : controlManagers?.data || [];
-        setControlManagersData(controlManagersArray);
-      } catch (err) {
-        console.error("Error fetching control managers data:", err);
-        setError(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  // Static control managers data as fallback
-  const staticControlManagers = [
+  // Static control managers data
+  const controlManagers = [
     {
       id: 1,
       name: "Д. Батбаяр",
@@ -63,11 +23,6 @@ export default function StructureControlManagersMobile() {
       image: "/images/control-managers/munkhbaatar.png",
     },
   ];
-
-  const controlManagersToDisplay =
-    controlManagersData.length > 0
-      ? controlManagersData
-      : staticControlManagers;
 
   return (
     <div className="w-full block sm:hidden">
@@ -114,7 +69,7 @@ export default function StructureControlManagersMobile() {
           />
 
           <div className="flex flex-col gap-6 overflow-y-auto max-h-[600px] p-2">
-            {controlManagersToDisplay.map((manager, index) => (
+            {controlManagers.map((manager, index) => (
               <div
                 key={manager.id}
                 className="border border-gray-300 rounded-lg overflow-hidden shadow-md"
@@ -167,37 +122,6 @@ export default function StructureControlManagersMobile() {
                 </div>
               </div>
             ))}
-
-            {/* Loading state */}
-            {isLoading && (
-              <div className="flex items-center justify-center p-4">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-                <p
-                  className="ml-2 text-gray-600 text-xs"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                >
-                  ᠠᠴᠢᠶᠠᠯᠠᠵᠤ ᠪᠠᠶᠢᠨ᠎ᠠ...
-                </p>
-              </div>
-            )}
-
-            {/* Error state */}
-            {error && (
-              <div className="flex items-center justify-center p-4">
-                <p
-                  className="text-red-600 text-xs"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                >
-                  ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠪᠠ
-                </p>
-              </div>
-            )}
           </div>
         </div>
       </div>

@@ -2,47 +2,10 @@ import Image from "next/image";
 import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import SectionTitle from "@/components/common/SectionTitle";
-import { useState, useEffect } from "react";
-import apiService from "@/services/apiService";
 
 export default function StructureManagersDesktop() {
-  // State for API data
-  const [managersData, setManagersData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  // Fetch managers data on component mount
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        console.log("Fetching managers data for structure detail page...");
-        const managers = await apiService.managers.getManagers({
-          page: 1,
-          pageSize: 20,
-          sort: "publishedAt:desc",
-        });
-        console.log("Managers response:", managers);
-
-        const managersArray = Array.isArray(managers)
-          ? managers
-          : managers?.data || [];
-        setManagersData(managersArray);
-      } catch (err) {
-        console.error("Error fetching managers data:", err);
-        setError(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  // Static managers data as fallback
-  const staticManagers = [
+  // Static managers data
+  const managers = [
     {
       id: 1,
       name: "Р. Очирбал",
@@ -68,9 +31,6 @@ export default function StructureManagersDesktop() {
       image: "/images/managers/munkhjavhlan.png",
     },
   ];
-
-  const managersToDisplay =
-    managersData.length > 0 ? managersData : staticManagers;
 
   return (
     <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen sm:overflow-y-hidden">
@@ -114,7 +74,7 @@ export default function StructureManagersDesktop() {
           />
 
           <div className="flex flex-col gap-8 overflow-y-auto max-h-[800px] p-4">
-            {managersToDisplay.map((manager, index) => (
+            {managers.map((manager, index) => (
               <div
                 key={manager.id}
                 className={`grid grid-cols-3 gap-8 items-center ${
@@ -167,42 +127,11 @@ export default function StructureManagersDesktop() {
                 </div>
 
                 {/* Divider */}
-                {index < managersToDisplay.length - 1 && (
+                {index < managers.length - 1 && (
                   <div className="col-span-3 border-t-2 border-dashed border-gray-300 my-4"></div>
                 )}
               </div>
             ))}
-
-            {/* Loading state */}
-            {isLoading && (
-              <div className="flex items-center justify-center p-8">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-                <p
-                  className="ml-4 text-gray-600"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                >
-                  ᠠᠴᠢᠶᠠᠯᠠᠵᠤ ᠪᠠᠶᠢᠨ᠎ᠠ...
-                </p>
-              </div>
-            )}
-
-            {/* Error state */}
-            {error && (
-              <div className="flex items-center justify-center p-8">
-                <p
-                  className="text-red-600"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                >
-                  ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠪᠠ
-                </p>
-              </div>
-            )}
           </div>
         </div>
       </div>

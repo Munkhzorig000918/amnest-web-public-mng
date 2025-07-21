@@ -1,51 +1,11 @@
 import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import SectionTitle from "@/components/common/SectionTitle";
-import { useState, useEffect } from "react";
-import apiService from "@/services/apiService";
 import Image from "next/image";
 
 export default function StructureExecuteManagersMobile() {
-  // State for API data
-  const [executeManagersData, setExecuteManagersData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  // Fetch executive managers data on component mount
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        console.log(
-          "Fetching executive managers data for structure detail page..."
-        );
-        const executeManagers =
-          await apiService.executeManagers.getExecuteManagers({
-            page: 1,
-            pageSize: 10,
-            sort: "publishedAt:desc",
-          });
-        console.log("Executive managers response:", executeManagers);
-
-        const executeManagersArray = Array.isArray(executeManagers)
-          ? executeManagers
-          : executeManagers?.data || [];
-        setExecuteManagersData(executeManagersArray);
-      } catch (err) {
-        console.error("Error fetching executive managers data:", err);
-        setError(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  // Static executive managers data as fallback
-  const staticExecuteManagers = [
+  // Static executive managers data
+  const executeManagers = [
     {
       id: 1,
       name: "Б. Батбаатар",
@@ -63,11 +23,6 @@ export default function StructureExecuteManagersMobile() {
       image: "/images/execute-managers/munkhbaatar.png",
     },
   ];
-
-  const executeManagersToDisplay =
-    executeManagersData.length > 0
-      ? executeManagersData
-      : staticExecuteManagers;
 
   return (
     <div className="w-full block sm:hidden">
@@ -114,7 +69,7 @@ export default function StructureExecuteManagersMobile() {
           />
 
           <div className="flex flex-col gap-6 overflow-y-auto max-h-[600px] p-2">
-            {executeManagersToDisplay.map((manager, index) => (
+            {executeManagers.map((manager, index) => (
               <div
                 key={manager.id}
                 className="border border-gray-300 rounded-lg overflow-hidden shadow-md"
@@ -167,37 +122,6 @@ export default function StructureExecuteManagersMobile() {
                 </div>
               </div>
             ))}
-
-            {/* Loading state */}
-            {isLoading && (
-              <div className="flex items-center justify-center p-4">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-                <p
-                  className="ml-2 text-gray-600 text-xs"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                >
-                  ᠠᠴᠢᠶᠠᠯᠠᠵᠤ ᠪᠠᠶᠢᠨ᠎ᠠ...
-                </p>
-              </div>
-            )}
-
-            {/* Error state */}
-            {error && (
-              <div className="flex items-center justify-center p-4">
-                <p
-                  className="text-red-600 text-xs"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                >
-                  ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠪᠠ
-                </p>
-              </div>
-            )}
           </div>
         </div>
       </div>

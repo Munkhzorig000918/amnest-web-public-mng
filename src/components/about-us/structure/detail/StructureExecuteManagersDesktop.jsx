@@ -2,50 +2,10 @@ import Image from "next/image";
 import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import SectionTitle from "@/components/common/SectionTitle";
-import { useState, useEffect } from "react";
-import apiService from "@/services/apiService";
 
 export default function StructureExecuteManagersDesktop() {
-  // State for API data
-  const [executeManagersData, setExecuteManagersData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  // Fetch executive managers data on component mount
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        console.log(
-          "Fetching executive managers data for structure detail page..."
-        );
-        const executeManagers =
-          await apiService.executeManagers.getExecuteManagers({
-            page: 1,
-            pageSize: 20,
-            sort: "publishedAt:desc",
-          });
-        console.log("Executive managers response:", executeManagers);
-
-        const executeManagersArray = Array.isArray(executeManagers)
-          ? executeManagers
-          : executeManagers?.data || [];
-        setExecuteManagersData(executeManagersArray);
-      } catch (err) {
-        console.error("Error fetching executive managers data:", err);
-        setError(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  // Static executive managers data as fallback
-  const staticExecuteManagers = [
+  // Static executive managers data
+  const executeManagers = [
     {
       id: 1,
       name: "Б. Батбаатар",
@@ -63,11 +23,6 @@ export default function StructureExecuteManagersDesktop() {
       image: "/images/execute-managers/munkhbaatar.png",
     },
   ];
-
-  const executeManagersToDisplay =
-    executeManagersData.length > 0
-      ? executeManagersData
-      : staticExecuteManagers;
 
   return (
     <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen sm:overflow-y-hidden">
@@ -111,7 +66,7 @@ export default function StructureExecuteManagersDesktop() {
           />
 
           <div className="flex flex-col gap-8 overflow-y-auto max-h-[800px] p-4">
-            {executeManagersToDisplay.map((manager, index) => (
+            {executeManagers.map((manager, index) => (
               <div
                 key={manager.id}
                 className={`grid grid-cols-3 gap-8 items-center ${
@@ -164,42 +119,11 @@ export default function StructureExecuteManagersDesktop() {
                 </div>
 
                 {/* Divider */}
-                {index < executeManagersToDisplay.length - 1 && (
+                {index < executeManagers.length - 1 && (
                   <div className="col-span-3 border-t-2 border-dashed border-gray-300 my-4"></div>
                 )}
               </div>
             ))}
-
-            {/* Loading state */}
-            {isLoading && (
-              <div className="flex items-center justify-center p-8">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-                <p
-                  className="ml-4 text-gray-600"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                >
-                  ᠠᠴᠢᠶᠠᠯᠠᠵᠤ ᠪᠠᠶᠢᠨ᠎ᠠ...
-                </p>
-              </div>
-            )}
-
-            {/* Error state */}
-            {error && (
-              <div className="flex items-center justify-center p-8">
-                <p
-                  className="text-red-600"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                >
-                  ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠪᠠ
-                </p>
-              </div>
-            )}
           </div>
         </div>
       </div>

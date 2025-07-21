@@ -1,48 +1,11 @@
 import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import SectionTitle from "@/components/common/SectionTitle";
-import { useState, useEffect } from "react";
-import apiService from "@/services/apiService";
 import Image from "next/image";
 
 export default function StructureManagersMobile() {
-  // State for API data
-  const [managersData, setManagersData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  // Fetch managers data on component mount
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        console.log("Fetching managers data for structure detail page...");
-        const managers = await apiService.managers.getManagers({
-          page: 1,
-          pageSize: 10,
-          sort: "publishedAt:desc",
-        });
-        console.log("Managers response:", managers);
-
-        const managersArray = Array.isArray(managers)
-          ? managers
-          : managers?.data || [];
-        setManagersData(managersArray);
-      } catch (err) {
-        console.error("Error fetching managers data:", err);
-        setError(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  // Static managers data as fallback
-  const staticManagers = [
+  // Static managers data
+  const managers = [
     {
       id: 1,
       name: "Р. Очирбал",
@@ -68,9 +31,6 @@ export default function StructureManagersMobile() {
       image: "/images/managers/munkhjavhlan.png",
     },
   ];
-
-  const managersToDisplay =
-    managersData.length > 0 ? managersData : staticManagers;
 
   return (
     <div className="w-full block sm:hidden">
@@ -117,7 +77,7 @@ export default function StructureManagersMobile() {
           />
 
           <div className="flex flex-col gap-6 overflow-y-auto max-h-[600px] p-2">
-            {managersToDisplay.map((manager, index) => (
+            {managers.map((manager, index) => (
               <div
                 key={manager.id}
                 className="border border-gray-300 rounded-lg overflow-hidden shadow-md"
@@ -170,37 +130,6 @@ export default function StructureManagersMobile() {
                 </div>
               </div>
             ))}
-
-            {/* Loading state */}
-            {isLoading && (
-              <div className="flex items-center justify-center p-4">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-                <p
-                  className="ml-2 text-gray-600 text-xs"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                >
-                  ᠠᠴᠢᠶᠠᠯᠠᠵᠤ ᠪᠠᠶᠢᠨ᠎ᠠ...
-                </p>
-              </div>
-            )}
-
-            {/* Error state */}
-            {error && (
-              <div className="flex items-center justify-center p-4">
-                <p
-                  className="text-red-600 text-xs"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                >
-                  ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠪᠠ
-                </p>
-              </div>
-            )}
           </div>
         </div>
       </div>

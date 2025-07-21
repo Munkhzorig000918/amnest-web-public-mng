@@ -1,55 +1,15 @@
 import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import SectionTitle from "@/components/common/SectionTitle";
-import { useState, useEffect } from "react";
-import apiService from "@/services/apiService";
 import Image from "next/image";
 
 export default function StructureChapterMembersMobile() {
-  // State for API data
-  const [chapterMembersData, setChapterMembersData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  // Fetch chapter members data on component mount
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        console.log(
-          "Fetching chapter members data for structure detail page..."
-        );
-        const chapterMembers =
-          await apiService.chapterMembers.getChapterMembers({
-            page: 1,
-            pageSize: 10,
-            sort: "publishedAt:desc",
-          });
-        console.log("Chapter members response:", chapterMembers);
-
-        const chapterMembersArray = Array.isArray(chapterMembers)
-          ? chapterMembers
-          : chapterMembers?.data || [];
-        setChapterMembersData(chapterMembersArray);
-      } catch (err) {
-        console.error("Error fetching chapter members data:", err);
-        setError(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  // Static chapter members data as fallback
-  const staticChapterMembers = [
+  // Static chapter members data
+  const chapterMembers = [
     {
       id: 1,
       name: "А. Батбаатар",
-      position: "Салбарын гишүүн",
+      position: "Бүлгийн гишүүн",
       description:
         "Монгол Улсын Их сургуулийн хууль зүйн сургуулийн багш. Эмнестид 2018 оноос хойш идэвхтэй оролцож, хүний эрхийн боловсрол, сургалт, судалгааны ажлуудыг зохион явуулдаг.",
       image: "/images/chapter-members/batbaatar.png",
@@ -57,23 +17,20 @@ export default function StructureChapterMembersMobile() {
     {
       id: 2,
       name: "Б. Мөнхбаатар",
-      position: "Салбарын гишүүн",
+      position: "Бүлгийн гишүүн",
       description:
         "МУИС-ийн философи, шашин судлалын тэнхимийн багш. Хүний эрхийн боловсрол, жендэр, хүрээлэн буй орчны асуудлаар сургалт, судалгааны ажил эрхэлж, хүний эрхийн сургалт, кампанит ажлуудыг зохион явуулдаг.",
       image: "/images/chapter-members/munkhbaatar.png",
     },
     {
       id: 3,
-      name: "В. Батбаатар",
-      position: "Салбарын гишүүн",
+      name: "В. Оюунчимэг",
+      position: "Бүлгийн гишүүн",
       description:
-        "Монгол Улсын Их сургуулийн хууль зүйн сургуулийн багш. Эмнестид 2019 оноос хойш идэвхтэй оролцож, хүний эрхийн боловсрол, сургалт, судалгааны ажлуудыг зохион явуулдаг.",
-      image: "/images/chapter-members/batbaatar2.png",
+        "МУИС-ийн философи, шашин судлалын тэнхимийн багш, доктор. 2005 оноос хойш МЭИ-д элсэж, эмэгтэйчүүдийн бүлгийн гишүүн, Хяналтын зөвлөлийн даргаар ажиллаж байсан.",
+      image: "/images/chapter-members/oyunchimeg.png",
     },
   ];
-
-  const chapterMembersToDisplay =
-    chapterMembersData.length > 0 ? chapterMembersData : staticChapterMembers;
 
   return (
     <div className="w-full block sm:hidden">
@@ -115,12 +72,12 @@ export default function StructureChapterMembersMobile() {
         {/* Chapter Members Section */}
         <div className="flex flex-col gap-4">
           <SectionTitle
-            title={"ᠰᠠᠯᠪᠠᠷ ᠶ᠋ᠢᠨ ᠭᠢᠰᠢᠭᠦᠨ"}
+            title={"ᠴᠢᠭᠤᠯᠭᠠᠨ ᠵᠥᠪᠯᠡᠨ"}
             containerClassName={"bg-[#FFFF00] text-[10px]"}
           />
 
           <div className="flex flex-col gap-6 overflow-y-auto max-h-[600px] p-2">
-            {chapterMembersToDisplay.map((member, index) => (
+            {chapterMembers.map((member, index) => (
               <div
                 key={member.id}
                 className="border border-gray-300 rounded-lg overflow-hidden shadow-md"
@@ -173,37 +130,6 @@ export default function StructureChapterMembersMobile() {
                 </div>
               </div>
             ))}
-
-            {/* Loading state */}
-            {isLoading && (
-              <div className="flex items-center justify-center p-4">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-                <p
-                  className="ml-2 text-gray-600 text-xs"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                >
-                  ᠠᠴᠢᠶᠠᠯᠠᠵᠤ ᠪᠠᠶᠢᠨ᠎ᠠ...
-                </p>
-              </div>
-            )}
-
-            {/* Error state */}
-            {error && (
-              <div className="flex items-center justify-center p-4">
-                <p
-                  className="text-red-600 text-xs"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                >
-                  ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠪᠠ
-                </p>
-              </div>
-            )}
           </div>
         </div>
       </div>
