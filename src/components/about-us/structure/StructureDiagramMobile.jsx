@@ -1,12 +1,16 @@
 import Button from "@/components/common/Button";
+import Link from "next/link";
 
 export default function StructureDiagramMobile() {
   return (
     <div className="relative">
       <img src="/images/structure-diagram.png" alt="" className="h-full z-0" />
-      <div className="flex gap-[48px] absolute top-[68px] w-full h-full">
+      <div className="z-10 flex gap-[51px] absolute top-[68px] w-full h-full">
         <div className="flex flex-col gap-[106px] ml-[78px]">
-          <button className="border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all">
+          <Link
+            href="/about-us/structure/managers"
+            className="border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all"
+          >
             <p
               className="text-black text-[5px] pl-1"
               style={{
@@ -16,8 +20,11 @@ export default function StructureDiagramMobile() {
             >
               ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ
             </p>
-          </button>
-          <button className="border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all">
+          </Link>
+          <Link
+            href="/about-us/structure/control-managers"
+            className="border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all"
+          >
             <p
               className="text-black text-[5px] pl-1"
               style={{
@@ -27,9 +34,12 @@ export default function StructureDiagramMobile() {
             >
               ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ
             </p>
-          </button>
+          </Link>
         </div>
-        <button className="mt-[67px] border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all">
+        <Link
+          href="/about-us/structure/chapter-members"
+          className="mt-[67px] border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all"
+        >
           <p
             className="text-black text-[5px] pl-[2px]"
             style={{
@@ -39,8 +49,11 @@ export default function StructureDiagramMobile() {
           >
             ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ
           </p>
-        </button>
-        <button className="mt-[68px] border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all">
+        </Link>
+        <Link
+          href="/about-us/structure/chapter-members"
+          className="mt-[68px] border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all"
+        >
           <p
             className="text-black text-[5px] pl-[2px]"
             style={{
@@ -50,9 +63,12 @@ export default function StructureDiagramMobile() {
           >
             ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ
           </p>
-        </button>
+        </Link>
         <div className="flex flex-col gap-[100px]">
-          <button className="border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all">
+          <Link
+            href="/about-us/structure/chapter-members"
+            className="border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all"
+          >
             <p
               className="text-black text-[5px] pl-[2px]"
               style={{
@@ -62,8 +78,11 @@ export default function StructureDiagramMobile() {
             >
               ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ
             </p>
-          </button>
-          <button className="border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all">
+          </Link>
+          <Link
+            href="/about-us/structure/chapter-members"
+            className="border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all"
+          >
             <p
               className="text-black text-[5px] pl-[2px]"
               style={{
@@ -73,10 +92,10 @@ export default function StructureDiagramMobile() {
             >
               ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ
             </p>
-          </button>
+          </Link>
         </div>
       </div>
-      <div className="flex absolute top-[48px] w-full h-full whitespace-nowrap font-bold text-[4px]">
+      <div className="z-0 flex absolute top-[48px] w-full h-full whitespace-nowrap font-bold text-[4px]">
         <p
           className="text-black mt-[92px] ml-[25px]"
           style={{

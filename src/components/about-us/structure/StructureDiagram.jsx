@@ -16,7 +16,7 @@ export default function StructureDiagram() {
             </p>
           </Link>
           <Link
-            href="/about-us/structure/chapter-members"
+            href="/about-us/structure/control-managers"
             className="border border-solid border-[#E3E3E3] rounded-[8px] sm:rounded-[10px] w-6 sm:w-[50px] max-h-min whitespace-nowrap py-3 flex items-center justify-center hover:brightness-105 transition-all bg-white hover:bg-gray-100"
             style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
           >
@@ -26,7 +26,7 @@ export default function StructureDiagram() {
           </Link>
         </div>
         <Link
-          href="/about-us/structure/control-managers"
+          href="/about-us/structure/chapter-members"
           className="border border-solid border-[#E3E3E3] rounded-[8px] sm:rounded-[10px] w-6 sm:w-[50px] max-h-min whitespace-nowrap py-3 flex items-center justify-center hover:brightness-105 transition-all bg-white hover:bg-gray-100 mt-[245px]"
           style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
         >
