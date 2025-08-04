@@ -38,3 +38,75 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+
+## Docker
+
+This project includes Docker configuration for easy development and deployment.
+
+### Development with Docker
+
+To run the application in development mode with Docker:
+
+```bash
+# Start development environment
+docker-compose --profile dev up
+
+# Or build and run in one command
+docker-compose --profile dev up --build
+```
+
+The application will be available at [http://localhost:3000](http://localhost:3000).
+
+### Production with Docker
+
+To run the application in production mode:
+
+```bash
+# Build and start production container
+docker-compose --profile prod up --build
+
+# Or run in detached mode
+docker-compose --profile prod up --build -d
+```
+
+### Production with Nginx Reverse Proxy
+
+For production deployment with Nginx reverse proxy:
+
+```bash
+# Start with Nginx reverse proxy
+docker-compose --profile nginx up --build
+
+# Or run in detached mode
+docker-compose --profile nginx up --build -d
+```
+
+The application will be available at [http://localhost](http://localhost) (port 80).
+
+### Docker Commands
+
+```bash
+# Build the Docker image
+docker build -t amnest-web-public-mn .
+
+# Run the container
+docker run -p 3000:3000 amnest-web-public-mn
+
+# Stop all containers
+docker-compose down
+
+# View logs
+docker-compose logs -f
+
+# Clean up
+docker-compose down -v --remove-orphans
+```
+
+### Environment Variables
+
+Create a `.env` file in the root directory for environment variables:
+
+```env
+NODE_ENV=production
+NEXT_TELEMETRY_DISABLED=1
+```
