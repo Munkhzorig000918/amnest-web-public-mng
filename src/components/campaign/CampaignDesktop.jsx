@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Button from "@/components/common/Button";
-import HeroBanner from "@/components/common/HeroBanner";
-import { heroBannerConfigs } from "@/constants/heroBanners";
+import BannerSlider from "@/components/common/BannerSlider";
+import { bannerImages } from "@/constants/bannerImages";
 import SectionTitle from "@/components/common/SectionTitle";
 import { useRouter } from "next/router";
 import {
@@ -109,80 +109,72 @@ export default function CampaignDesktop() {
   }
 
   return (
-    <div className="hidden sm:block">
-      {/* Hero Banner */}
-      <HeroBanner
-        backgroundImage={heroBannerConfigs.campaign.backgroundImage}
-        title={heroBannerConfigs.campaign.title}
-        description={heroBannerConfigs.campaign.description}
-      />
+    <div className="h-full hidden sm:flex gap-10 overflow-x-auto w-auto flex-shrink-0">
+      <BannerSlider images={bannerImages} width="90rem" useDynamic={true} />
 
-      {/* Content Section */}
-      <div className="h-full flex gap-10 overflow-x-auto w-auto flex-shrink-0 mt-10">
-        <div className="h-full p-4 flex gap-32">
-          <div className="h-full flex gap-10">
-            <SectionTitle title={"ᠪᠢᠳᠡ ᢈᠡᠷᢈᠢᠨ ᠥᢉᠡᠷᠡᠴᠢᠯᠡᠯᠲᠡ ᠶ᠋ᠢ ᢈᠢᠳᠡᢉ ᠪᠤᠢ?"} />
-            <div className="h-full w-full grid grid-cols-1 grid-rows-3 gap-10">
-              {changeitems.map((item) => (
-                <div key={item.id} className="flex gap-5">
-                  <h4
-                    className="text-2xl font-bold"
-                    style={{
-                      writingMode: "vertical-lr",
-                      textOrientation: "upright",
-                    }}
-                  >
-                    {item.title}
-                  </h4>
-                  <p
-                    className="text-sm font-bold"
-                    style={{
-                      writingMode: "vertical-lr",
-                      textOrientation: "upright",
-                    }}
-                  >
-                    {item.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="h-full flex gap-10">
-            <SectionTitle title={"ᠻᠠᠮᠫᠠᠨᠢᠲᠤ ᠠᠵᠢᠯ ᠤ᠋ᠳ"} />
-            <div className="h-full grid grid-rows-3 grid-flow-col gap-[10px]">
-              {campaignItems.slice(0, 15).map((item) => (
-                <div
-                  key={item.id}
-                  className="flex flex-col items-center justify-center w-36 gap-5 border-2 border-black p-5 cursor-pointer hover:bg-gray-100 transition-colors"
-                  onClick={() => router.push(`/campaign/${item.id}`)}
+      <div className="h-full p-4 flex gap-32">
+        <div className="h-full flex gap-10">
+          <SectionTitle title={"ᠪᠢᠳᠡ ᢈᠡᠷᢈᠢᠨ ᠥᢉᠡᠷᠡᠴᠢᠯᠡᠯᠲᠡ ᠶ᠋ᠢ ᢈᠢᠳᠡᢉ ᠪᠤᠢ?"} />
+          <div className="h-full w-full grid grid-cols-1 grid-rows-3 gap-10">
+            {changeitems.map((item) => (
+              <div key={item.id} className="flex gap-5">
+                <h4
+                  className="text-2xl font-bold"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
                 >
-                  <Image
-                    src={item.image}
-                    alt={item.title}
-                    width={60}
-                    height={60}
-                    onError={(e) => {
-                      e.target.src = "/images/about1.png"; // fallback image
-                    }}
-                  />
-                  <p
-                    className="text-base font-bold"
-                    style={{
-                      writingMode: "vertical-lr",
-                      textOrientation: "upright",
-                    }}
-                    title={item.title}
-                  >
-                    {item.title.length > 15
-                      ? `${item.title.substring(0, 15)}...`
-                      : item.title}
-                  </p>
-                </div>
-              ))}
-              {/* Fill empty slots if we have less than 15 campaigns */}
-              {Array.from({
-                length: Math.max(0, 15 - campaignItems.length),
-              }).map((_, index) => (
+                  {item.title}
+                </h4>
+                <p
+                  className="text-sm font-bold"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                >
+                  {item.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="h-full flex gap-10">
+          <SectionTitle title={"ᠻᠠᠮᠫᠠᠨᠢᠲᠤ ᠠᠵᠢᠯ ᠤ᠋ᠳ"} />
+          <div className="h-full grid grid-rows-3 grid-flow-col gap-[10px]">
+            {campaignItems.slice(0, 15).map((item) => (
+              <div
+                key={item.id}
+                className="flex flex-col items-center justify-center w-36 gap-5 border-2 border-black p-5 cursor-pointer hover:bg-gray-100 transition-colors"
+                onClick={() => router.push(`/campaign/${item.id}`)}
+              >
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  width={60}
+                  height={60}
+                  onError={(e) => {
+                    e.target.src = "/images/about1.png"; // fallback image
+                  }}
+                />
+                <p
+                  className="text-base font-bold"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                  title={item.title}
+                >
+                  {item.title.length > 15
+                    ? `${item.title.substring(0, 15)}...`
+                    : item.title}
+                </p>
+              </div>
+            ))}
+            {/* Fill empty slots if we have less than 15 campaigns */}
+            {Array.from({ length: Math.max(0, 15 - campaignItems.length) }).map(
+              (_, index) => (
                 <div
                   key={`empty-${index}`}
                   className="flex flex-col items-center justify-center w-36 gap-5 border border-gray-200 p-5"
@@ -198,8 +190,8 @@ export default function CampaignDesktop() {
                     ᠻᠠᠮᠫᠠᠨᠢᠲᠤ ᠦᠭᠡᠢ
                   </p>
                 </div>
-              ))}
-            </div>
+              )
+            )}
           </div>
         </div>
       </div>
