@@ -4,6 +4,8 @@ import Layout from "@/components/layout/Layout";
 import Image from "next/image";
 import {
   useGetCompanyWorksQuery,
+  useGetCompanyWorkByIdQuery,
+  useGetCompanyWorkFeaturesQuery,
   useGetPostsQuery,
 } from "@/redux/services/apiService";
 import { getImageUrl } from "@/config/api";
@@ -12,11 +14,11 @@ export default function CampaignDetail() {
   const router = useRouter();
   const { id } = router.query;
 
-  // Fetch company work by static_id with deep population (includes posts)
+  // First try to fetch by static_id
   const {
-    data: companyWorksData,
-    error: companyWorkError,
-    isLoading: companyWorkLoading,
+    data: companyWorksByStaticId,
+    error: companyWorkStaticError,
+    isLoading: companyWorkStaticLoading,
   } = useGetCompanyWorksQuery(
     {
       filters: {
@@ -24,18 +26,49 @@ export default function CampaignDetail() {
           $eq: id,
         },
       },
-      populate: "deep", // This will include posts if they exist
+      populate: "deep",
     },
     {
       skip: !id, // Skip the query if id is not available yet
     }
   );
 
-  // Get the specific company work (should be first item in array)
+  // If static_id search returns no results, try by database ID
+  const {
+    data: companyWorkById,
+    error: companyWorkByIdError,
+    isLoading: companyWorkByIdLoading,
+  } = useGetCompanyWorkByIdQuery(id, {
+    skip: !id || (companyWorksByStaticId && companyWorksByStaticId.length > 0),
+  });
+
+  // Determine which company work to use
   const companyWork =
-    companyWorksData && companyWorksData.length > 0
-      ? companyWorksData[0]
-      : null;
+    companyWorksByStaticId && companyWorksByStaticId.length > 0
+      ? companyWorksByStaticId[0]
+      : companyWorkById;
+
+  // Get the actual company work ID for features query
+  const companyWorkId = companyWork?.id;
+
+  // Fetch company work features using the database ID
+  const {
+    data: featuresData,
+    error: featuresError,
+    isLoading: featuresLoading,
+  } = useGetCompanyWorkFeaturesQuery(
+    {
+      filters: {
+        company_work: {
+          $eq: companyWorkId,
+        },
+      },
+      populate: "deep",
+    },
+    {
+      skip: !companyWorkId, // Skip the query if company work ID is not available yet
+    }
+  );
 
   // Get posts from the populated company work data
   const companyWorkPosts = companyWork?.posts || [];
@@ -59,8 +92,16 @@ export default function CampaignDetail() {
   const postsData =
     companyWorkPosts.length > 0 ? companyWorkPosts : recentPostsData || [];
 
+  // Determine loading state
+  const isLoading = companyWorkStaticLoading || companyWorkByIdLoading || !id;
+
+  // Determine error state
+  const hasError =
+    (companyWorkStaticError && companyWorkByIdError) ||
+    (!companyWork && !isLoading);
+
   // Loading state
-  if (companyWorkLoading || !id) {
+  if (isLoading) {
     return (
       <Layout>
         <div className="min-h-screen flex items-center justify-center">
@@ -74,7 +115,7 @@ export default function CampaignDetail() {
   }
 
   // Error state
-  if (companyWorkError || !companyWork) {
+  if (hasError) {
     return (
       <Layout>
         <div className="min-h-screen flex items-center justify-center">
@@ -99,146 +140,244 @@ export default function CampaignDetail() {
 
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        {/* Campaign Header */}
-        <div className="mb-8">
-          <div className="flex flex-col md:flex-row gap-8 items-start">
-            {/* Campaign Icon */}
-            <div className="flex-shrink-0">
-              <Image
-                src={getImageUrl(companyWork.icon) || "/images/about1.png"}
-                alt={companyWork.title}
-                width={200}
-                height={200}
-                className="rounded-lg shadow-lg"
-                onError={(e) => {
-                  e.target.src = "/images/about1.png";
-                }}
-              />
-            </div>
-
-            {/* Campaign Info */}
-            <div className="flex-1">
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                {companyWork.title}
-              </h1>
-              <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                {companyWork.description}
-              </p>
-
-              {/* Campaign Features */}
-              {companyWork.feature_title && (
-                <div className="bg-gray-50 p-6 rounded-lg">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-3">
-                    {companyWork.feature_title}
-                  </h2>
-                  {companyWork.feature_desc && (
-                    <p className="text-gray-700">{companyWork.feature_desc}</p>
-                  )}
-                </div>
-              )}
-            </div>
+      <div className="sm:h-screen flex flex-col overflow-hidden flex-1">
+        {/* Hero Section */}
+        <div className="relative h-[200px] sm:h-[300px] w-full flex-shrink-0">
+          {companyWork.cover ? (
+            <Image
+              src={getImageUrl(companyWork.cover)}
+              alt={companyWork.title || "Campaign cover"}
+              fill
+              className="object-cover"
+              priority
+            />
+          ) : (
+            <div className="w-full h-full bg-gray-200" />
+          )}
+          <div className="absolute inset-0 bg-black bg-opacity-40" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <h1
+              className="p-4 text-white text-[10px] sm:text-lg md:text-xl lg:text-2xl font-bold text-start max-h-[150px] sm:max-h-[250px] w-full flex justify-center items-center overflow-x-auto"
+              style={{
+                writingMode: "vertical-lr",
+                textOrientation: "upright",
+              }}
+            >
+              {companyWork.title || "ᠻᠠᠮᠫᠠᠨᠢᠲᠤ"}
+            </h1>
           </div>
-
-          {/* Campaign Cover Image */}
-          {companyWork.cover && (
-            <div className="mt-8">
-              <Image
-                src={getImageUrl(companyWork.cover)}
-                alt={companyWork.title}
-                width={1200}
-                height={400}
-                className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg"
-                onError={(e) => {
-                  e.target.src = "/images/about1.png";
-                }}
-              />
-            </div>
-          )}
-
-          {/* YouTube Video */}
-          {companyWork.youtube_video_id && (
-            <div className="mt-8">
-              <div className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden shadow-lg">
-                <iframe
-                  src={`https://www.youtube.com/embed/${companyWork.youtube_video_id}`}
-                  title={companyWork.title}
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="w-full h-64 md:h-96"
-                ></iframe>
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* Related News Section */}
-        {postsData && postsData.length > 0 && (
-          <div className="mt-12">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8 text-center">
-              ᠬᠠᠮᠠᠭᠠᠷᠠᠯᠲᠠᠢ ᠮᠡᠳᠡᠭᠡᠯᠡᠯ
-            </h2>
-            <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-              {postsData.slice(0, 6).map((post) => (
-                <div
-                  key={post.id}
-                  className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer"
-                  onClick={() => router.push(`/news/${post.id}`)}
-                >
-                  <div className="aspect-w-16 aspect-h-9">
-                    <Image
-                      src={getImageUrl(post.cover) || "/images/about1.png"}
-                      alt={post.title}
-                      width={400}
-                      height={225}
-                      className="w-full h-48 object-cover"
-                      onError={(e) => {
-                        e.target.src = "/images/about1.png";
+        {/* Content and Sidebar Container */}
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-7 overflow-hidden">
+          {/* Content Section */}
+          <div className="sm:flex-1 p-4">
+            <div className="flex flex-row gap-2 sm:gap-10">
+              {/* Info Header */}
+              <div className="flex flex-row sm:flex-col items-start sm:items-center justify-between gap-4 flex-shrink-0">
+                <div className="flex flex-col items-start gap-4">
+                  <div
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                    className="border border-gray-300 px-2 sm:px-4 py-2 sm:py-3 text-[10px] sm:text-sm"
+                  >
+                    ᠻᠠᠮᠫᠠᠨᠢᠲᠤ
+                  </div>
+
+                  {/* Campaign Status */}
+                  {companyWork.status && (
+                    <div
+                      className={`px-2 sm:px-4 py-2 sm:py-3 text-[10px] sm:text-sm font-medium ${
+                        companyWork.status === "active"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
+                      style={{
+                        writingMode: "vertical-lr",
+                        textOrientation: "upright",
                       }}
-                    />
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-                      {post.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                      {post.short_description ||
-                        post.description ||
-                        post.body?.substring(0, 100) + "..."}
-                    </p>
-                    <div className="flex justify-between items-center text-xs text-gray-500">
-                      <span>
-                        {new Date(post.publishedAt).toLocaleDateString("mn-MN")}
-                      </span>
-                      <span className="text-blue-600 hover:text-blue-800">
-                        ᠳᠡᠯᠭᠡᠷᠡᠩᠭᠦᠢ ᠤᠨᠰᠢᠬᠤ →
-                      </span>
+                    >
+                      {companyWork.status === "active"
+                        ? "ᠢᠳᠡᠪᢈᠢᠲᠡᠢ"
+                        : "ᠳᠦᠦᠷᠡᠭᠰᠡᠨ"}
                     </div>
-                  </div>
+                  )}
+
+                  {/* Action Buttons */}
+                  <button
+                    className="bg-blue-600 text-white px-2 sm:px-4 py-2 sm:py-3 text-[10px] sm:text-sm font-semibold hover:bg-blue-700 transition-colors"
+                    onClick={() => router.push("/participation")}
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                  >
+                    ᠣᠷᠤᠯᠴᠠᠬᠤ
+                  </button>
+
+                  <button
+                    className="bg-gray-200 text-gray-800 px-2 sm:px-4 py-2 sm:py-3 text-[10px] sm:text-sm font-semibold hover:bg-gray-300 transition-colors"
+                    onClick={() => router.push("/campaign")}
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                  >
+                    ᠪᠤᠰᠠᠳ ᠻᠠᠮᠫᠠᠨᠢᠲᠤ ᠦᠵᠡᠬᠦ
+                  </button>
                 </div>
-              ))}
+
+                {/* Campaign Date */}
+                {companyWork.publishedAt && (
+                  <div
+                    className="text-xs sm:text-lg font-semibold"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                  >
+                    {new Date(companyWork.publishedAt).toLocaleDateString(
+                      "mn-MN"
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div className="flex gap-2 flex-1 overflow-x-auto max-h-[300px]">
+                {/* Campaign Description */}
+                {companyWork.description && (
+                  <div
+                    className="text-xs sm:text-xl md:text-2xl font-semibold text-gray-800 border-r border-gray-200 pr-4"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                    dangerouslySetInnerHTML={{
+                      __html: companyWork.description,
+                    }}
+                  />
+                )}
+
+                {/* Campaign Features */}
+                {featuresData && featuresData.length > 0 && (
+                  <div className="flex gap-4 overflow-x-auto">
+                    {featuresData.map((feature, index) => (
+                      <div
+                        key={feature.id || index}
+                        className="flex flex-col items-center gap-2 min-w-[200px] border-r border-gray-200 pr-4 last:border-r-0"
+                      >
+                        {feature.image && (
+                          <div className="w-16 h-16 sm:w-24 sm:h-24 relative">
+                            <Image
+                              src={getImageUrl(feature.image)}
+                              alt={feature.title || "Feature image"}
+                              fill
+                              className="object-cover rounded"
+                            />
+                          </div>
+                        )}
+                        <h3
+                          className="text-[10px] sm:text-base font-semibold"
+                          style={{
+                            writingMode: "vertical-lr",
+                            textOrientation: "upright",
+                          }}
+                        >
+                          {feature.title}
+                        </h3>
+                        {feature.description && (
+                          <p
+                            className="text-[9px] sm:text-sm text-gray-600"
+                            style={{
+                              writingMode: "vertical-lr",
+                              textOrientation: "upright",
+                            }}
+                          >
+                            {feature.description}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Campaign Icon */}
+                {companyWork.icon && (
+                  <div className="flex flex-col items-center gap-2 min-w-[100px]">
+                    <div className="w-16 h-16 sm:w-24 sm:h-24 relative">
+                      <Image
+                        src={getImageUrl(companyWork.icon)}
+                        alt={companyWork.title || "Campaign icon"}
+                        fill
+                        className="object-cover rounded"
+                      />
+                    </div>
+                    <p
+                      className="text-[10px] sm:text-sm font-medium"
+                      style={{
+                        writingMode: "vertical-lr",
+                        textOrientation: "upright",
+                      }}
+                    >
+                      ᠻᠠᠮᠫᠠᠨᠢᠲᠤ ᠶ᠋ᠢᠨ ᠲᠡᠮᠳᠡᠭ
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        )}
 
-        {/* No Related News */}
-        {(!postsData || postsData.length === 0) && (
-          <div className="mt-12 text-center">
-            <p className="text-gray-600 text-lg">
-              ᠡᠨᠡ ᠻᠠᠮᠫᠠᠨᠢᠲᠤ ᠳ᠋ᠤ ᠬᠠᠮᠠᠭᠠᠷᠠᠯᠲᠠᠢ ᠮᠡᠳᠡᠭᠡᠯᠡᠯ ᠦᠭᠡᠢ ᠪᠠᠶᠢᠨ᠎ᠠ
-            </p>
+          {/* Related Posts Sidebar */}
+          <div className="w-full sm:w-20 bg-gray-50 overflow-y-auto max-h-[250px] sm:max-h-max">
+            {postsData && postsData.length > 0 ? (
+              <div className="bg-gray-100 p-4 w-full h-full flex flex-row sm:flex-col gap-4 items-start sm:items-center">
+                <h3
+                  className="text-xs sm:text-xl font-semibold"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                >
+                  ᠬᠠᠮᠠᠭ᠎ᠠᠯᠠᠯᠲᠠᠢ ᠮᠡᠳᠡᠭᠡ
+                </h3>
+                <div className="flex flex-row sm:flex-col gap-2 sm:gap-4 overflow-x-auto sm:overflow-x-visible">
+                  {postsData.slice(0, 5).map((post, index) => (
+                    <div
+                      key={post.id || index}
+                      className="bg-white p-3 cursor-pointer hover:bg-gray-50 transition-colors max-w-10 flex-shrink-0"
+                      onClick={() => router.push(`/news/${post.id}`)}
+                    >
+                      <p
+                        className="text-[10px] sm:text-sm font-medium"
+                        style={{
+                          writingMode: "vertical-lr",
+                          textOrientation: "upright",
+                        }}
+                      >
+                        {post.title?.length > 60
+                          ? `${post.title.substring(0, 60)}...`
+                          : post.title}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="bg-gray-100 p-4 w-full h-full flex items-center justify-center">
+                <p
+                  className="text-xs text-gray-600"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                >
+                  ᠬᠠᠮᠠᠭ᠎ᠠᠯᠠᠯᠲᠠᠢ ᠮᠡᠳᠡᠭᠡ ᠦᠭᠡᠢ
+                </p>
+              </div>
+            )}
           </div>
-        )}
-
-        {/* Back to Campaigns Button */}
-        <div className="mt-12 text-center">
-          <button
-            onClick={() => router.push("/campaign")}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
-          >
-            ← ᠻᠠᠮᠫᠠᠨᠢᠲᠤ ᠨᠢᠭᠤᠷ ᠳ᠋ᠤ ᠪᠤᠴᠠᠬᠤ
-          </button>
         </div>
       </div>
     </Layout>
