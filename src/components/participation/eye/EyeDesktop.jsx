@@ -1,7 +1,48 @@
 import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
+import InteractiveMap from "@/components/participation/InteractiveMap";
+
+// Sample data for top 5 provinces - this should come from API in real implementation
+const top5Provinces = [
+  { provinceName: "Улаанбаатар", count: 25, percent: 25.0 },
+  { provinceName: "Төв", count: 18, percent: 18.0 },
+  { provinceName: "Орхон", count: 16, percent: 16.0 },
+  { provinceName: "Дархан-Уул", count: 14, percent: 14.0 },
+  { provinceName: "Дорнод", count: 13, percent: 13.0 },
+];
+
+// Arch visualization data - all yellow dots
+const archGraduses = [
+  { gradus: 4 },
+  { gradus: 13 },
+  { gradus: 22 },
+  { gradus: 31 },
+  { gradus: 40 },
+  { gradus: 49 },
+  { gradus: 58 },
+  { gradus: 67 },
+  { gradus: 76 },
+  { gradus: 85 },
+  { gradus: 94 },
+  { gradus: 103 },
+  { gradus: 112 },
+  { gradus: 121 },
+  { gradus: 130 },
+  { gradus: 139 },
+  { gradus: 148 },
+  { gradus: 157 },
+  { gradus: 166 },
+  { gradus: 175 },
+];
 
 export default function EyeDesktop() {
+  const totalNews = 100; // This should come from API
+  const archInfo = {
+    count: totalNews,
+    percent: 100,
+    title: "Нийт ирсэн мэдээллийн тоо",
+  };
+
   return (
     <div className="h-full hidden sm:flex gap-10 overflow-x-auto w-auto flex-shrink-0">
       <BannerSlider images={bannerImages} width="90rem" />
@@ -17,7 +58,7 @@ export default function EyeDesktop() {
           >
             ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠠᠩᠬᠠᠷᠤᠯ ᠲᠠᠲᠠᠭᠰᠠᠨ ᠠᠰᠠᠭᠤᠳᠠᠯ ᠤ᠋ᠳ ᠢ᠋ ᠡᠷᠢᠯᢈᠢᠯᠡᢈᠦ᠂
             ᠰᠢᠢᠳᠪᠦᠷᠢᠯᠡᢈᠦ ᠠᠷᠭ᠎ᠠ ᠵᠠᠮ ᠢ᠋ ᠲᠣᠳᠤᠷᠬᠠᠶᠢᠯᠠᠬᠤ ᠳ᠋ᠤ ᠢᠷᢉᠡᠳ ᠦ᠋ᠨ ᠣᠷᠤᠯᠴᠠᠭ᠎ᠠ ᠶ᠋ᠢ
-            ᠳᠡᠮᠵᠢᢈᠦ ᠵᠣᠷᠢᠯᠭ᠎ᠠ ᠪᠠᠷ ᠶᠠᠪᠤᠭᠤᠯᠵᠤ ᠪᠤᠢ “ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠨᠢᠳᠦ” ᠦᠨᠳᠦᠰᠦᠨ
+            ᠳᠡᠮᠵᠢᢈᠦ ᠵᠣᠷᠢᠯᠭ᠎ᠠ ᠪᠠᠷ ᠶᠠᠪᠤᠭᠤᠯᠵᠤ ᠪᠤᠢ "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠨᠢᠳᠦ" ᠦᠨᠳᠦᠰᠦᠨ
             ᠦ᠋ ᠮᠡᠳᠡᢉᠡᠯᠡᠯ ᠦ᠋ᠨ ᠮᠠᠷᠠᠹᠤᠨ᠃
           </p>
           <h2
@@ -41,9 +82,138 @@ export default function EyeDesktop() {
           >
             ᠮᠣᠩᠭᠣᠯ ᠤᠯᠤᠰ ᠤ᠋ᠨ ᠭᠠᠵᠠᠷ ᠤ᠋ᠨ ᠵᠢᠷᠤᠭ
           </p>
-          <img src="/images/mgl-map.png" alt="" className="h-1/2" />
+          <div className="h-1/2">
+            <InteractiveMap />
+          </div>
         </div>
-        <div className="flex gap-7 p-20">
+
+        {/* Yellow Arch Visualization */}
+        <div className="flex flex-col items-center">
+          <div className="w-[546px] h-[311px] flex items-center justify-end flex-col mb-[60px]">
+            <div className="text-[42px] px-4 flex flex-col items-center">
+              {archInfo.percent}%
+              <div className="h-[3px] w-[127px] bg-black mb-1" />
+            </div>
+            <div className="text-[13px] w-[240px] h-[40px] text-center truncate-text">
+              {archInfo.title}
+            </div>
+            <div className="text-[71px] leading-none">{archInfo.count}</div>
+            <div className="w-0 h-0 relative">
+              {archGraduses.map((item, index) => (
+                <div
+                  key={index}
+                  className="w-[260px] h-[45px] absolute right-0 bottom-4 flex items-center space-x-1.5"
+                  style={{
+                    transform: `rotate(${item.gradus}deg)`,
+                    transformOrigin: "right",
+                    clipPath: "polygon(0 0, 0 100%, 100% 50%)",
+                  }}
+                >
+                  {[0, 1, 2, 3, 4].map((dot) => (
+                    <div
+                      key={dot}
+                      className="w-[17px] h-[17px] rounded-full"
+                      style={{
+                        backgroundColor: "#fcff29",
+                      }}
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Хамгийн их мэдээлэл ирсэн аймаг, дүүрэг section */}
+          <div className="flex flex-col">
+            <div
+              className="w-[507px] h-[120px] flex items-center justify-center border border-black text-[22px]"
+              style={{
+                writingMode: "vertical-lr",
+                textOrientation: "upright",
+              }}
+            >
+              ᠬᠠᠮᠠᠭᠢᠨ ᠢ᠋ᠢᠬ ᠮᠡᠳᠡᠡᠡᠯ ᠢᠷᠰᠡᠨ ᠠ᠋ᠢᠮᠠᠭ᠂ ᠳ᠋ᠦᠦᠷᠡᠭ
+            </div>
+            <div className="flex w-[507px] h-[80px] pl-[10px] my-[20px]">
+              <div className="flex-1 flex items-center justify-center">
+                <span
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                >
+                  ᠠ᠋ᠢᠮᠠᠭ
+                </span>
+              </div>
+              <div className="flex-1 flex items-center justify-center">
+                <span
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                >
+                  ᠨᠢᠢᠢᠲ
+                </span>
+              </div>
+              <div className="flex-1 flex items-center justify-center">
+                <span
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                >
+                  %
+                </span>
+              </div>
+            </div>
+            {top5Provinces.map((item, index) => (
+              <div
+                key={index}
+                className="flex w-[507px] h-[80px] pl-[10px] mb-[20px] border-l-2 border-black"
+              >
+                <div
+                  className={`flex-1 flex items-center justify-center border border-black ${
+                    index === 0 ? "border-none" : ""
+                  }`}
+                  style={{
+                    backgroundColor: index === 0 ? "#fcff29" : "transparent",
+                  }}
+                >
+                  <span
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                  >
+                    {item.provinceName}
+                  </span>
+                </div>
+                <div className="flex-1 flex items-center justify-center">
+                  <span
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                  >
+                    {item.count}
+                  </span>
+                </div>
+                <div className="flex-1 flex items-center justify-center">
+                  <span
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                  >
+                    {item.percent}%
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex gap-7 p-20" id="fill-info">
           <div className="flex gap-2">
             <p
               className="text-sm"

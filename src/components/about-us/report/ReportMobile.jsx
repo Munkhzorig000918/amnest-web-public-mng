@@ -1,9 +1,73 @@
+import { useState, useEffect } from "react";
 import Button from "@/components/common/Button";
 import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import ReportSwiper from "./ReportSwiper";
+import { useRouter } from "next/router";
 
 export default function ReportMobile() {
+  const [reports, setReports] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(
+          "http://localhost:1337/api/reports?populate=*"
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setReports(data.data || []);
+      } catch (err) {
+        console.error("Error fetching reports:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReports();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="block sm:hidden">
+        <BannerSlider images={bannerImages} width="90rem" />
+        <div className="flex items-center justify-center h-64">
+          <p
+            className="text-lg font-bold"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+          >
+            ᠠᠴᠢᠶᠠᠯᠠᠨ ᠠᠴᠢᠶᠠᠯᠠᠵᠤ ᠪᠠᠢᠨ᠎ᠠ...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="block sm:hidden">
+        <BannerSlider images={bannerImages} width="90rem" />
+        <div className="flex items-center justify-center h-64">
+          <p
+            className="text-lg font-bold text-red-600"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+          >
+            ᠠᠯᠳᠠᠭᠠ ᠭᠠᠷᠪᠠ᠃ ᠳᠠᠬᠢᠨ ᠳᠤᠷᠠᠳᠬᠤ ᠪᠣᠯᠤᠮᠵᠢᠲᠠᠢ᠃
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const reportItems = reports || [];
+
   return (
     <div className="block sm:hidden">
       <BannerSlider images={bannerImages} width="90rem" />
@@ -14,6 +78,7 @@ export default function ReportMobile() {
             "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢ ᠲᠦᢉᠡᢉᠡᠨ ᠳᠡᠯᢉᠡᠷᠡᢉᠦᠯᢈᠦ᠂ ᠬᠠᠮᠠᠭᠠᠯᠠᠬᠤ ᠪᠢᠳᠡᠨ ᠦ᠋ ᠦᠢᠯᠡᠰ ᠲᠦ ᠮᠠᠨ ᠤ᠋ ᢉᠡᠰᠢᢉᠦᠳ ᠳᠡᠮᠵᠢᢉᠴᠢᠳ ᠥᠪᠡᠷᠰᠡᠳ ᠦ᠋ᠨ ᠴᠠᠭ ᠵᠠᠪ᠂ ᠰᠡᠳᢈᠢᠯ ᠵᠢᠷᠦᢈᠡ ᠪᠡᠨ ᠵᠣᠷᠢᠭᠤᠯᠵᠤ ᠠᠵᠢᠯᠯᠠᠳᠠᠭ᠃ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠳ᠋ᠦ ᠡᢉᠡᠯᠢᠲᠡᠢ ᠳᠡᠯᠡᢈᠡᠢ ᠶᠢᠷᠲᠢᠨᠴᠦ ᠶ᠋ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠳ᠋ᠤ ᢉᠡᠰᠢᢉᠦᠨ ᠦ᠋ ᠣᠷᠤᠯᠴᠠᠭ᠎ᠠ᠂ ᠲᠠᠲᠠᠪᠤᠷᠢ ᠶᠠᠭᠤ ᠶᠠᠭᠤᠨ ᠠ᠋ᠴᠠ ᠴᠤ ᠢᠯᠡᢉᠦᠦ ᠴᠢᠬᠤᠯᠠ ᠪᠠᠶᠢᠳᠠᠭ᠃ ᠲᠡᠶᠢᠮᠦ ᠡᠴᠡ ᠪᠢᠳᠡ ᢉᠡᠰᠢᢉᠦᠳ ᠦ᠋ᠨ ᠢ᠋ᠶᠡᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠬᠠᠨᠳᠢᠪᠯᠠᠭᠰᠠᠨ ᠴᠠᠭ᠂ ᠲᠥᠯᠦᢉᠰᠡᠨ ᠲᠠᠲᠠᠪᠤᠷᠢ᠂ ᠪᠠᠬᠠᠷᠬᠠᠵᠤ ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠤ᠋ ᠲᠠᠶᠢᠯᠤᠨ ᠳ᠋ᠤ ᠪᠠᠨ ᠳᠤᠷᠠᠳᠳᠠᠭ᠃"
           }
           sectionTitle={"ᠪᠢᠳᠡ ᢈᠡᠷᢈᠢᠨ ᠥᢉᠡᠷᠡᠴᠢᠯᠡᠯᠲᠡ ᢈᠢᠳᠡᢉ ᠪᠤᠢ?"}
+          reports={reportItems}
         />
         <div className={`h-full flex flex-row`}>
           <div className="max-h-[200px] flex items-center justify-center w-full h-full bg-[#F1F1F1]">
@@ -49,8 +114,11 @@ export default function ReportMobile() {
           </div>
         </div>
         <div className="flex flex-row gap-5 w-full h-full overflow-x-auto p-4">
-          {reportItems.map((a, i) => (
-            <div className="flex flex-col gap-2 w-full h-full">
+          {staticItems.map((report, i) => (
+            <div
+              key={report.id || i}
+              className="flex flex-col gap-2 w-full h-full"
+            >
               <div className="w-8 h-8 text-xl font-bold aspect-square rounded-sm flex items-center justify-center bg-black text-[#FFFF00]">
                 {i + 1}
               </div>
@@ -62,7 +130,9 @@ export default function ReportMobile() {
                     textOrientation: "upright",
                   }}
                 >
-                  {a.title}
+                  {report.attributes?.title ||
+                    report.title ||
+                    `ᠲᠠᠶᠢᠯᠤᠨ ${i + 1}`}
                 </h2>
                 <p
                   className="text-[10px]"
@@ -71,7 +141,9 @@ export default function ReportMobile() {
                     textOrientation: "upright",
                   }}
                 >
-                  {a.description}
+                  {report.attributes?.description ||
+                    report.description ||
+                    "ᠲᠠᠢᠯᠪᠤᠷᠢ ᠦᢉᠡᠢ"}
                 </p>
               </div>
             </div>
@@ -121,6 +193,7 @@ export default function ReportMobile() {
               text={"ᠬᠠᠨᠳᠢᠪ ᠥᢉᢈᠦ"}
               type="primary"
               className="max-h-min whitespace-nowrap"
+              onClick={() => router.push("/donation")}
             />
           </div>
         </div>
@@ -129,7 +202,7 @@ export default function ReportMobile() {
   );
 }
 
-const reportItems = [
+const staticItems = [
   {
     title:
       "ᢈᠦᠮᠦᠨ ᠪᠦᠷᠢ ᠡᠷᢈᠡ ᠪᠡᠨ ᠮᠡᠳᠡᠳᠡᢉ᠂ ᠡᠷᢈᠡ ᠪᠡᠨ ᢈᠡᠷᠡᢉᠵᠢᢉᠦᠯᠵᠦ ᠴᠢᠳᠠᠳᠠᠭ ᠳᠡᠯᠡᢈᠡᠢ ᠶᠢᠷᠲᠢᠨᠴᠦ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ",

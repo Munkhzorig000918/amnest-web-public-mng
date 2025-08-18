@@ -66,27 +66,31 @@ export default function AssemblySwiper({ title, description, sectionTitle }) {
   const slides = [
     {
       id: 1,
-      image: "https://www.youtube.com/watch?v=F5jCTOgfuw0",
+      image: "https://www.youtube.com/watch?v=aCi-sflmu2Y",
     },
     {
       id: 2,
-      image: "https://www.youtube.com/watch?v=F5jCTOgfuw0",
+      image: "https://www.youtube.com/watch?v=a0w2NjR8iUU",
     },
     {
       id: 3,
-      image: "https://www.youtube.com/watch?v=F5jCTOgfuw0",
+      image: "https://www.youtube.com/watch?v=WCgBkzwGxtQ",
     },
     {
       id: 4,
-      image: "https://www.youtube.com/watch?v=F5jCTOgfuw0",
+      image: "https://www.youtube.com/watch?v=YsLw5PNtJV8",
     },
     {
       id: 5,
-      image: "https://www.youtube.com/watch?v=F5jCTOgfuw0",
+      image: "https://www.youtube.com/watch?v=sLAliIBTZtI",
     },
     {
       id: 6,
-      image: "https://www.youtube.com/watch?v=F5jCTOgfuw0",
+      image: "https://www.youtube.com/watch?v=NqvasOvgYwo",
+    },
+    {
+      id: 7,
+      image: "https://www.youtube.com/watch?v=a4z8D-jl07g",
     },
   ];
 

@@ -4,22 +4,139 @@ import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import apiService from "@/services/apiService";
+import { getImageUrl } from "@/utils/fetcher";
 
 export default function NewsMobile() {
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [activeCategory, setActiveCategory] = useState("news");
-  const itemsPerPage = 9; // Fewer items per page on mobile
+  const itemsPerPage = 6; // Fewer items per page on mobile
 
-  // Filter news items by category
-  const filteredItems = newsItems.filter(
-    (item) => item.category === activeCategory
-  );
+  // State for API data
+  const [postsData, setPostsData] = useState([]);
+  const [statementsData, setStatementsData] = useState([]);
+  const [goodNewsData, setGoodNewsData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Calculate pagination
-  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentItems = filteredItems.slice(startIndex, endIndex);
+  // Fetch data based on active category
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        switch (activeCategory) {
+          case "news":
+            // Regular news posts
+            const posts = await apiService.posts.getPostsList({
+              page: currentPage,
+              pageSize: itemsPerPage,
+            });
+            console.log("Posts response:", posts);
+            setPostsData(posts.data || []);
+            break;
+
+          case "statements":
+            // Statements/position papers
+            const statements = await apiService.statements.getStatements({
+              page: currentPage,
+              pageSize: itemsPerPage,
+            });
+            console.log("Statements response:", statements);
+            setStatementsData(statements.data || []);
+            break;
+
+          case "good_news":
+            // Good news/special posts - using posts API with category filter
+            const goodNews = await apiService.posts.getPostsList({
+              page: currentPage,
+              pageSize: itemsPerPage,
+              post_category: "good_news",
+            });
+            console.log("Good news response:", goodNews);
+            setGoodNewsData(goodNews.data || []);
+            break;
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [activeCategory, currentPage]);
+
+  // Determine current data based on active category
+  let currentData = [];
+
+  switch (activeCategory) {
+    case "news":
+      currentData = postsData;
+      break;
+    case "statements":
+      currentData = statementsData;
+      break;
+    case "good_news":
+      currentData = goodNewsData;
+      break;
+    default:
+      currentData = [];
+  }
+
+  // Convert data to unified format
+  const newsItems = currentData.map((item, index) => {
+    let title, image, description;
+
+    // Debug logging
+    if (activeCategory === "statements") {
+      console.log("Processing statement item:", item);
+      console.log("Item has attributes?", !!item.attributes);
+      console.log("Item keys:", Object.keys(item));
+    }
+
+    switch (activeCategory) {
+      case "news":
+      case "good_news":
+        title = item.attributes?.title || item.title || `ᠭᠠᠷᠴᠢᠭ ${index + 1}`;
+        image =
+          getImageUrl(item.attributes?.cover || item.cover) ||
+          "/images/news1.png";
+        description =
+          item.attributes?.short_description || item.short_description || "";
+        break;
+      case "statements":
+        // Handle both flattened (formatStrapiResponse) and nested (raw) formats
+        title = item.title || item.attributes?.title || `ᠮᠡᠳᠡᠭᠳᠡᠯ ${index + 1}`;
+
+        // For statements, the data is already flattened by formatStrapiResponse
+        // So item.cover should be the cover data directly
+        const coverData = item.cover || item.attributes?.cover;
+        image = getImageUrl(coverData) || "/images/news1.png";
+        description = item.description || item.attributes?.description || "";
+        break;
+      default:
+        title = `ᠭᠠᠷᠴᠢᠭ ${index + 1}`;
+        image = "/images/news1.png";
+        description = "";
+    }
+
+    return {
+      id: item.id,
+      title,
+      image,
+      description,
+      category: activeCategory,
+    };
+  });
+
+  // Calculate pagination - for now we'll use the current page size
+  // In a real implementation, you'd get total count from the API response
+  const totalPages = Math.max(1, Math.ceil(currentData.length / itemsPerPage));
 
   // Convert Arabic numerals to Mongolian Bichig numerals
   const toMongolianNumeral = (num) => {
@@ -44,93 +161,178 @@ export default function NewsMobile() {
     setCurrentPage(1); // Reset to first page when changing category
   };
 
+  const handleNewsClick = (newsId) => {
+    if (activeCategory === "statements") {
+      router.push(`/news/statement/${newsId}`);
+    } else {
+      router.push(`/news/${newsId}`);
+    }
+  };
+
+  // Loading state
+  if (isLoading && currentData.length === 0) {
+    return (
+      <div className="block sm:hidden h-full overflow-y-auto flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900 mx-auto"></div>
+          <p
+            className="mt-4 text-gray-600 text-sm"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+          >
+            ᠠᠴᠢᠶᠠᠯᠠᠵᠤ ᠪᠠᠶᠢᠨ᠎ᠠ...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="block sm:hidden h-full overflow-y-auto flex items-center justify-center min-h-screen">
+        <div className="text-center text-red-600">
+          <p
+            className="text-sm"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+          >
+            ᠮᠡᠳᠡᢉᠡ ᠠᠴᠢᠶᠠᠯᠠᠬᠤ ᠳ᠋ᠤ ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠪᠠ
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="block sm:hidden h-full overflow-y-auto">
+    <div className="block sm:hidden h-full overflow-y-auto overflow-x-hidden">
       <BannerSlider images={bannerImages} width="100%" />
 
-      <div className="p-4">
+      <div className="p-4 flex gap-5">
         {/* Category Buttons */}
-        <div className="flex gap-2 mb-4 overflow-x-auto">
+        <div className="flex flex-col gap-2">
           <button
             onClick={() => handleCategoryChange("news")}
-            className={`px-2 py-1 rounded-lg text-xs whitespace-nowrap transition-colors ${
+            className={`px-4 py-2 text-xs font-bold rounded transition-colors cursor-pointer ${
               activeCategory === "news"
-                ? "bg-[#2D2D2D] text-white"
-                : "bg-white border border-[#E3E3E3] text-black hover:bg-gray-50"
+                ? "text-white bg-[#2D2D2D] border border-[#2D2D2D]"
+                : "text-black bg-white border border-[#E3E3E3] hover:bg-gray-50"
             }`}
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
           >
             ᠮᠡᠳᠡᢉᠡ
           </button>
           <button
-            onClick={() => handleCategoryChange("reports")}
-            className={`px-2 py-1 rounded-lg text-xs whitespace-nowrap transition-colors ${
-              activeCategory === "reports"
-                ? "bg-[#2D2D2D] text-white"
-                : "bg-white border border-[#E3E3E3] text-black hover:bg-gray-50"
+            onClick={() => handleCategoryChange("statements")}
+            className={`px-4 py-2 text-xs font-bold rounded transition-colors cursor-pointer ${
+              activeCategory === "statements"
+                ? "text-white bg-[#2D2D2D] border border-[#2D2D2D]"
+                : "text-black bg-white border border-[#E3E3E3] hover:bg-gray-50"
             }`}
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
           >
-            ᠮᠡᠳᠡᢉᠳᠡᠯ᠂ ᠪᠠᠶᠢᠷᠢ ᠰᠠᠭᠤᠷᠢ
+            ᠮᠡᠳᠡᠭᠳᠡᠯ ᠪᠠᠶᠢᠷ ᠰᠤᠤᠷᠢ
           </button>
           <button
-            onClick={() => handleCategoryChange("special")}
-            className={`px-2 py-1 rounded-lg text-xs whitespace-nowrap transition-colors ${
-              activeCategory === "special"
-                ? "bg-[#2D2D2D] text-white"
-                : "bg-white border border-[#E3E3E3] text-black hover:bg-gray-50"
+            onClick={() => handleCategoryChange("good_news")}
+            className={`px-4 py-2 text-xs font-bold rounded transition-colors cursor-pointer ${
+              activeCategory === "good_news"
+                ? "text-white bg-[#2D2D2D] border border-[#2D2D2D]"
+                : "text-black bg-white border border-[#E3E3E3] hover:bg-gray-50"
             }`}
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
           >
-            ᠣᠨᠴᠠᠯᠠᠬᠤ ᠮᠡᠳᠡᢉᠡ
+            ᠣᠨᠴᠤᠯᠠᠬᠤ ᠮᠡᠳᠡᢉᠡ
           </button>
         </div>
 
         {/* News Grid */}
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          {currentItems.map((item) => (
-            <div
-              key={item.id}
-              className="bg-white rounded-lg overflow-hidden border border-[#E3E3E3]"
-            >
-              <div className="relative aspect-square">
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  fill
-                  className="object-cover"
-                />
-                <Button
-                  text={"ᠮᠡᠳᠡᢉᠡ"}
-                  type="primary"
-                  className="absolute top-2 right-2 text-xs"
-                />
-              </div>
-              <div className="p-3 flex items-end">
-                <h3
-                  className="text-xs mb-2 max-h-[100px] w-full line-clamp-6"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                >
-                  {item.title}
-                </h3>
-                <Button text={"ᠤᠩᠰᠢᠬᠤ"} type="secondary" />
-              </div>
-            </div>
-          ))}
-        </div>
+        <div className="flex-1">
+          <div className="grid grid-cols-1 gap-4">
+            {isLoading ? (
+              // Loading placeholders to maintain layout
+              Array.from({ length: 6 }).map((_, index) => (
+                <div key={`loading-${index}`} className="flex gap-4">
+                  <div className="relative w-24 h-24 flex-shrink-0 bg-gray-200 animate-pulse rounded"></div>
+                  <div className="flex-1">
+                    <div className="h-8 bg-gray-200 animate-pulse rounded mb-2"></div>
+                    <div className="h-6 w-16 bg-gray-200 animate-pulse rounded"></div>
+                  </div>
+                </div>
+              ))
+            ) : newsItems.length > 0 ? (
+              newsItems.slice(0, 6).map((item) => (
+                <div key={item.id} className="flex gap-4 max-h-[150px]">
+                  <h3
+                    className="text-sm font-medium line-clamp-3 mb-2"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                  >
+                    {item.title.length > 40
+                      ? `${item.title.substring(0, 40)}...`
+                      : item.title}
+                  </h3>
+                  <div className="relative aspect-square w-[150px] h-[150px] flex-shrink-0">
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      className="object-cover rounded"
+                      onError={(e) => {
+                        e.target.src = "/images/news1.png"; // fallback image
+                      }}
+                    />
+                    <Button
+                      text={
+                        activeCategory === "statements" ? "ᠮᠡᠳᠡᠭᠳᠡᠯ" : "ᠮᠡᠳᠡᢉᠡ"
+                      }
+                      type="primary"
+                      className="absolute -top-1 -right-1 text-black text-xs px-1 py-0.5 cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={() => handleNewsClick(item.id)}
+                    />
+                  </div>
 
-        {/* Pagination Controls */}
-        {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-4">
+                  <Button
+                    text={"ᠤᠩᠰᠢᠬᠤ"}
+                    type="secondary"
+                    className="text-black text-xs px-2 py-1 cursor-pointer hover:opacity-80 transition-opacity"
+                    onClick={() => handleNewsClick(item.id)}
+                  />
+                </div>
+              ))
+            ) : (
+              // No data available - show message
+              <div className="flex items-center justify-center h-[200px]">
+                <div className="text-center">
+                  <p
+                    className="text-gray-500 text-sm"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                  >
+                    {activeCategory === "good_news"
+                      ? "ᠣᠨᠴᠤᠯᠠᠬᠤ ᠮᠡᠳᠡᢉᠡ ᠦᠭᠡᠢ"
+                      : activeCategory === "statements"
+                      ? "ᠮᠡᠳᠡᠭᠳᠡᠯ ᠦᠭᠡᠢ"
+                      : "ᠮᠡᠳᠡᢉᠡ ᠦᠭᠡᠢ"}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Pagination Controls */}
+          <div className="flex justify-center items-center gap-4 mt-6">
             <Button
               text={<ChevronLeft />}
               type="chevron"
               onClick={handlePrevPage}
               disabled={currentPage === 1}
             />
-            <span className="text-sm">
+            <p className="text-sm">
               {toMongolianNumeral(currentPage)}/{toMongolianNumeral(totalPages)}
-            </span>
+            </p>
             <Button
               text={<ChevronRight />}
               type="chevron"
@@ -138,290 +340,8 @@ export default function NewsMobile() {
               disabled={currentPage === totalPages}
             />
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
 }
-
-const newsItems = [
-  {
-    id: 1,
-    category: "news",
-    title:
-      "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠳ᠋ᠦ ᠡᢉᠡᠯᠢ ᠲᠡᠢ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᢈᠥᠲᠦᠯᠪᠦᠷᠢ ᠪᠠᠶᠠᠨ-ᠥᠯᠦᢉᠡᠢ᠂ ᠬᠣᠪᠳᠤ ᠠᠶᠢᠮᠠᠭ ᠲᠤ ᢈᠡᠷᠡᢉᠵᠢᠵᠦ ᠪᠠᠶᠢᠨ᠎ᠠ᠃",
-    image: "/images/news1.png",
-  },
-  {
-    id: 2,
-    category: "news",
-    title:
-      "ᠲᠠᠨ ᠤ᠋ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠡᠰᠢᠨᠯ᠋ ᠪᠠᠶᠢᠭᠤᠯᠤᠯᠭ᠎ᠠ ᠶ᠋ᠢᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠡᠮᠡᠴᠡᠯ ᠲᠠᠢ ᠬᠣᠯᠪᠣᠭᠳᠠᠬᠤ ᠴᠢᠬᠤᠯᠠ ᠲᠡᠮᠡᠴᠡᠯ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 3,
-    category: "news",
-    title:
-      "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠵᠠᠯᠠᠭᠤᠴᠤᠳ ᠤᠨ ᠬᠦᠳᠡᠯᢉᠡᠭᠡᠨ ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠪᠦᢉᠦᠳᠡ ᠶ᠋ᠢᠨ ᠢᠳᠡᠪᢈᠢ ᠣᠷᠣᠯᠴᠠᠭ᠎ᠠ ᠶ᠋ᠢ ᠡᠷᠢᠯᢈᠢᠯᠡᠵᠦ ᠪᠠᠶᠢᠨ᠎ᠠ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 4,
-    category: "news",
-    title:
-      "ᠲᠡᢉᠰᠢ ᠪᠢᠰᠢ ᠪᠠᠶᠢᠳᠠᠯ ᠤ᠋ᠨ ᠡᠰᠡᠷᢉᠦ ᠲᠡᠮᠡᠴᠡᠯ ᠢ ᠳᠡᠮᠵᠢᠬᠦ ᠲᠦᠷᠦ ᠶ᠋ᠢᠨ ᠪᠣᠳᠣᠯᠭ᠎ᠠ ᠶ᠋ᠢ ᠰᠠᠶᠢᠵᠢᠷᠠᠭᠤᠯᠬᠤ ᠬᠡᠷᠡᢉᠲᠡᠢ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 5,
-    category: "news",
-    title:
-      "ᠰᠠᠶᠢᠨ ᠳᠤᠷ᠎ᠠ ᠶ᠋ᠢᠨ ᠪᠣᠯᠤᠨ ᠳᠠᠳᠤᠯᠭ᠎ᠠ ᠶ᠋ᠢᠨ ᠠᠵᠢᠯ ᠤᠨ ᠲᠥᠯᠦᢉᠡ ᠮᠣᠩᢉᠣᠯ ᠳᠠᠬᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠡᠰᠢᠨᠯ ᠵᠢᠨ ᠠᠵᠢᠯᠯᠠᢉᠠ ᠲᠥᢈᠦᠰᠪᠦᠷᠢ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 6,
-    category: "news",
-    title:
-      "ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶ᠋ᠢᠨ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠪᠡᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠬᠠᠮᠲᠤᠷᠠᠯ ᠤᠨ ᠡᠷᢈᠡᠮ ᠰᠢᠨᠵᠢᠯᠡᢉᠡᠨ ᠦ᠋ ᠬᠦᠷᠢᠶᠡᠯᠡᠩ ᠢ᠋ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 7,
-    category: "news",
-    title:
-      "ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠲᠦᠷᠦ ᠶᠢᠨ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 8,
-    category: "news",
-    title:
-      "ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠧᠰᠢᠨᠯ ᠤᠨ ᠰᠠᠢᠢᠳ ᠤᠯᠤᠰ ᠤᠨ ᠡᠷᢈᠡ ᠶᠢᠨ ᠰᠢᠨ᠎ᠡ ᠬᠦᠳᠡᠯᢉᠡᠭᠡᠨ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 9,
-    category: "news",
-    title:
-      "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠦᠨᠡᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠠᠯᠳᠠᠷ ᠤᠨ ᠰᠠᠯᠪᠠᠷ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 10,
-    category: "news",
-    title:
-      "ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠦᠨᠳᠦᠰᠦᠲᠡᠨ ᠦ᠋ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᠶᠢᠨ ᠰᠠᠯᠪᠠᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᠢ ᠳᠡᠮᠵᠢᠭᠦᠯᠦᠨ ᠵᠦᠷᠭᠡᠨ ᠠᠵᠢᠯᠠᠳᠠᠨ᠎ᠠ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 11,
-    category: "news",
-    title:
-      "ᠰᠠᠶᠢᠨ ᠳᠤᠷ᠎ᠠ ᠶᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠰᠢᠨ᠎ᠡ ᠦᠷᠭᠦᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 12,
-    category: "news",
-    title:
-      "ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶᠢᠨ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠪᠡᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠦᠷᠭᠦᠯᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 13,
-    category: "reports",
-    title:
-      "ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠦᠨᠳᠦᠰᠦᠲᠡᠨ ᠦ᠋ ᠶᠡᠬᠡ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᠶᠢᠨ ᠰᠠᠯᠪᠠᠷ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 14,
-    category: "reports",
-    title:
-      "ᠨᠠᠢᠷᠠᠮᠳᠠᠯ ᠤᠨ ᠰᠠᠯᠪᠠᠷ ᢈᠦᠮᠦᠨ ᠤ ᠡᠷᢈᠡ ᠶᠢᠨ ᠳᠠᠶᠠᠨ ᠳᠡᠯᠡᢈᠡᠢ ᠶᠢᠨ ᠬᠤᠷᠠᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠤᠨ ᠠᠵᠢᠯᠠᠳᠠᠨ᠎ᠠ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 15,
-    category: "reports",
-    title:
-      "ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠰᠢᠨ᠋ᠯ ᠤᠨ ᠰᠠᠢᠢᠳ ᠤᠯᠤᠰ ᠤᠨ ᠡᠷᢈᠡ ᠶᠢᠨ ᠰᠠᠯᠪᠠᠷ ᢈᠦᠮᠦᠨ ᠦ ᠡᠷᢈᠡ ᠶᠢᠨ ᠬᠤᠷᠠᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠤᠨ᠎ᠠ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 16,
-    category: "reports",
-    title:
-      "ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶ᠋ᠢᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠦᠨᠡᠨ ᠦ᠋ ᠲᠦᠪ ᠲᠡᠦᢈᠡ ᠶ᠋ᠢᠨ ᠠᠰᠠᠭᠤᠳᠠᠯ ᠢ ᠰᠢᠨᠵᠢᠯᠡᢉᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 17,
-    category: "reports",
-    title:
-      "ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠦᠨᠳᠦᠰᠦᠲᠡᠨ ᠦ᠋ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᠶ᠋ᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᠢ ᠳᠡᠮᠵᠢᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 18,
-    category: "reports",
-    title:
-      "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠠᠯᠳᠠᠷ ᠤᠨ ᠰᠠᠯᠪᠠᠷ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠰᠢᠨ᠎ᠡ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ ᠵᠦᠷᠭᠡᠨ ᠠᠵᠢᠯᠠᠳᠠᠨ᠎ᠠ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 19,
-    category: "reports",
-    title:
-      "ᠰᠠᠶᠢᠨ ᠳᠤᠷ᠎ᠠ ᠶᠢᠨ ᠨᠡᠶᠢᠲᠡ ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠡᠷᢈᠡ ᠶᠢᠨ ᠰᠠᠯᠪᠠᠷ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 20,
-    category: "reports",
-    title:
-      "ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠧᠰᠢᠨᠯ ᠤᠨ ᠰᠠᠢᠢᠳ ᠤᠯᠤᠰ ᠤᠨ ᠡᠷᢈᠡ ᠶᠢᠨ ᠵᠦᠷᠭᠡᠨ ᠪᠠᠢᠢᠴᠠᠭᠠᠨ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 21,
-    category: "reports",
-    title:
-      "ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠬᠦᠮᠦᠵᠢᠯ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠰᠢᠨ᠎ᠡ ᠦᠷᠭᠦᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 22,
-    category: "reports",
-    title:
-      "ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶᠢᠨ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠪᠡᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠦᠷᠭᠦᠯᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 23,
-    category: "reports",
-    title:
-      "ᠰᠠᠶᠢᠨ ᠳᠤᠷ᠎ᠠ ᠶᠢᠨ ᠪᠣᠯᠤᠨ ᠳᠠᠳᠤᠯᠭ᠎ᠠ ᠶᠢᠨ ᠠᠵᠢᠯ ᠤᠨ ᠲᠥᠯᠦᢉᠡ ᠮᠣᠩᢉᠣᠯ ᠳᠠᠬᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠡᠰᠢᠨᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 24,
-    category: "reports",
-    title:
-      "ᠲᠡᢉᠰᠢ ᠪᠢᠰᠢ ᠪᠠᠶᠢᠳᠠᠯ ᠤᠨ ᠡᠰᠡᠷᢉᠦ ᠲᠡᠮᠡᠴᠡᠯ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 25,
-    category: "special",
-    title:
-      "ᠨᠠᠢᠷᠠᠮᠳᠠᠯ ᠤᠨ ᠰᠠᠯᠪᠠᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠨᠢᠭᠡ ᠨᠠᠢᠷᠠᠮᠳᠠᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 26,
-    category: "special",
-    title:
-      "ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᠶ᠋ᠢᠨ ᠰᠠᠯᠪᠠᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 27,
-    category: "special",
-    title:
-      "ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶ᠋ᠢᠨ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠪᠡᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠰᠢᠨ᠎ᠡ ᠬᠦᠳᠡᠯᢉᠡᠭᠡᠨ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 28,
-    category: "special",
-    title:
-      "ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠰᠢᠨ᠋ᠯ ᠤᠨ ᠰᠠᠢᠢᠳ ᠤᠯᠤᠰ ᠤᠨ ᠡᠷᢈᠡ ᠶᠢᠨ ᠨᠢᠭᠡ ᠰᠠᠯᠪᠠᠷ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 29,
-    category: "special",
-    title:
-      "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠦᠨᠡᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠠᠯᠳᠠᠷ ᠤᠨ ᠰᠠᠯᠪᠠᠷ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 30,
-    category: "special",
-    title:
-      "ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠦᠨᠳᠦᠰᠦᠲᠡᠨ ᠦ᠋ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᠶ᠋ᠢᠨ ᠰᠠᠯᠪᠠᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᠢ ᠳᠡᠮᠵᠢᠭᠦᠯᠦᠨ ᠵᠦᠷᠭᠡᠨ ᠠᠵᠢᠯᠠᠳᠠᠨ᠎ᠠ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 31,
-    category: "special",
-    title:
-      "ᠰᠠᠶᠢᠨ ᠳᠤᠷ᠎ᠠ ᠶᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠰᠢᠨ᠎ᠡ ᠦᠷᠭᠦᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 32,
-    category: "special",
-    title:
-      "ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶᠢᠨ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠪᠡᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠦᠷᠭᠦᠯᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 33,
-    category: "special",
-    title:
-      "ᠲᠡᢉᠰᠢ ᠪᠢᠰᠢ ᠪᠠᠶᠢᠳᠠᠯ ᠤᠨ ᠡᠰᠡᠷᢉᠦ ᠲᠡᠮᠡᠴᠡᠯ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠦᠷᠭᠦᠯᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 34,
-    category: "special",
-    title:
-      "ᠮᠣᠩᢉᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠲᠦᠷᠦ ᠶᠢᠨ ᠰᠤᠷᠭᠠᠭᠤᠯᠢ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶᠢᠨ ᠬᠦᠮᠦᠵᠢᠯ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 35,
-    category: "special",
-    title:
-      "ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠧᠰᠢᠨᠯ ᠤᠨ ᠰᠠᠢᠢᠳ ᠤᠯᠤᠰ ᠤᠨ ᠡᠷᢈᠡ ᠶᠢᠨ ᠰᠢᠨ᠎ᠡ ᠬᠦᠳᠡᠯᢉᠡᠭᠡᠨ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠠᠵᠢᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-  {
-    id: 36,
-    category: "special",
-    title:
-      "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠦᠨᠡᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠠᠯᠳᠠᠷ ᠤᠨ ᠰᠠᠯᠪᠠᠷ ᠢ ᠪᠠᠶᠢᠭᠤᠯᠬᠤ ᠬᠤᠷᠠᠯ ᠢ ᠡᠬᠢᠯᠡᠭᠦᠯᠦᠨ᠎ᠡ",
-    image: "/images/news1.png",
-  },
-];
-
-const aboutItems = [
-  {
-    id: 1,
-    title: "ᠪᠢᠳᠡ ᢈᠡᠨ ᠪᠤᠢ?",
-    body: "ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠰᠢᠨ᠋ᠯ ᠨᠢ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡᢈᠦ ᢈᠦᠮᠦᠰ ᠦ᠋ᠨ ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᢈᠢᠨ ᠤ᠋ ᢈᠥᠳᠡᠯᢉᠡᢉᠡᠨ ᠶᠠᠭᠤᠮ᠎ᠠ᠃",
-    image: "/images/about1.png",
-  },
-  {
-    id: 2,
-    title: "ᠪᠢᠳᠡ ᠶᠠᠭᠤ ᢈᠢᠳᠡᢉ ᠪᠤᠢ?",
-    body: "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠦᢉᠡᠮᠡᠯ ᠲᠤᠩᠬᠠᠭᠯᠠᠯ ᠪᠣᠯᠤᠨ ᠪᠤᠰᠤᠳ ᠣᠯᠠᠨ ᠤᠯᠤᠰ ᠤ᠋ᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠵᠢᠱᠢᢉ ᢈᠡᠮᠵᠢᠶᠡᠨ ᠳ᠋ᠦ ᠵᠢᠭᠠᠭᠰᠠᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢ ᠡᠨᠡ ᠳᠡᠯᠡᢈᠡᠢ ᠶ᠋ᠢᠨ ᢈᠦᠮᠦᠨ  ᠪᠦᠷᠢ ᠳ᠋ᠦ ᠡᠳ᠋ᠯᠡᢉᠦᠯᢈᠦ ᠳ᠋ᠦ ᠣᠷᠤᠰᠢᠨ᠎ᠠ᠃",
-    image: "/images/about2.png",
-  },
-  {
-    id: 3,
-    title: "ᠪᠢᠳᠡ ᢈᠡᠨ ᠪᠤᠢ?",
-    body: "ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠰᠢᠨ᠋ᠯ ᠨᠢ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡᢈᠦ ᢈᠦᠮᠦᠰ ᠦ᠋ᠨ ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᢈᠢᠨ ᠤ᠋ ᢈᠥᠳᠡᠯᢉᠡᢉᠡᠨ ᠶᠠᠭᠤᠮ᠎ᠠ᠃",
-    image: "/images/about3.jpg",
-  },
-  {
-    id: 4,
-    title: "ᠪᠢᠳᠡ ᠶᠠᠭᠤ ᢈᠢᠳᠡᢉ ᠪᠤᠢ?",
-    body: "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠦᢉᠡᠮᠡᠯ ᠲᠤᠩᠬᠠᠭᠯᠠᠯ ᠪᠣᠯᠤᠨ ᠪᠤᠰᠤᠳ ᠣᠯᠠᠨ ᠤᠯᠤᠰ ᠤ᠋ᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠵᠢᠱᠢᢉ ᢈᠡᠮᠵᠢᠶᠡᠨ ᠳ᠋ᠦ ᠵᠢᠭᠠᠭᠰᠠᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢ ᠡᠨᠡ ᠳᠡᠯᠡᢈᠡᠢ ᠶ᠋ᠢᠨ ᢈᠦᠮᠦᠨ  ᠪᠦᠷᠢ ᠳ᠋ᠦ ᠡᠳ᠋ᠯᠡᢉᠦᠯᢈᠦ ᠳ᠋ᠦ ᠣᠷᠤᠰᠢᠨ᠎ᠠ᠃",
-    image: "/images/about4.jpg",
-  },
-];

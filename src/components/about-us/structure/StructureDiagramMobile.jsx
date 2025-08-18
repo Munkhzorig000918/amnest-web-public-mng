@@ -1,14 +1,18 @@
 import Button from "@/components/common/Button";
+import Link from "next/link";
 
 export default function StructureDiagramMobile() {
   return (
     <div className="relative">
       <img src="/images/structure-diagram.png" alt="" className="h-full z-0" />
-      <div className="flex gap-[52px] absolute top-[62px] w-full h-full">
-        <div className="flex flex-col gap-[100px] ml-[90px]">
-          <button className="border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all">
+      <div className="z-10 flex gap-[51px] absolute top-[68px] w-full h-full">
+        <div className="flex flex-col gap-[106px] ml-[78px]">
+          <Link
+            href="/about-us/structure/managers"
+            className="border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all"
+          >
             <p
-              className="text-black text-[7px] pl-1"
+              className="text-black text-[5px] pl-1"
               style={{
                 writingMode: "vertical-lr",
                 textOrientation: "upright",
@@ -16,10 +20,13 @@ export default function StructureDiagramMobile() {
             >
               ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ
             </p>
-          </button>
-          <button className="border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all">
+          </Link>
+          <Link
+            href="/about-us/structure/control-managers"
+            className="border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all"
+          >
             <p
-              className="text-black text-[7px] pl-1"
+              className="text-black text-[5px] pl-1"
               style={{
                 writingMode: "vertical-lr",
                 textOrientation: "upright",
@@ -27,11 +34,14 @@ export default function StructureDiagramMobile() {
             >
               ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ
             </p>
-          </button>
+          </Link>
         </div>
-        <button className="mt-[73px] border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all">
+        <Link
+          href="/about-us/structure/chapter-members"
+          className="mt-[67px] border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all"
+        >
           <p
-            className="text-black text-[7px] pl-1"
+            className="text-black text-[5px] pl-[2px]"
             style={{
               writingMode: "vertical-lr",
               textOrientation: "upright",
@@ -39,10 +49,13 @@ export default function StructureDiagramMobile() {
           >
             ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ
           </p>
-        </button>
-        <button className="mt-[73px] border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all">
+        </Link>
+        <Link
+          href="/about-us/structure/chapter-members"
+          className="mt-[68px] border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all"
+        >
           <p
-            className="text-black text-[7px] pl-1"
+            className="text-black text-[5px] pl-[2px]"
             style={{
               writingMode: "vertical-lr",
               textOrientation: "upright",
@@ -50,11 +63,14 @@ export default function StructureDiagramMobile() {
           >
             ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ
           </p>
-        </button>
+        </Link>
         <div className="flex flex-col gap-[100px]">
-          <button className="border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all">
+          <Link
+            href="/about-us/structure/chapter-members"
+            className="border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all"
+          >
             <p
-              className="text-black text-[7px] pl-1"
+              className="text-black text-[5px] pl-[2px]"
               style={{
                 writingMode: "vertical-lr",
                 textOrientation: "upright",
@@ -62,10 +78,13 @@ export default function StructureDiagramMobile() {
             >
               ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ
             </p>
-          </button>
-          <button className="border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all">
+          </Link>
+          <Link
+            href="/about-us/structure/chapter-members"
+            className="border border-solid border-[#E3E3E3] bg-white rounded-[3px] max-h-12 whitespace-nowrap py-2 flex items-center justify-center hover:brightness-105 transition-all"
+          >
             <p
-              className="text-black text-[7px] pl-1"
+              className="text-black text-[5px] pl-[2px]"
               style={{
                 writingMode: "vertical-lr",
                 textOrientation: "upright",
@@ -73,19 +92,19 @@ export default function StructureDiagramMobile() {
             >
               ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ
             </p>
-          </button>
+          </Link>
         </div>
       </div>
-      <div className="flex absolute top-[46px] w-full h-full whitespace-nowrap font-bold text-[4px]">
+      <div className="z-0 flex absolute top-[48px] w-full h-full whitespace-nowrap font-bold text-[4px]">
         <p
-          className="text-black mt-[94px] ml-[29px]"
+          className="text-black mt-[92px] ml-[25px]"
           style={{
             writingMode: "vertical-lr",
           }}
         >
           ᠴᠢᠭᠤᠯᠭᠠᠨ
         </p>
-        <div className="flex flex-col ml-[35px]">
+        <div className="flex flex-col ml-[30px]">
           <p
             className="text-black"
             style={{
@@ -104,7 +123,7 @@ export default function StructureDiagramMobile() {
           </p>
         </div>
         <p
-          className="text-black ml-[63px] mt-[75px]"
+          className="text-black ml-[56px] mt-[75px]"
           style={{
             writingMode: "vertical-lr",
           }}
@@ -112,14 +131,14 @@ export default function StructureDiagramMobile() {
           ᢈᠢᠨᠠᠯᠲᠠ ᠶ᠋ᠢᠨ ᠵᠥᠪᠡᠯᢉᠡᢉᠡ
         </p>
         <p
-          className="text-black ml-[62px] mt-[75px]"
+          className="text-black ml-[54px] mt-[75px]"
           style={{
             writingMode: "vertical-lr",
           }}
         >
           ᢈᠢᠨᠠᠯᠲᠠ ᠶ᠋ᠢᠨ ᠵᠥᠪᠡᠯᢉᠡᢉᠡ
         </p>
-        <div className="flex flex-col ml-[64px]">
+        <div className="flex flex-col ml-[56px]">
           <p
             className="text-black"
             style={{

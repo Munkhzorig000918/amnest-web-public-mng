@@ -33,9 +33,9 @@ export default function Layout({ children }) {
       </div>
 
       {/* Mobile Layout */}
-      <div className="block md:hidden">
+      <div className="flex flex-col md:hidden min-h-screen">
         <HeaderMobile />
-        {children}
+        <div className="flex-1">{children}</div>
         <FooterMobile />
       </div>
     </>

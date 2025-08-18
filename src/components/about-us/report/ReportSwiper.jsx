@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
 import SectionTitle from "@/components/common/SectionTitle";
+import Image from "next/image";
+import { useRouter } from "next/router";
 
 // Custom hook for Mongolian numeral conversion
 const useMongolianNumeral = () => {
@@ -38,11 +40,17 @@ const useMongolianNumeral = () => {
   return { toMongolianNumeral };
 };
 
-export default function AssemblySwiper({ title, description, sectionTitle }) {
+export default function ReportSwiper({
+  title,
+  description,
+  sectionTitle,
+  reports = [],
+}) {
   const swiperRef = useRef(null);
   const [currentSlide, setCurrentSlide] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
   const { toMongolianNumeral } = useMongolianNumeral();
+  const router = useRouter();
 
   // Check if screen is mobile size
   useEffect(() => {
@@ -56,38 +64,48 @@ export default function AssemblySwiper({ title, description, sectionTitle }) {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const slides = [
-    {
-      id: 1,
-      title: "᠒᠐᠒᠔ ᠣᠨ: ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠤ᠋ ᠲᠠᠶᠢᠯᠤᠨ",
-      image: "/images/dummy-image.png",
-    },
-    {
-      id: 2,
-      title: "᠒᠐᠒᠔ ᠣᠨ: ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠤ᠋ ᠲᠠᠶᠢᠯᠤᠨ",
-      image: "/images/dummy-image.png",
-    },
-    {
-      id: 3,
-      title: "᠒᠐᠒᠔ ᠣᠨ: ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠤ᠋ ᠲᠠᠶᠢᠯᠤᠨ",
-      image: "/images/dummy-image.png",
-    },
-    {
-      id: 4,
-      title: "᠒᠐᠒᠔ ᠣᠨ: ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠤ᠋ ᠲᠠᠶᠢᠯᠤᠨ",
-      image: "/images/dummy-image.png",
-    },
-    {
-      id: 5,
-      title: "᠒᠐᠒᠔ ᠣᠨ: ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠤ᠋ ᠲᠠᠶᠢᠯᠤᠨ",
-      image: "/images/dummy-image.png",
-    },
-    {
-      id: 6,
-      title: "᠒᠐᠒᠔ ᠣᠨ: ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠤ᠋ ᠲᠠᠶᠢᠯᠤᠨ",
-      image: "/images/dummy-image.png",
-    },
-  ];
+  // Convert reports data to slides format
+  const slides =
+    reports.length > 0
+      ? reports.map((report, index) => {
+          const imageUrl =
+            report.attributes?.cover?.data?.attributes?.url ||
+            report.cover_url ||
+            "/images/dummy-image.png";
+
+          // Add base URL if the image URL is a relative path from the API
+          const fullImageUrl = imageUrl.startsWith("/uploads/")
+            ? `http://localhost:1337${imageUrl}`
+            : imageUrl;
+
+          const pdfUrl =
+            report.attributes?.pdf_file?.data?.attributes?.url ||
+            report.pdf_url;
+
+          // Add base URL if the PDF URL is a relative path from the API
+          const fullPdfUrl =
+            pdfUrl && pdfUrl.startsWith("/uploads/")
+              ? `http://localhost:1337${pdfUrl}`
+              : pdfUrl;
+
+          return {
+            id: report.id || index + 1,
+            title:
+              report.attributes?.title ||
+              report.title ||
+              `ᠲᠠᠶᠢᠯᠤᠨ ${index + 1}`,
+            image: fullImageUrl,
+            pdfUrl: fullPdfUrl,
+          };
+        })
+      : [
+          // Fallback slides when no reports data
+          {
+            id: 1,
+            title: "ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠤ᠋ ᠲᠠᠶᠢᠯᠤᠨ ᠦᠭᠡᠢ",
+            image: "/images/dummy-image.png",
+          },
+        ];
 
   const handlePrevSlide = () => {
     if (swiperRef.current) {
@@ -105,33 +123,45 @@ export default function AssemblySwiper({ title, description, sectionTitle }) {
     setCurrentSlide(swiper.activeIndex + 1);
   };
 
+  const handleSlideClick = (slide) => {
+    if (slide.id) {
+      router.push(`/about-us/report/${slide.id}`);
+    }
+  };
+
   return (
     <div className="h-full flex flex-col sm:flex-row gap-8 p-4">
       <div className="flex gap-2 sm:gap-8 max-h-[150px] sm:max-h-max">
-        <h1
-          className="text-[10px] sm:text-2xl font-bold"
-          style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
-        >
-          {title}
-        </h1>
-        <p
-          className="text-[10px] sm:text-sm font-bold text-[#848382] sm:text-black"
-          style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
-        >
-          {description}
-        </p>
+        {title && (
+          <h1
+            className="text-[10px] sm:text-2xl font-bold"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+          >
+            {title}
+          </h1>
+        )}
+        {description && (
+          <p
+            className="text-[10px] sm:text-sm font-bold text-[#848382] sm:text-black"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+          >
+            {description}
+          </p>
+        )}
       </div>
       <SectionTitle title={sectionTitle} containerClassName="hidden sm:block" />
       <div className="flex flex-row gap-2">
-        <p
-          className="text-[10px] font-bold block sm:hidden"
-          style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
-        >
-          {sectionTitle}
-        </p>
+        {sectionTitle && (
+          <p
+            className="text-[10px] font-bold block sm:hidden"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+          >
+            {sectionTitle}
+          </p>
+        )}
         <Swiper
           direction={isMobile ? "horizontal" : "vertical"}
-          slidesPerView={isMobile ? 1.3 : 3}
+          slidesPerView={isMobile ? (slides.length === 1 ? 1 : 1.8) : 3}
           spaceBetween={isMobile ? 20 : 40}
           navigation={false}
           pagination={false}
@@ -144,7 +174,10 @@ export default function AssemblySwiper({ title, description, sectionTitle }) {
         >
           {slides.map((slide) => (
             <SwiperSlide key={slide.id}>
-              <div className={`w-full h-full flex gap-4`}>
+              <div
+                className={`w-full h-full flex gap-4 cursor-pointer hover:opacity-80 transition-opacity duration-300`}
+                onClick={() => handleSlideClick(slide)}
+              >
                 <div className="flex flex-col items-center gap-4 justify-between">
                   <p
                     className="text-sm font-bold"
@@ -156,14 +189,15 @@ export default function AssemblySwiper({ title, description, sectionTitle }) {
                     {slide.title}
                   </p>
                 </div>
-                <img
+                <Image
                   src={slide.image}
-                  alt={""}
-                  className={`rounded-lg shadow-lg relative z-0 ${
-                    isMobile
-                      ? "w-full max-w-[200px] aspect-[16/9]"
-                      : "min-w-[200px] aspect-[9/16]"
-                  }`}
+                  alt={slide.title || ""}
+                  width={200}
+                  height={112.5}
+                  className={`rounded-lg shadow-lg relative z-0 w-full max-w-[130px] sm:min-w-[200px] sm:max-w-[200px] aspect-[290/204]`}
+                  onError={(e) => {
+                    e.target.src = "/images/dummy-image.png";
+                  }}
                 />
               </div>
             </SwiperSlide>

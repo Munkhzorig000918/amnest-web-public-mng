@@ -4,8 +4,46 @@ import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import SectionTitle from "@/components/common/SectionTitle";
 import StructureDiagram from "./StructureDiagram";
+import { useState, useEffect } from "react";
+import apiService from "@/services/apiService";
+import { getImageUrl } from "@/utils/fetcher";
 
 export default function StructureDesktop() {
+  // State for API data
+  const [librariesData, setLibrariesData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Fetch libraries data on component mount (matching old web functionality)
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        console.log("Fetching libraries data for structure page...");
+        const libraries = await apiService.libraries.getLibraries({
+          page: 1,
+          pageSize: 20,
+          sort: "publishedAt:desc",
+        });
+        console.log("Libraries response:", libraries);
+
+        const librariesArray = Array.isArray(libraries)
+          ? libraries
+          : libraries?.data || [];
+        setLibrariesData(librariesArray);
+      } catch (err) {
+        console.error("Error fetching libraries data:", err);
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen sm:overflow-y-hidden">
       <BannerSlider images={bannerImages} width="90rem" />
@@ -52,15 +90,37 @@ export default function StructureDesktop() {
           title={"ᠮᠣᠩᠭᠣᠯ ᠤ᠋ᠨ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠡᠱᠢᠨᠯ ᠪᠠᠶᠢᠭᠤᠯᠤᠯᠭ᠎ᠠ ᠶ᠋ᠢᠨ ᠳᠦᠷᠢᠮ"}
         />
 
-        {/* PDF Viewer */}
-        <div className="min-h-[800px] min-w-[1300px] flex items-center justify-center">
-          <iframe
-            src="/documents/dummy.pdf"
-            width="100%"
-            height="800"
-            style={{ border: "none" }}
-            title="Amnesty International Structure Document"
-          ></iframe>
+        {/* PDF Showcase Section - matching old web functionality */}
+        <div className="flex items-center justify-center gap-6 min-w-[1000px]">
+          <div className="min-h-[700px] w-full flex items-center justify-center border border-gray-300 rounded-lg overflow-hidden shadow-lg">
+            <object
+              data="https://amnesty-cdn.sgp1.cdn.digitaloceanspaces.com/static/73425868-1dc8-4656-87b4-cf7775db28e0.pdf"
+              type="application/pdf"
+              width="100%"
+              height="700px"
+              className="border-none"
+              title="Mongolia's Amnesty International Organization Bylaws"
+            >
+              <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+                <p
+                  className="text-gray-600 mb-4"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                >
+                  PDF ᠬᠠᠷᠠᠭᠤᠯᠠᠬᠤ ᠵᠢᠨ ᠠᠷᠭ᠎ᠠ ᠦᠭᠡᠢ
+                </p>
+                <Button
+                  href="https://amnesty-cdn.sgp1.cdn.digitaloceanspaces.com/static/73425868-1dc8-4656-87b4-cf7775db28e0.pdf"
+                  target="_blank"
+                  className="bg-yellow-400 hover:bg-yellow-500 text-black px-6 py-3 rounded"
+                >
+                  ᠳᠠᠤᠨᠯᠣᠭᠳ ᠢᠯᠠᠭᠠᠬᠤ
+                </Button>
+              </div>
+            </object>
+          </div>
         </div>
       </div>
     </div>

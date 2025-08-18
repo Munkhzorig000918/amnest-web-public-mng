@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
 import SectionTitle from "@/components/common/SectionTitle";
+import { getImageUrl } from "@/utils/fetcher";
 
 // Custom hook for Mongolian numeral conversion
 const useMongolianNumeral = () => {
@@ -38,11 +39,19 @@ const useMongolianNumeral = () => {
   return { toMongolianNumeral };
 };
 
-export default function RightSwiper({ title, description, sectionTitle }) {
+export default function RightSwiper({
+  title,
+  description,
+  sectionTitle,
+  data = [],
+}) {
   const swiperRef = useRef(null);
   const [currentSlide, setCurrentSlide] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
   const { toMongolianNumeral } = useMongolianNumeral();
+
+  console.log(`RightSwiper [${sectionTitle}] received data:`, data);
+  console.log(`RightSwiper [${sectionTitle}] data length:`, data?.length);
 
   // Check if screen is mobile size
   useEffect(() => {
@@ -56,44 +65,27 @@ export default function RightSwiper({ title, description, sectionTitle }) {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const slides = [
-    {
-      id: 1,
-      title: "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠶᠡᠷᠦᠩᢈᠡᠢ ᠣᠶᠢᠯᠠᠭᠠᠯᠲᠠ",
-      image: "/images/dummy-image.png",
-      duration: "᠙᠐ ᠮᠢᠨ",
-    },
-    {
-      id: 2,
-      title: "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠶᠡᠷᠦᠩᢈᠡᠢ ᠣᠶᠢᠯᠠᠭᠠᠯᠲᠠ",
-      image: "/images/dummy-image.png",
-      duration: "᠙᠐ ᠮᠢᠨ",
-    },
-    {
-      id: 3,
-      title: "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠶᠡᠷᠦᠩᢈᠡᠢ ᠣᠶᠢᠯᠠᠭᠠᠯᠲᠠ",
-      image: "/images/dummy-image.png",
-      duration: "᠙᠐ ᠮᠢᠨ",
-    },
-    {
-      id: 4,
-      title: "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠶᠡᠷᠦᠩᢈᠡᠢ ᠣᠶᠢᠯᠠᠭᠠᠯᠲᠠ",
-      image: "/images/dummy-image.png",
-      duration: "᠙᠐ ᠮᠢᠨ",
-    },
-    {
-      id: 5,
-      title: "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠶᠡᠷᠦᠩᢈᠡᠢ ᠣᠶᠢᠯᠠᠭᠠᠯᠲᠠ",
-      image: "/images/dummy-image.png",
-      duration: "᠙᠐ ᠮᠢᠨ",
-    },
-    {
-      id: 6,
-      title: "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠶᠡᠷᠦᠩᢈᠡᠢ ᠣᠶᠢᠯᠠᠭᠠᠯᠲᠠ",
-      image: "/images/dummy-image.png",
-      duration: "᠙᠐ ᠮᠢᠨ",
-    },
-  ];
+  // Process API data into slides format
+  const slides = data.map((item, index) => {
+    const itemAttrs = item.attributes || item;
+
+    // Get the image using the helper function - try different field names
+    const imageUrl =
+      getImageUrl(itemAttrs.thumbnail) ||
+      getImageUrl(itemAttrs.cover) ||
+      getImageUrl(itemAttrs.image) ||
+      getImageUrl(itemAttrs.featured_image) ||
+      "/images/dummy-image.png";
+
+    return {
+      id: item.id || index + 1,
+      title: itemAttrs.title || itemAttrs.name || "ᠦᠨᠡᠨ ᠦ᠋ ᠭᠠᠷᠴᠠᠭ",
+      image: imageUrl,
+      duration: itemAttrs.duration || itemAttrs.lesson_length || "᠙᠐ ᠮᠢᠨ",
+      description:
+        itemAttrs.description || itemAttrs.content || itemAttrs.introduction,
+    };
+  });
 
   const handlePrevSlide = () => {
     if (swiperRef.current) {
@@ -110,6 +102,38 @@ export default function RightSwiper({ title, description, sectionTitle }) {
   const handleSlideChange = (swiper) => {
     setCurrentSlide(swiper.activeIndex + 1);
   };
+
+  // Don't render if no data
+  if (!slides.length) {
+    return (
+      <div className="h-full flex flex-col sm:flex-row gap-4 sm:gap-8 overflow-x-auto sm:overflow-auto">
+        <div className="flex flex-row gap-4 sm:gap-8">
+          <div className="flex gap-2 sm:gap-8 max-h-[120px] sm:max-h-max">
+            <h1
+              className="text-xs sm:text-2xl font-bold"
+              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+            >
+              {title}
+            </h1>
+            <p
+              className="text-[8px] sm:text-sm font-bold"
+              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+            >
+              {description}
+            </p>
+          </div>
+          <Button text={"ᠪᠦᢉᠦᠳᠡ ᠶ᠋ᠢ ᠦᠵᠡᢈᠦ"} type="secondary" />
+          <SectionTitle
+            title={sectionTitle}
+            containerClassName="hidden sm:block"
+          />
+        </div>
+        <div className="flex items-center justify-center p-8">
+          <p className="text-sm text-gray-500">ᠮᠡᠳᠡᢉᠡᠯᠡᠯ ᠦᠭᠡᠢ ᠪᠠᠶᠢᠨ᠎ᠠ</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full flex flex-col sm:flex-row gap-4 sm:gap-8 overflow-x-auto sm:overflow-auto">
@@ -181,8 +205,8 @@ export default function RightSwiper({ title, description, sectionTitle }) {
                 <div className="relative z-0 aspect-square">
                   <img
                     src={slide.image}
-                    alt={""}
-                    className="rounded-lg relative z-0 aspect-square w-full h-full min-h-[200px] min-w-[200px] sm:min-h-[270px] sm:min-w-[270px]"
+                    alt={slide.title}
+                    className="rounded-lg relative z-0 aspect-square w-full h-full min-h-[200px] min-w-[200px] sm:min-h-[270px] sm:min-w-[270px] object-cover"
                   />
                   <Button text={"ᠳᠡᠯᢉᠡᠷᠡᠩᢈᠦᠢ"} type="details" />
                 </div>
