@@ -251,7 +251,7 @@ export default function HomeMobile() {
                     }}
                   />
                   <h4
-                    className="text-black font-bold text-[10px] sm:text-base"
+                    className="text-black font-bold text-[10px] sm:text-base max-h-24 overflow-hidden"
                     style={{
                       writingMode: "vertical-lr",
                       textOrientation: "upright",
@@ -264,7 +264,7 @@ export default function HomeMobile() {
                   </h4>
                 </div>
                 <div
-                  className="text-black font-bold text-[8px] sm:text-base"
+                  className="text-black font-bold text-[8px] sm:text-base max-h-32 overflow-hidden"
                   style={{
                     writingMode: "vertical-lr",
                     textOrientation: "upright",

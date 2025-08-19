@@ -238,7 +238,7 @@ export default function HomeDesktop() {
                   }}
                 />
                 <h4
-                  className="text-black font-bold text-sm"
+                  className="text-black font-bold text-sm max-h-32 overflow-hidden"
                   style={{
                     writingMode: "vertical-lr",
                     textOrientation: "upright",
@@ -251,7 +251,7 @@ export default function HomeDesktop() {
                 </h4>
               </div>
               <div
-                className="min-w-28 text-black font-bold text-sm"
+                className="min-w-28 text-black font-bold text-sm max-h-96 overflow-hidden"
                 style={{
                   writingMode: "vertical-lr",
                   textOrientation: "upright",
