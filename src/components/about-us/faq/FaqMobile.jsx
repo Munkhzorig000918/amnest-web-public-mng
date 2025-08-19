@@ -3,6 +3,7 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { useGetFaqsQuery } from "@/redux/services/apiService";
 import { getImageUrl } from "@/config/api";
 import BannerSlider from "@/components/common/BannerSlider";
+import StaticHeader from "@/components/common/StaticHeader";
 
 export default function FaqMobile() {
   const [expandedItem, setExpandedItem] = useState(null);

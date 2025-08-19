@@ -4,6 +4,7 @@ import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import ReportSwiper from "./ReportSwiper";
 import { useRouter } from "next/router";
+import StaticHeader from "@/components/common/StaticHeader";
 
 export default function ReportMobile() {
   const [reports, setReports] = useState([]);

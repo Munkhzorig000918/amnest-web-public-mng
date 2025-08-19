@@ -8,7 +8,7 @@ export default function StaticHeader({
 }) {
   return (
     <div
-      className="relative overflow-hidden md:m-4 h-full"
+      className="relative overflow-hidden md:p-4 h-full"
       style={{ width: width }}
     >
       <div className="h-full relative">
