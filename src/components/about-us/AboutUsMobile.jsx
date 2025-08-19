@@ -3,6 +3,7 @@ import Button from "@/components/common/Button";
 import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import { useRouter } from "next/router";
+import StaticHeader from "../common/StaticHeader";
 
 export default function AboutUsMobile() {
   const router = useRouter();

@@ -24,7 +24,7 @@ export default function StaticHeader({
           }}
         />
         {title && (
-          <div className="hidden md:flex absolute h-full top-0 left-0 bg-black/50 backdrop-blur-lg text-white max-w-xs rounded-xl items-center justify-center p-16">
+          <div className="hidden md:flex absolute h-full top-0 left-0 bg-black/50 backdrop-blur-lg text-white w-full max-w-xs rounded-xl items-center justify-center p-16">
             <h1
               className="text-3xl font-bold font-mongolian text-center"
               style={{

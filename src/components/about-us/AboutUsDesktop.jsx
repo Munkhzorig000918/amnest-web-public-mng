@@ -72,10 +72,10 @@ export default function AboutUsDesktop() {
         <SectionTitle title={"ᠪᠢᠳᠡ ᢈᠡᠷᢈᠢᠨ ᠥᢉᠡᠷᠡᠴᠢᠯᠡᠯᠲᠡ ᢈᠢᠳᠡᢉ ᠪᠤᠢ?"} />
         <div className="h-full grid grid-cols-2 grid-rows-2 gap-12 mr-20">
           {aboutItems.map((item) => (
-            <div key={item.id} className="flex items-start p-5 gap-4 h-[600px]">
+            <div key={item.id} className="flex items-start p-5 gap-4">
               <Image src={item.image} alt={item.title} width={80} height={80} />
               <h2
-                className="font-bold text-xl"
+                className="font-bold text-xl max-h-[400px] overflow-hidden"
                 style={{
                   writingMode: "vertical-lr",
                 }}
@@ -83,7 +83,7 @@ export default function AboutUsDesktop() {
                 {item.title}
               </h2>
               <p
-                className="text-black font-bold text-sm"
+                className="text-black font-bold text-sm max-h-[400px] overflow-hidden"
                 style={{
                   writingMode: "vertical-lr",
                 }}
