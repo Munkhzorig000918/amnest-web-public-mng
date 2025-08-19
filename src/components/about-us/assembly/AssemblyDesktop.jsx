@@ -1,13 +1,17 @@
 import Image from "next/image";
 import Button from "@/components/common/Button";
-import BannerSlider from "@/components/common/BannerSlider";
-import { bannerImages } from "@/constants/bannerImages";
+import StaticHeader from "@/components/common/StaticHeader";
 import AssemblySwiper from "./AssemblySwiper";
 
 export default function ReportDesktop() {
   return (
-    <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-hidden">
-      <BannerSlider images={bannerImages} width="90rem" />
+    <div className="h-full hidden sm:flex gap-20 w-auto flex-shrink-0">
+      <StaticHeader
+        image="/images/news1.png"
+        alt="Assembly Page Header"
+        width="90rem"
+        title="ᠶᠡᠷᠦᠩᢈᠡᠢ ᠴᠢᠭᠤᠯᠭᠠᠨ"
+      />
       <div className="flex gap-16 p-4 h-full">
         <div className="flex gap-6 max-h-screen">
           <p

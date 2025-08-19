@@ -8,7 +8,12 @@ export default function AboutUsMobile() {
   const router = useRouter();
   return (
     <div className="h-full flex flex-col gap-7 w-auto flex-shrink-0 sm:hidden">
-      <BannerSlider images={bannerImages} width="90rem" />
+      <StaticHeader
+        image="/images/news1.png"
+        alt="About Us Page Header"
+        width="100%"
+        title="ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠱᠢᠨ᠋ᠯ ᠨᠢ ᠲᠠᠨᠢᠯᠴᠠᠭᠤᠯᠬᠤ"
+      />
       <div className="max-h-[200px] h-full p-2 flex gap-2">
         <h2
           className="text-[9px] font-bold"

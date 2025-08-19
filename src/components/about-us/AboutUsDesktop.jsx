@@ -1,15 +1,19 @@
 import Image from "next/image";
 import Button from "@/components/common/Button";
-import BannerSlider from "@/components/common/BannerSlider";
-import { bannerImages } from "@/constants/bannerImages";
+import StaticHeader from "@/components/common/StaticHeader";
 import SectionTitle from "@/components/common/SectionTitle";
 import { useRouter } from "next/router";
 
 export default function AboutUsDesktop() {
   const router = useRouter();
   return (
-    <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-hidden">
-      <BannerSlider images={bannerImages} width="90rem" />
+    <div className="h-full hidden sm:flex gap-20 w-auto flex-shrink-0">
+      <StaticHeader
+        image="/images/news1.png"
+        alt="About Us Page Header"
+        width="90rem"
+        title="ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠱᠢᠨ᠋ᠯ ᠨᠢ ᠲᠠᠨᠢᠯᠴᠠᠭᠤᠯᠬᠤ"
+      />
       <div className="h-full p-4 flex gap-10">
         <h2
           className="text-2xl font-bold"

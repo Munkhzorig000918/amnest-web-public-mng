@@ -1,11 +1,17 @@
 import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import MerchItem from "./MerchItem";
+import StaticHeader from "../common/StaticHeader";
 
 export default function ShopMobile({ merchandise = [] }) {
   return (
     <div className="h-full flex flex-col sm:hidden gap-7">
-      <BannerSlider images={bannerImages} width="90rem" useDynamic={true} />
+      <StaticHeader
+        image="/images/news1.png"
+        alt="Shop Page Header"
+        width="100%"
+        title="ᠪᠠᠷᠠᠭ᠎ᠠ ᠦᠢᠯᠡᠳᠦᠯ"
+      />
       <div className="h-full p-4">
         <div className="h-full flex flex-col gap-7">
           <div className="flex gap-2 max-h-[200px] overflow-x-auto">

@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Button from "@/components/common/Button";
-import HeroBanner from "@/components/common/HeroBanner";
-import { heroBannerConfigs } from "@/constants/heroBanners";
+import StaticHeader from "@/components/common/StaticHeader";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
 import { countryData } from "@/utils/countryList";
@@ -45,15 +44,16 @@ export default function DonationDesktop({
 
   return (
     <div className="hidden sm:block">
-      {/* Hero Banner */}
-      <HeroBanner
-        backgroundImage={heroBannerConfigs.donation.backgroundImage}
-        title={heroBannerConfigs.donation.title}
-        description={heroBannerConfigs.donation.description}
+      {/* Static Header */}
+      <StaticHeader
+        image="/images/news1.png"
+        alt="Donation Page Header"
+        width="100%"
+        title="ᠬᠠᠨᠳᠢᠪ ᠥᠭᠦᠬᠦ"
       />
 
       {/* Content Section */}
-      <div className="h-full flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-hidden mt-10">
+      <div className="h-full flex gap-20 w-auto flex-shrink-0 mt-10">
         <div className="flex gap-16 p-8 m-4 h-full bg-[#48483D] text-white rounded-lg">
           <div className="flex gap-7">
             <h2

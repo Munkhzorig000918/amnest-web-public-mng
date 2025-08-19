@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
-import BannerSlider from "@/components/common/BannerSlider";
-import { bannerImages } from "@/constants/bannerImages";
+import StaticHeader from "@/components/common/StaticHeader";
 import { useSubmitContactFormMutation } from "../../../redux/services/apiService";
 import toast from "react-hot-toast";
 
@@ -80,8 +79,13 @@ export default function ContactDesktop() {
   };
 
   return (
-    <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-hidden">
-      <BannerSlider images={bannerImages} width="90rem" />
+    <div className="h-full hidden sm:flex gap-20 w-auto flex-shrink-0">
+      <StaticHeader
+        image="/images/news1.png"
+        alt="Contact Page Header"
+        width="90rem"
+        title="ᠬᠠᠷᠢᠯᠴᠠᠬᠤ ᠬᠠᠪᠰᠤᠷᠠᠯ"
+      />
       <div className="flex gap-16 p-4 h-full">
         <div className="flex gap-7">
           <h2

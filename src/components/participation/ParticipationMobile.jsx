@@ -2,11 +2,17 @@ import Image from "next/image";
 import Button from "@/components/common/Button";
 import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
+import StaticHeader from "../common/StaticHeader";
 
 export default function ParticipationMobile() {
   return (
     <div className="h-full w-full block sm:hidden">
-      <BannerSlider images={bannerImages} width="90rem" />
+      <StaticHeader
+        image="/images/news1.png"
+        alt="Participation Page Header"
+        width="100%"
+        title="ᠣᠷᠣᠯᠴᠠᠬᠤ ᠬᠤᠪᠢ"
+      />
 
       <div className="h-full p-4 flex flex-col gap-7">
         <div className="h-full flex gap-2 max-h-[150px]">

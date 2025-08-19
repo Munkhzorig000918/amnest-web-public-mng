@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import Button from "@/components/common/Button";
-import BannerSlider from "@/components/common/BannerSlider";
-import { bannerImages } from "@/constants/bannerImages";
+import StaticHeader from "@/components/common/StaticHeader";
 import ReportSwiper from "./ReportSwiper";
 import { useRouter } from "next/router";
 
@@ -36,8 +35,13 @@ export default function ReportDesktop() {
 
   if (loading) {
     return (
-      <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-hidden">
-        <BannerSlider images={bannerImages} width="90rem" useDynamic={true} />
+      <div className="h-full hidden sm:flex gap-20 w-auto flex-shrink-0">
+        <StaticHeader
+          image="/images/news1.png"
+          alt="Report Page Header"
+          width="90rem"
+          title="ᠬᠦᠮᠦᠨ ᠦ ᠡᠷᠬᠡ ᠶᠢᠨ ᠬᠡᠮᠵᠢᠶ᠎ᠡ ᠶᠢᠨ ᠲᠠᠢᠯᠪᠤᠷᠢ"
+        />
         <div className="flex items-center justify-center h-full w-full">
           <p
             className="text-lg font-bold"
@@ -52,8 +56,13 @@ export default function ReportDesktop() {
 
   if (error) {
     return (
-      <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-hidden">
-        <BannerSlider images={bannerImages} width="90rem" useDynamic={true} />
+      <div className="h-full hidden sm:flex gap-20 w-auto flex-shrink-0">
+        <StaticHeader
+          image="/images/news1.png"
+          alt="Report Page Header"
+          width="90rem"
+          title="ᠬᠦᠮᠦᠨ ᠦ ᠡᠷᠬᠡ ᠶᠢᠨ ᠬᠡᠮᠵᠢᠶ᠎ᠡ ᠶᠢᠨ ᠲᠠᠢᠯᠪᠤᠷᠢ"
+        />
         <div className="flex items-center justify-center h-full w-full">
           <p
             className="text-lg font-bold text-red-600"
@@ -69,8 +78,13 @@ export default function ReportDesktop() {
   const reportItems = reports || [];
 
   return (
-    <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-hidden">
-      <BannerSlider images={bannerImages} width="90rem" useDynamic={true} />
+    <div className="h-full hidden sm:flex gap-20 w-auto flex-shrink-0">
+      <StaticHeader
+        image="/images/news1.png"
+        alt="Report Page Header"
+        width="90rem"
+        title="ᠬᠦᠮᠦᠨ ᠦ ᠡᠷᠬᠡ ᠶᠢᠨ ᠬᠡᠮᠵᠢᠶ᠎ᠡ ᠶᠢᠨ ᠲᠠᠢᠯᠪᠤᠷᠢ"
+      />
       <div className="flex gap-16 h-full">
         <ReportSwiper
           title={"ᠮᠣᠩᠭᠣᠯ ᠤ᠋ᠨ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠡᠰᠢᠨᠯ ᠦ᠋ᠨ ᠦᠶᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭ᠎ᠠ"}

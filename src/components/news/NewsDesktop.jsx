@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Button from "@/components/common/Button";
-import StaticHeader from "@/components/common/StaticHeader";
+import BannerSlider from "@/components/common/BannerSlider";
 import {
   ChevronLeft,
   ChevronRight,
@@ -219,12 +219,7 @@ export default function NewsDesktop() {
 
   return (
     <div className="h-full hidden sm:flex gap-10 w-auto flex-shrink-0">
-      <StaticHeader
-        image="/images/news1.png"
-        alt="News Page Header"
-        width="90rem"
-        title="ᠮᠡᠳᠡᢉᠡ ᠮᠡᠳᠡᢉᠡᠯᠡᠯ"
-      />
+      <BannerSlider width="90rem" useDynamic={true} />
       <div className="h-full p-4">
         <div className="h-full flex gap-10">
           <div className="h-full flex flex-col items-center gap-4">

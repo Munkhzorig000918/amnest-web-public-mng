@@ -11,114 +11,80 @@ export default function BannerSlider({
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const [slideshowData, setSlideshowData] = useState([]);
-  const [slideshowLoading, setSlideshowLoading] = useState(false);
-  const [slideshowError, setSlideshowError] = useState(null);
+  const [featuredNewsData, setFeaturedNewsData] = useState([]);
+  const [featuredNewsLoading, setFeaturedNewsLoading] = useState(false);
+  const [featuredNewsError, setFeaturedNewsError] = useState(null);
   const timeoutRef = useRef(null);
 
-  // Fetch dynamic slideshow data if useDynamic is true
+  // Fetch featured news posts for homepage slider (like old web)
   useEffect(() => {
     if (useDynamic) {
-      const fetchSlideshows = async () => {
-        setSlideshowLoading(true);
-        setSlideshowError(null);
+      const fetchFeaturedNews = async () => {
+        setFeaturedNewsLoading(true);
+        setFeaturedNewsError(null);
 
         try {
-          // Use regular slideshows endpoint since content is in slideshows collection
-          const response = await apiService.slideshows.getSlideshows({
+          // Fetch regular news posts for homepage slider
+          const response = await apiService.posts.getPostsList({
             page: 1,
-            pageSize: 10,
+            pageSize: 6, // Limit to 6 posts for homepage
             sort: "publishedAt:desc",
           });
 
-          // The slideshowsService.getSlideshows() uses formatStrapiResponse()
-          // which returns the data directly as an array, not wrapped in response.data
-          const slideshowsData = Array.isArray(response)
-            ? response
-            : response?.data || [];
+          // Handle the response structure - getPostsList returns { data: [...], meta: {...} }
+          const newsData = response?.data || [];
 
-          setSlideshowData(slideshowsData);
+          setFeaturedNewsData(newsData);
         } catch (error) {
-          console.error("Error fetching slideshows:", error);
-          setSlideshowError(error);
+          console.error("Error fetching featured news:", error);
+          setFeaturedNewsError(error);
         } finally {
-          setSlideshowLoading(false);
+          setFeaturedNewsLoading(false);
         }
       };
 
-      fetchSlideshows();
+      fetchFeaturedNews();
     }
   }, [useDynamic]);
 
-  // Convert slideshow data to banner format
-  const dynamicImages = slideshowData
-    ? slideshowData.flatMap((slide) => {
-        const images = [];
+  // Convert featured news data to banner format (like old web)
+  const dynamicImages = featuredNewsData
+    ? featuredNewsData.map((newsPost) => {
+        // getPostsList returns flattened data, no .attributes needed
+        const post = newsPost;
 
-        // Use cover image if available - no .attributes needed after formatStrapiResponse
-        const coverImage =
-          slide.cover?.data?.attributes ||
-          slide.cover?.attributes ||
-          slide.cover;
-
-        if (coverImage) {
-          const coverImageUrl =
-            coverImage?.formats?.large?.url ||
-            coverImage?.formats?.medium?.url ||
-            coverImage?.formats?.small?.url ||
-            coverImage?.url;
-
-          if (coverImageUrl) {
-            const coverSlide = {
-              id: `${slide.id}-cover`,
-              src: `http://localhost:1337${coverImageUrl}`,
-              alt: slide.title || `Slideshow ${slide.id} Cover`,
-              caption: {
-                title:
-                  slide.title ||
-                  "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠤ᠋ᠨ ᠰᠢᠮᠫᠤᠽᠢᠦᠮ ᠒᠐᠒᠕",
-                description:
-                  slide.body?.replace(/<[^>]*>/g, "") ||
-                  "«ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠤ᠋ᠨ ᠰᠢᠮᠫᠤᠽᠢᠦᠮ ᠒᠐᠒᠕- ᠳ᠋ᠤ» ᠢᠯᠡᠳᢈᠡᠯ ᠲᠠᠨᠢᠯᠴᠠᠭᠤᠯᠬᠤ",
-              },
-            };
-            images.push(coverSlide);
+        // Get cover image URL - handle the cover structure from getPostsList
+        let coverImageUrl = null;
+        if (post.cover) {
+          // Cover might be a string URL or an object
+          if (typeof post.cover === "string") {
+            coverImageUrl = post.cover;
+          } else if (post.cover.url) {
+            coverImageUrl = post.cover.url;
+          } else if (post.cover.formats) {
+            // Try different formats in order of preference
+            coverImageUrl =
+              post.cover.formats.large?.url ||
+              post.cover.formats.medium?.url ||
+              post.cover.formats.small?.url ||
+              post.cover.formats.thumbnail?.url ||
+              post.cover.url;
           }
         }
 
-        // Add additional images from the images array - no .attributes needed after formatStrapiResponse
-        const slideImages = slide.images?.data || slide.images || [];
-
-        slideImages.forEach((image, index) => {
-          const imageAttrs = image.attributes || image;
-          const imageUrl =
-            imageAttrs?.formats?.large?.url ||
-            imageAttrs?.formats?.medium?.url ||
-            imageAttrs?.formats?.small?.url ||
-            imageAttrs?.url;
-
-          if (imageUrl) {
-            const additionalSlide = {
-              id: `${slide.id}-img-${index}`,
-              src: `http://localhost:1337${imageUrl}`,
-              alt:
-                imageAttrs?.alternativeText ||
-                slide.title ||
-                `Slideshow ${slide.id} Image ${index + 1}`,
-              caption: {
-                title:
-                  slide.title ||
-                  "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠤ᠋ᠨ ᠰᠢᠮᠫᠤᠽᠢᠦᠮ ᠒᠐᠒᠕",
-                description:
-                  slide.body?.replace(/<[^>]*>/g, "") ||
-                  "«ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠪᠣᠯᠪᠠᠰᠤᠷᠠᠯ ᠤ᠋ᠨ ᠰᠢᠮᠫᠤᠽᠢᠦᠮ ᠒᠐᠒᠕- ᠳ᠋ᠤ» ᠢᠯᠡᠳᢈᠡᠯ ᠲᠠᠨᠢᠯᠴᠠᠭᠤᠯᠬᠤ",
-              },
-            };
-            images.push(additionalSlide);
-          }
-        });
-
-        return images;
+        return {
+          id: post.id,
+          src: coverImageUrl
+            ? `http://localhost:1337${coverImageUrl}`
+            : "/images/news1.png",
+          alt: post.title || `News ${post.id}`,
+          caption: {
+            title: post.title || "ᠮᠡᠳᠡᢉᠡ",
+            description: post.short_description || post.description || "",
+          },
+          // Add link to news detail page (like old web)
+          link: `/news/${post.id}`,
+        };
       })
     : [];
 
@@ -166,7 +132,7 @@ export default function BannerSlider({
   }, [currentIndex, isAutoPlaying, displayImages, nextSlide]);
 
   // Show loading state for dynamic content
-  if (useDynamic && slideshowLoading) {
+  if (useDynamic && featuredNewsLoading) {
     return (
       <div className="p-4">
         <div
@@ -188,9 +154,9 @@ export default function BannerSlider({
   }
 
   // Show error state for dynamic content
-  if (useDynamic && slideshowError) {
+  if (useDynamic && featuredNewsError) {
     console.warn(
-      "Failed to load slideshow data, falling back to static images"
+      "Failed to load featured news data, falling back to static images"
     );
     // Fall back to static images if provided
     if (!images || images.length === 0) {
@@ -279,11 +245,21 @@ export default function BannerSlider({
                   >
                     {image.caption.description}
                   </p>
-                  <Button
-                    text={"ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ"}
-                    type="primary"
-                    className="text-black h-40"
-                  />
+                  {image.link ? (
+                    <a href={image.link}>
+                      <Button
+                        text={"ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ"}
+                        type="primary"
+                        className="text-black h-40"
+                      />
+                    </a>
+                  ) : (
+                    <Button
+                      text={"ᠳᠡᠯᢉᠡᠷᠡᠩᢉᠦᠢ"}
+                      type="primary"
+                      className="text-black h-40"
+                    />
+                  )}
                 </div>
               )}
             </div>

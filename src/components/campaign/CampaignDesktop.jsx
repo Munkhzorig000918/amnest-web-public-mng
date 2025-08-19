@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Button from "@/components/common/Button";
-import BannerSlider from "@/components/common/BannerSlider";
-import { bannerImages } from "@/constants/bannerImages";
+import StaticHeader from "@/components/common/StaticHeader";
 import SectionTitle from "@/components/common/SectionTitle";
 import { useRouter } from "next/router";
 import {
@@ -109,8 +108,13 @@ export default function CampaignDesktop() {
   }
 
   return (
-    <div className="h-full hidden sm:flex gap-10 overflow-x-auto w-auto flex-shrink-0">
-      <BannerSlider images={bannerImages} width="90rem" useDynamic={true} />
+    <div className="h-full hidden sm:flex gap-10 w-auto flex-shrink-0">
+      <StaticHeader
+        image="/images/news1.png"
+        alt="Campaign Page Header"
+        width="90rem"
+        title="ᠻᠠᠮᠫᠠᠨᠢᠲᠤ ᠠᠵᠢᠯ ᠤ᠋ᠨ ᠬᠦᠷᠦᠭᠡᠯᠭᠡ"
+      />
 
       <div className="h-full p-4 flex gap-32">
         <div className="h-full flex gap-10">

@@ -1,14 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
-import BannerSlider from "@/components/common/BannerSlider";
-import { bannerImages } from "@/constants/bannerImages";
+import StaticHeader from "@/components/common/StaticHeader";
 import Button from "@/components/common/Button";
 import { useRouter } from "next/router";
 export default function StructureChapterMembersDesktop() {
   const router = useRouter();
   return (
     <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen sm:overflow-y-hidden">
-      <BannerSlider images={bannerImages} width="90rem" />
+      <StaticHeader
+        image="/images/news1.png"
+        alt="Chapter Members Page Header"
+        width="90rem"
+        title="ᠪᠦᠯᠦᢉ ᠦ᠋ᠨ ᢉᠡᠰᠢᢉᠦᠳ"
+      />
       <div className="flex gap-20 p-4 h-full">
         <div className="flex gap-10">
           <h2

@@ -9,6 +9,7 @@ import {
   useGetCompanyWorkFeaturesQuery,
 } from "@/redux/services/apiService";
 import { getImageUrl } from "@/config/api";
+import StaticHeader from "../common/StaticHeader";
 
 export default function CampaignMobile() {
   const router = useRouter();
@@ -102,7 +103,12 @@ export default function CampaignMobile() {
 
   return (
     <div className="h-full w-full block sm:hidden">
-      <BannerSlider images={bannerImages} width="90rem" useDynamic={true} />
+      <StaticHeader
+        image="/images/news1.png"
+        alt="Campaign Page Header"
+        width="100%"
+        title="ᠻᠠᠮᠫᠠᠨᠢᠲᠤ ᠠᠵᠢᠯ ᠤ᠋ᠨ ᠬᠦᠷᠦᠭᠡᠯᠭᠡ"
+      />
 
       <div className="h-full p-4 flex flex-col gap-7">
         <div className="h-full flex gap-7 max-h-[150px]">

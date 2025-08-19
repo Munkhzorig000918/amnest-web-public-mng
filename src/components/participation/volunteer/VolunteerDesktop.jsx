@@ -1,11 +1,16 @@
 import BannerSlider from "@/components/common/BannerSlider";
+import StaticHeader from "@/components/common/StaticHeader";
 import { bannerImages } from "@/constants/bannerImages";
 
 export default function VolunteerDesktop() {
   return (
     <div className="h-full hidden sm:flex gap-10 w-auto flex-shrink-0">
-      <BannerSlider images={bannerImages} width="90rem" />
-
+      <StaticHeader
+        image="/images/news1.png"
+        alt="Youth Page Header"
+        width="90rem"
+        title="ᠵᠠᠯᠠᠭᠤᠴᠤᠳ ᠤ᠋ᠨ ᠣᠷᠤᠯᠴᠠᠭ᠎ᠠ"
+      />
       <div className="h-full p-4 flex gap-20">
         <div className="flex gap-24">
           {volunteerItems.map((item) => (

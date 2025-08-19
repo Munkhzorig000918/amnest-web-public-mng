@@ -1,10 +1,16 @@
 import BannerSlider from "@/components/common/BannerSlider";
+import StaticHeader from "@/components/common/StaticHeader";
 import { bannerImages } from "@/constants/bannerImages";
 
 export default function EyeMobile() {
   return (
     <div className="h-full w-full sm:hidden p-4 flex flex-col gap-4">
-      <BannerSlider images={bannerImages} width="90rem" />
+      <StaticHeader
+        image="/images/news1.png"
+        alt="Youth Page Header"
+        width="100%"
+        title="ᠵᠠᠯᠠᠭᠤᠴᠤᠳ ᠤ᠋ᠨ ᠣᠷᠤᠯᠴᠠᠭ᠎ᠠ"
+      />
       <div className="h-full w-full flex flex-col gap-4">
         <div className="flex gap-4 max-h-[150px] w-full">
           <p

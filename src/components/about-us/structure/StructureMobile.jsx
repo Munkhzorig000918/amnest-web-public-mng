@@ -7,7 +7,12 @@ export default function StructureMobile() {
   return (
     <div className="w-full block sm:hidden">
       <div className="relative w-full h-[40hv]">
-        <BannerSlider images={bannerImages} width="90rem" />
+        <StaticHeader
+          image="/images/news1.png"
+          alt="Structure Page Header"
+          width="100%"
+          title="ᠵᠦᠢᠯ ᠦ᠋ᠨ ᠪᠠᠢᠭᠤᠯᠤᠯᠲᠠ"
+        />
       </div>
       <div className="flex flex-col gap-12 p-4 h-full">
         <div className="flex gap-2 max-h-[200px]">

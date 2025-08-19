@@ -8,6 +8,7 @@ import apiService from "@/services/apiService";
 import { getImageUrl } from "@/utils/fetcher";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import StaticHeader from "../common/StaticHeader";
 
 export default function HomeMobile() {
   const router = useRouter();
@@ -128,7 +129,12 @@ export default function HomeMobile() {
   return (
     <div className="w-full min-h-screen bg-white block md:hidden">
       <div className="relative w-full h-[40vh]">
-        <BannerSlider images={bannerImages} width="100%" useDynamic={true} />
+        <StaticHeader
+          image="/images/news1.png"
+          alt="Home Page Header"
+          width="100%"
+          title="ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠰᠢᠨ᠋ᠯ ᠨᠢ ᢈᠦᠮᠦᠨ ᠪᠦᠷᠢ ᠳ᠋ᠦ ᠡᠷᢈᠡ ᠶ᠋ᠢ ᠨᠢ ᠡᠳ᠋ᠯᠡᢉᠦᠯᢈᠦ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᢈᠦᠮᠦᠰ ᠦ᠋ᠨ ᢈᠦᠮᠦᠨᠯᠢᢉ ᠰᠡᠳᢈᠢᠯ ᠳ᠋ᠦ ᠲᠤᠯᠭᠠᠭᠤᠷᠢᠯᠠᠨ ᠻᠠᠮᠫᠠᠨᠢᠲᠤ ᠠᠵᠢᠯ ᠥᠷᠨᠢᢉᠦᠯᠳᠡᢉ ᠑᠐ ᠰᠠᠶ᠋ᠢ ᢈᠦᠮᠦᠨ ᠢ᠋ ᠡᠩᠨᠡᢉᠡᠨ ᠳ᠋ᠦ ᠪᠡᠨ ᠨᠢᢉᠡᠳᢈᠡᢉᠰᠡᠨ ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᠶᠠᠭᠠᠷᢈᠢ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠬᠠᠮᠠᠭᠠᠯᠠᠭᠴᠢᠳ ᠤ᠋ᠨ ᢈᠥᠳᠡᠯᢉᠡᢉᠡᠨ ᠶᠤᠮ᠃"
+        />
       </div>
       <div className="h-full p-1">
         <div className="max-h-[200px] h-full flex gap-3">

@@ -1,5 +1,4 @@
-import BannerSlider from "@/components/common/BannerSlider";
-import { bannerImages } from "@/constants/bannerImages";
+import StaticHeader from "@/components/common/StaticHeader";
 import MerchItem from "./MerchItem";
 import SectionTitle from "../common/SectionTitle";
 
@@ -8,7 +7,12 @@ export default function ShopDesktop({ merchandise = [] }) {
 
   return (
     <div className="h-full hidden sm:flex gap-10 flex-shrink-0 p-4">
-      <BannerSlider images={bannerImages} width="90rem" useDynamic={true} />
+      <StaticHeader
+        image="/images/news1.png"
+        alt="Shop Page Header"
+        width="90rem"
+        title="ᠪᠠᠷᠠᠭ᠎ᠠ ᠦᠢᠯᠡᠳᠦᠯ"
+      />
       <div className="h-full p-4">
         <div className="h-full flex gap-10">
           <div className="flex gap-7">

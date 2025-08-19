@@ -4,6 +4,7 @@ import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import { useSubmitContactFormMutation } from "../../../redux/services/apiService";
 import toast from "react-hot-toast";
+import StaticHeader from "@/components/common/StaticHeader";
 
 export default function ContactMobile() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -81,7 +82,12 @@ export default function ContactMobile() {
 
   return (
     <div className="h-full w-full block sm:hidden p-4">
-      <BannerSlider images={bannerImages} width="90rem" />
+      <StaticHeader
+        image="/images/news1.png"
+        alt="Contact Page Header"
+        width="100%"
+        title="ᠬᠠᠷᠢᠯᠴᠠᠬᠤ ᠬᠠᠪᠰᠤᠷᠠᠯ"
+      />
       <div className="flex gap-10 max-h-[150px] overflow-x-auto">
         <div className="flex gap-2">
           <h2
