@@ -1,13 +1,17 @@
 import Image from "next/image";
 import Button from "@/components/common/Button";
-import BannerSlider from "@/components/common/BannerSlider";
-import { bannerImages } from "@/constants/bannerImages";
+import StaticHeader from "@/components/common/StaticHeader";
 import SectionTitle from "@/components/common/SectionTitle";
 
 export default function HistoryDesktop() {
   return (
     <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-auto">
-      <BannerSlider images={bannerImages} width="90rem" />
+      <StaticHeader
+        image="/images/news1.png"
+        alt="History Page Header"
+        width="90rem"
+        title="ᠮᠣᠩᠭᠣᠯ ᠤ᠋ᠨ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠡᠰᠢᠨᠯ ᠦ᠋ᠨ ᠲᠡᠦᢈᠡᠨ ᠲᠣᠪᠴᠢᠶ᠎ᠠ"
+      />
 
       <div className="flex gap-12 p-4 h-full">
         <SectionTitle
@@ -22,7 +26,7 @@ export default function HistoryDesktop() {
                 } ${i % 2 === 1 ? "order-last" : ""}`}
               >
                 <p
-                  className="text-sm text-center max-h-[380px]"
+                  className="text-sm text-center max-h-[380px] font-mongolian"
                   style={{
                     writingMode: "vertical-lr",
                   }}
@@ -39,7 +43,7 @@ export default function HistoryDesktop() {
                   i % 2 === 0 ? "justify-start" : "justify-end"
                 } ${i % 2 === 1 ? "order-first" : ""}`}
               >
-                <p className="text-2xl font-bold">
+                <p className="text-2xl font-bold font-mongolian">
                   {i === 9 ? (
                     <span
                       style={{

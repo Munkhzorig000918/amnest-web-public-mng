@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Button from "@/components/common/Button";
-import BannerSlider from "@/components/common/BannerSlider";
-import { bannerImages } from "@/constants/bannerImages";
+import StaticHeader from "@/components/common/StaticHeader";
 import {
   ChevronLeft,
   ChevronRight,
@@ -220,7 +219,12 @@ export default function NewsDesktop() {
 
   return (
     <div className="h-full hidden sm:flex gap-10 overflow-x-auto overflow-y-hidden w-auto flex-shrink-0 max-h-screen">
-      <BannerSlider images={bannerImages} width="90rem" />
+      <StaticHeader
+        image="/images/news1.png"
+        alt="News Page Header"
+        width="90rem"
+        title="ᠮᠡᠳᠡᢉᠡ ᠮᠡᠳᠡᢉᠡᠯᠡᠯ"
+      />
       <div className="h-full p-4">
         <div className="h-full flex gap-10">
           <div className="h-full flex flex-col items-center gap-4">

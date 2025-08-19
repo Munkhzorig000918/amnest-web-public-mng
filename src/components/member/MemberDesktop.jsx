@@ -1,5 +1,4 @@
-import BannerSlider from "@/components/common/BannerSlider";
-import { bannerImages } from "@/constants/bannerImages";
+import StaticHeader from "@/components/common/StaticHeader";
 import { useRouter } from "next/router";
 import SectionTitle from "../common/SectionTitle";
 import toast from "react-hot-toast";
@@ -500,7 +499,12 @@ export default function MemberDesktop({
 
   return (
     <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-hidden">
-      <BannerSlider images={bannerImages} width="90rem" />
+      <StaticHeader
+        image="/images/news1.png"
+        alt="Member Page Header"
+        width="90rem"
+        title="ᠭᠢᠰᠦᠦᠨᠴᠢᠯᠡᠯ"
+      />
       <div className="flex gap-16 p-4 h-full">
         <div className="flex gap-2">
           <h2

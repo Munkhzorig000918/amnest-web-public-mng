@@ -3,6 +3,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import HeaderMobile from "@/components/layout/HeaderMobile";
 import FooterMobile from "@/components/layout/FooterMobile";
+import DonateFloatingButton from "@/components/common/DonateFloatingButton";
 
 export default function Layout({ children }) {
   const scrollRef = useRef(null);
@@ -38,6 +39,9 @@ export default function Layout({ children }) {
         <div className="flex-1">{children}</div>
         <FooterMobile />
       </div>
+
+      {/* Sticky Donation Button - appears on all pages except donation */}
+      <DonateFloatingButton />
     </>
   );
 }
