@@ -85,12 +85,13 @@ export default function StructureManagersMobile() {
         <StaticHeader
           title="ᠤᠳᠤᠷᠢᠳᠬᠤ ᠵᠥᠪᠯᠡᠯ"
           description="ᠮᠣᠩᠭᠣᠯ ᠤ᠋ᠨ ᠡᠮᠨᠧᠰᠲ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠡᠰᠢᠩᠯ ᠦ᠋ᠨ ᠪᠣᠳᠤᠯᠭ᠎ᠠ᠂ ᠦᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭᠠᠨ ᠳ᠋ᠤ ᠮᠡᠷᢉᠡᠵᠢᠯ ᠦ᠋ᠨ ᠤᠷ᠎ᠠ ᠴᠢᠳᠠᠪᠤᠷᠢ᠂ ᠲᠤᠷᠰᠢᠯᠭ᠎ᠠ᠂ ᠴᠠᠭ ᠵᠠᠪ ᠢ᠋ᠶᠠᠨ ᠬᠠᠨᠳᠢᠪᠯᠠᠵᠤ ᠠᠵᠢᠯᠯᠠᠳᠠᠭ ᠤᠳᠤᠷᠢᠳᠬᠤ ᠵᠥᠪᠯᠡᠯ ᠦ᠋ᠨ ᢉᠡᠰᠢᢉᠦᠳ᠃"
+          width="100%"
         />
       </div>
-      <div className="flex flex-col gap-12 p-4 h-full">
+      <div className="flex flex-col gap-12 p-4 h-full w-full max-w-full">
         <div className="flex gap-2 max-h-[200px]">
           <h2
-            className="text-[10px] font-bold"
+            className="text-sm font-bold"
             style={{
               writingMode: "vertical-lr",
             }}
@@ -98,7 +99,7 @@ export default function StructureManagersMobile() {
             ᠤᠳᠤᠷᠢᠳᠬᠤ ᠵᠥᠪᠯᠡᠯ
           </h2>
           <p
-            className="text-[8px] text-[#848382]"
+            className="text-xs"
             style={{
               writingMode: "vertical-lr",
             }}
@@ -110,48 +111,52 @@ export default function StructureManagersMobile() {
         </div>
 
         {/* Managers Section */}
-        <div className="flex overflow-x-auto gap-4 pb-4">
+        <div className="flex flex-col gap-6 w-full">
           {managers.map((manager, index) => (
             <div
               key={manager.id}
-              className="flex-none flex flex-col items-center gap-4 min-w-[250px] max-w-[250px] border-r border-dashed border-gray-300 pr-4 last:border-r-0"
+              className="flex flex-row items-center gap-4 border-b border-dashed border-gray-300 pb-6 last:border-b-0 w-full"
             >
-              <Image
-                src={manager.image || "/images/no-image-icon.png"}
-                alt={manager.name}
-                width={200}
-                height={200}
-                className="rounded-full w-[200px] h-[200px]"
-              />
-              <div className="flex items-start gap-2">
-                <h3
-                  className="font-bold text-sm"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                >
-                  {manager.name}
-                </h3>
+              <div className="flex-shrink-0">
+                <Image
+                  src={manager.image || "/images/no-image-icon.png"}
+                  alt={manager.name}
+                  width={150}
+                  height={150}
+                  className="rounded-full w-[150px] h-[150px] object-cover"
+                />
+                <div className="flex flex-row items-start justify-center gap-2 mt-2">
+                  <h3
+                    className="font-bold text-sm"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                  >
+                    {manager.name}
+                  </h3>
+                  <p
+                    className="text-xs text-gray-600"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                  >
+                    {manager.position}
+                  </p>
+                </div>
+              </div>
+              <div className="flex-1 min-w-0 overflow-x-auto max-h-[400px]">
                 <p
-                  className="text-xs text-gray-600"
+                  className="text-xs leading-relaxed"
                   style={{
                     writingMode: "vertical-lr",
                     textOrientation: "upright",
                   }}
                 >
-                  {manager.position}
+                  {manager.description}
                 </p>
               </div>
-              <p
-                className="text-xs leading-relaxed"
-                style={{
-                  writingMode: "vertical-lr",
-                  textOrientation: "upright",
-                }}
-              >
-                {manager.description}
-              </p>
             </div>
           ))}
         </div>
