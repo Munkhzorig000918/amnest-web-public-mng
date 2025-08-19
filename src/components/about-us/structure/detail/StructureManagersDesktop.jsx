@@ -1,6 +1,5 @@
 import Image from "next/image";
-import BannerSlider from "@/components/common/BannerSlider";
-import { bannerImages } from "@/constants/bannerImages";
+import StaticHeader from "@/components/common/StaticHeader";
 import SectionTitle from "@/components/common/SectionTitle";
 
 export default function StructureManagersDesktop() {
@@ -82,7 +81,12 @@ export default function StructureManagersDesktop() {
 
   return (
     <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen sm:overflow-y-hidden">
-      <BannerSlider images={bannerImages} width="90rem" />
+      <StaticHeader
+        image="/images/news1.png"
+        alt="Managers Page Header"
+        width="90rem"
+        title="ᠤᠳᠤᠷᠢᠳᠬᠤ ᠵᠥᠪᠯᠡᠯ"
+      />
 
       <div className="flex gap-12 p-4 h-full">
         <div className="flex gap-10">

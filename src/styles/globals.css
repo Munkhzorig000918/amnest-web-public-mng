@@ -12,6 +12,8 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-mongolian: "Mongolian Baiti", "Microsoft Mongolian Baiti",
+    "Menksoft Qagan", "TraditionalMongolian", "Mongolian White", serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -26,3 +28,165 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Mongolian font utility class */
+.font-mongolian {
+  font-family: "Mongolian Baiti", "Microsoft Mongolian Baiti", "Menksoft Qagan",
+    "TraditionalMongolian", "Mongolian White", serif;
+}
+
+/* Donation button - exact copy from original Svelte version */
+.donate-floating-button {
+  position: fixed;
+  display: flex;
+  top: 40%;
+  right: 0;
+  bottom: 60%;
+  height: 160px;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.donate-floating-button .sub {
+  padding: 10px 0;
+  background: #ffff00;
+  width: 40px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  overflow: hidden;
+  box-shadow: 1px 0 6px 0 rgba(0, 0, 0, 0.3);
+}
+
+.donate-floating-button .sub .label {
+  margin: 48px 0 15px 0;
+  transform: rotate(270deg);
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.donate-floating-button .candle {
+  opacity: 0;
+  bottom: 0;
+  z-index: 1100;
+}
+
+.donate-floating-button .candle-flame {
+  bottom: 4px;
+  position: absolute;
+}
+
+.donate-floating-button .fire-big-svg {
+  animation: fire-big 5s infinite;
+  animation-duration: 2s;
+  animation-delay: 1s;
+  bottom: 0;
+}
+
+.donate-floating-button .fire-small-svg {
+  animation: fire-small 5s infinite;
+  animation-duration: 2s;
+  animation-delay: 1s;
+  z-index: 2000;
+  bottom: 0;
+}
+
+.donate-floating-button:hover .candle {
+  opacity: 1;
+}
+
+.donate-floating-button .candle-sub {
+  animation: move 10s infinite;
+  animation-duration: 5s;
+  position: absolute;
+  transition: 0.3s linear all;
+}
+
+.donate-floating-button:hover .candle-sub {
+  top: 8px;
+  animation: move 0s;
+  animation-duration: 0.3s;
+  animation-delay: 0s;
+}
+
+@keyframes move {
+  0% {
+    top: 5px;
+  }
+  25% {
+    top: 0;
+  }
+  50% {
+    top: 5px;
+  }
+  75% {
+    top: 0;
+  }
+  100% {
+    top: 5px;
+  }
+}
+
+@keyframes fire-big {
+  0% {
+    height: 27px;
+    bottom: 0;
+    transform: rotateZ(0deg);
+  }
+  25% {
+    height: 32px;
+    bottom: 0;
+    transform: rotateZ(-2deg);
+  }
+  50% {
+    height: 27px;
+    bottom: 0;
+    transform: rotateZ(0deg);
+  }
+  75% {
+    height: 32px;
+    bottom: 0;
+    transform: rotateZ(2deg);
+  }
+  100% {
+    height: 27px;
+    bottom: 0;
+    transform: rotateZ(0deg);
+  }
+}
+
+@keyframes fire-small {
+  0% {
+    height: 27px;
+    bottom: 0;
+  }
+  25% {
+    height: 33px;
+    bottom: 0;
+  }
+  50% {
+    height: 27px;
+    bottom: 0;
+  }
+  75% {
+    height: 33px;
+    bottom: 0;
+  }
+  100% {
+    height: 27px;
+    bottom: 0;
+  }
+}
+
+/* @font-face for custom Mongolian script font (uncomment and update path when font file is added) */
+/*
+@font-face {
+  font-family: 'TraditionalMongolian';
+  src: url('/fonts/traditional-mongolian.woff2') format('woff2'),
+       url('/fonts/traditional-mongolian.woff') format('woff'),
+       url('/fonts/traditional-mongolian.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+*/

@@ -2,6 +2,7 @@ import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import Button from "@/components/common/Button";
 import { countryData } from "@/utils/countryList";
+import StaticHeader from "../common/StaticHeader";
 
 export default function DonationMobile({
   // Form data
@@ -41,7 +42,12 @@ export default function DonationMobile({
   return (
     <div className="w-full min-h-screen bg-white md:hidden">
       <div className="relative w-full h-[40vh]">
-        <BannerSlider images={bannerImages} />
+        <StaticHeader
+          image="/images/news1.png"
+          alt="Donation Page Header"
+          width="100%"
+          title="ᠬᠠᠨᠳᠢᠪ ᠥᢉᢉᠦ"
+        />
       </div>
 
       <div className="p-4">

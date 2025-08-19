@@ -3,6 +3,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import HeaderMobile from "@/components/layout/HeaderMobile";
 import FooterMobile from "@/components/layout/FooterMobile";
+import DonateFloatingButton from "@/components/common/DonateFloatingButton";
 
 export default function Layout({ children }) {
   const scrollRef = useRef(null);
@@ -25,19 +26,26 @@ export default function Layout({ children }) {
 
   return (
     <>
-      {/* Desktop Layout */}
-      <div className="h-screen items-center justify-start hidden md:flex">
+      {/* Desktop Layout - Horizontal scrolling for Mongolian script */}
+      <div
+        ref={scrollRef}
+        className="h-screen w-screen overflow-x-auto overflow-y-hidden flex items-center justify-start hidden md:flex"
+        style={{ scrollBehavior: "smooth" }}
+      >
         <Header />
-        {children}
+        <div className="h-full flex-shrink-0">{children}</div>
         <Footer />
       </div>
 
-      {/* Mobile Layout */}
+      {/* Mobile Layout - Keep vertical scrolling */}
       <div className="flex flex-col md:hidden min-h-screen">
         <HeaderMobile />
         <div className="flex-1">{children}</div>
         <FooterMobile />
       </div>
+
+      {/* Sticky Donation Button - appears on all pages except donation */}
+      <DonateFloatingButton />
     </>
   );
 }

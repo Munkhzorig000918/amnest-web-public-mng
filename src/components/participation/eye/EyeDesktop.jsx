@@ -1,6 +1,7 @@
 import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import InteractiveMap from "@/components/participation/InteractiveMap";
+import StaticHeader from "@/components/common/StaticHeader";
 
 // Sample data for top 5 provinces - this should come from API in real implementation
 const top5Provinces = [
@@ -44,9 +45,13 @@ export default function EyeDesktop() {
   };
 
   return (
-    <div className="h-full hidden sm:flex gap-10 overflow-x-auto w-auto flex-shrink-0">
-      <BannerSlider images={bannerImages} width="90rem" />
-
+    <div className="h-full hidden sm:flex gap-10 w-auto flex-shrink-0">
+      <StaticHeader
+        image="/images/news1.png"
+        alt="Youth Page Header"
+        width="90rem"
+        title="ᠵᠠᠯᠠᠭᠤᠴᠤᠳ ᠤ᠋ᠨ ᠣᠷᠤᠯᠴᠠᠭ᠎ᠠ"
+      />
       <div className="h-full p-4 flex gap-20">
         <div className="flex gap-10">
           <p

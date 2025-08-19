@@ -1,10 +1,16 @@
 import BannerSlider from "@/components/common/BannerSlider";
+import StaticHeader from "@/components/common/StaticHeader";
 import { bannerImages } from "@/constants/bannerImages";
 
 export default function VolunteerMobile() {
   return (
     <div className="h-full w-full block sm:hidden p-4">
-      <BannerSlider images={bannerImages} width="90rem" />
+      <StaticHeader
+        image="/images/news1.png"
+        alt="Youth Page Header"
+        width="100%"
+        title="ᠵᠠᠯᠠᠭᠤᠴᠤᠳ ᠤ᠋ᠨ ᠣᠷᠤᠯᠴᠠᠭ᠎ᠠ"
+      />
       <div className="flex flex-col gap-7">
         {volunteerItems.map((item) => (
           <div

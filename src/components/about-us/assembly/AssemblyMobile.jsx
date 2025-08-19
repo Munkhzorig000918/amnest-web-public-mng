@@ -2,12 +2,18 @@ import Button from "@/components/common/Button";
 import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import AssemblySwiper from "./AssemblySwiper";
+import StaticHeader from "@/components/common/StaticHeader";
 
 export default function AssemblyMobile() {
   return (
     <div className="block sm:hidden overflow-x-auto overflow-y-hidden">
       <div className="flex flex-col gap-4 h-full">
-        <BannerSlider images={bannerImages} width="90rem" />
+        <StaticHeader
+          image="/images/news1.png"
+          alt="Assembly Page Header"
+          width="100%"
+          title="ᠶᠡᠷᠦᠩᢈᠡᠢ ᠴᠢᠭᠤᠯᠭᠠᠨ"
+        />
         <div className="flex flex-col gap-4 p-4">
           {/* First text section with image */}
           <div className="flex gap-2 max-h-[212px]">

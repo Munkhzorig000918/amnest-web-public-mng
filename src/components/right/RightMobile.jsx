@@ -9,6 +9,7 @@ import {
   onlineLessonsService,
   podcastsService,
 } from "@/services/apiService";
+import StaticHeader from "../common/StaticHeader";
 
 export default function RightMobile() {
   const [swiperData, setSwiperData] = useState([]);
@@ -96,7 +97,12 @@ export default function RightMobile() {
 
   return (
     <div className="h-full flex flex-col sm:hidden gap-7">
-      <BannerSlider images={bannerImages} width="90rem" useDynamic={true} />
+      <StaticHeader
+        image="/images/news1.png"
+        alt="Rights Page Header"
+        width="100%"
+        title="ᠬᠦᠮᠦᠨ ᠦ ᠡᠷᠬᠡ ᠶᠢᠨ ᠲᠠᠯᠠᠭᠠᠷ ᠮᠡᠳᠡᠬᠦ"
+      />
       <div className="h-full p-4">
         <div className="h-full flex flex-col gap-7">
           <div className="flex gap-2 max-h-[200px] overflow-x-auto">

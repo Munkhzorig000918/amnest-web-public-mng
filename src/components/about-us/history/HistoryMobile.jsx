@@ -1,11 +1,15 @@
-import BannerSlider from "@/components/common/BannerSlider";
-import { bannerImages } from "@/constants/bannerImages";
+import StaticHeader from "@/components/common/StaticHeader";
 
 export default function HistoryMobile() {
   return (
     <div className="w-full min-h-screen bg-white block sm:hidden">
       <div className="relative w-full h-[40vh]">
-        <BannerSlider images={bannerImages} />
+        <StaticHeader
+          image="/images/news1.png"
+          alt="History Page Header"
+          width="100%"
+          title="ᠮᠣᠩᠭᠣᠯ ᠤ᠋ᠨ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠡᠰᠢᠨᠯ ᠦ᠋ᠨ ᠲᠡᠦᢈᠡᠨ ᠲᠣᠪᠴᠢᠶ᠎ᠠ"
+        />
       </div>
 
       <div className="flex flex-col gap-12 p-4 h-full relative">

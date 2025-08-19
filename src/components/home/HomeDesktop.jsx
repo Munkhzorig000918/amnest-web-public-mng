@@ -124,7 +124,7 @@ export default function HomeDesktop() {
   }
 
   return (
-    <div className="h-full gap-10 overflow-x-auto w-auto flex-shrink-0 hidden md:flex">
+    <div className="h-full gap-10 w-auto flex-shrink-0 hidden md:flex">
       <BannerSlider width="90rem" useDynamic={true} />
       <div className="h-full p-4">
         <div className="h-full flex gap-10">
@@ -238,7 +238,7 @@ export default function HomeDesktop() {
                   }}
                 />
                 <h4
-                  className="text-black font-bold text-sm"
+                  className="text-black font-bold text-sm max-h-32 overflow-hidden"
                   style={{
                     writingMode: "vertical-lr",
                     textOrientation: "upright",
@@ -251,7 +251,7 @@ export default function HomeDesktop() {
                 </h4>
               </div>
               <div
-                className="min-w-28 text-black font-bold text-sm"
+                className="min-w-28 text-black font-bold text-sm max-h-96 overflow-hidden"
                 style={{
                   writingMode: "vertical-lr",
                   textOrientation: "upright",

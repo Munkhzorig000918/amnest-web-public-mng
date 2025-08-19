@@ -204,8 +204,12 @@ export default function NewsMobile() {
 
   return (
     <div className="block sm:hidden h-full overflow-y-auto overflow-x-hidden">
-      <BannerSlider images={bannerImages} width="100%" />
-
+      <StaticHeader
+        image="/images/news1.png"
+        alt="Youth Page Header"
+        width="100%"
+        title="ᠵᠠᠯᠠᠭᠤᠴᠤᠳ ᠤ᠋ᠨ ᠣᠷᠤᠯᠴᠠᠭ᠎ᠠ"
+      />
       <div className="p-4 flex gap-5">
         {/* Category Buttons */}
         <div className="flex flex-col gap-2">

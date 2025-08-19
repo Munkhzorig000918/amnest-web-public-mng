@@ -4,8 +4,7 @@ import { useGetFaqsQuery } from "@/redux/services/apiService";
 import { getImageUrl } from "@/config/api";
 import Image from "next/image";
 import Button from "@/components/common/Button";
-import BannerSlider from "@/components/common/BannerSlider";
-import { bannerImages } from "@/constants/bannerImages";
+import StaticHeader from "@/components/common/StaticHeader";
 
 export default function FaqDesktop() {
   const [expandedItem, setExpandedItem] = useState(null);
@@ -65,8 +64,13 @@ export default function FaqDesktop() {
   }
 
   return (
-    <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen">
-      <BannerSlider images={bannerImages} width="90rem" />
+    <div className="h-full hidden sm:flex gap-20 w-auto flex-shrink-0">
+      <StaticHeader
+        image="/images/news1.png"
+        alt="FAQ Page Header"
+        width="90rem"
+        title="ᠠᠰᠠᠭᠤᠯᠲᠠ ᠬᠠᠷᠢᠭᠤᠯᠲᠠ"
+      />
       <div className="flex gap-6 max-h-screen overflow-y-auto p-4">
         {faqItems.map((item, index) => (
           <div key={index} className="flex">

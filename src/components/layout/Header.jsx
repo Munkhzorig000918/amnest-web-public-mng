@@ -61,7 +61,7 @@ export default function Header() {
                       </p>
                     </div>
                     {showDropdown && (
-                      <div className="absolute left-[78px] top-[-30px] bg-white rounded-xl p-6 w-auto z-30 border border-[#E3E3E3]">
+                      <div className="absolute left-[38px] top-[-30px] bg-white rounded-xl p-6 w-auto z-30 border border-[#E3E3E3]">
                         <div className="flex justify-between items-center">
                           <div className="flex gap-10">
                             <div className="flex flex-col items-center cursor-pointer group">

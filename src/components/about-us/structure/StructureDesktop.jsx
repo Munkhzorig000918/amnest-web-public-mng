@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Button from "@/components/common/Button";
-import BannerSlider from "@/components/common/BannerSlider";
-import { bannerImages } from "@/constants/bannerImages";
+import StaticHeader from "@/components/common/StaticHeader";
 import SectionTitle from "@/components/common/SectionTitle";
 import StructureDiagram from "./StructureDiagram";
 import { useState, useEffect } from "react";
@@ -45,8 +44,13 @@ export default function StructureDesktop() {
   }, []);
 
   return (
-    <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen sm:overflow-y-hidden">
-      <BannerSlider images={bannerImages} width="90rem" />
+    <div className="h-full hidden sm:flex gap-20 w-auto flex-shrink-0">
+      <StaticHeader
+        image="/images/news1.png"
+        alt="Structure Page Header"
+        width="90rem"
+        title="ᠵᠦᠢᠯ ᠦ᠋ᠨ ᠪᠠᠢᠭᠤᠯᠤᠯᠲᠠ"
+      />
 
       <div className="flex gap-12 p-4 h-full">
         <div className="flex gap-10">

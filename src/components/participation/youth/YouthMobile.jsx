@@ -4,12 +4,17 @@ import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import SectionTitle from "@/components/common/SectionTitle";
 import { Download } from "lucide-react";
+import StaticHeader from "@/components/common/StaticHeader";
 
 export default function YouthDesktop() {
   return (
     <div className="h-full w-full block sm:hidden">
-      <BannerSlider images={bannerImages} width="90rem" />
-
+      <StaticHeader
+        image="/images/news1.png"
+        alt="Youth Page Header"
+        width="100%"
+        title="ᠵᠠᠯᠠᠭᠤᠴᠤᠳ ᠤ᠋ᠨ ᠣᠷᠤᠯᠴᠠᠭ᠎ᠠ"
+      />
       <div className="h-full flex flex-col gap-7">
         <div className="flex flex-row gap-2 max-h-[212px] p-4">
           <img

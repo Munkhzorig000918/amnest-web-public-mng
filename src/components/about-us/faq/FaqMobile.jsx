@@ -3,6 +3,7 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { useGetFaqsQuery } from "@/redux/services/apiService";
 import { getImageUrl } from "@/config/api";
 import BannerSlider from "@/components/common/BannerSlider";
+import StaticHeader from "@/components/common/StaticHeader";
 
 export default function FaqMobile() {
   const [expandedItem, setExpandedItem] = useState(null);
@@ -62,7 +63,12 @@ export default function FaqMobile() {
 
   return (
     <div className="h-full w-full block sm:hidden">
-      <BannerSlider images={bannerImages} width="90rem" />
+      <StaticHeader
+        image="/images/news1.png"
+        alt="FAQ Page Header"
+        width="100%"
+        title="ᠠᠰᠠᠭᠤᠯᠲᠠ ᠬᠠᠷᠢᠭᠤᠯᠲᠠ"
+      />
       <div className="flex flex-col gap-4 p-4">
         {faqItems.map((item, index) => (
           <div key={index} className="flex items-center gap-2">

@@ -1,14 +1,18 @@
 import Image from "next/image";
 import Button from "@/components/common/Button";
-import BannerSlider from "@/components/common/BannerSlider";
-import { bannerImages } from "@/constants/bannerImages";
+import StaticHeader from "@/components/common/StaticHeader";
 import SectionTitle from "@/components/common/SectionTitle";
 import { Download } from "lucide-react";
 
 export default function YouthDesktop() {
   return (
     <div className="h-full hidden sm:flex gap-10 overflow-x-auto w-auto flex-shrink-0">
-      <BannerSlider images={bannerImages} width="90rem" />
+      <StaticHeader
+        image="/images/news1.png"
+        alt="Youth Page Header"
+        width="90rem"
+        title="ᠵᠠᠯᠠᠭᠤᠴᠤᠳ ᠤ᠋ᠨ ᠣᠷᠤᠯᠴᠠᠭ᠎ᠠ"
+      />
 
       <div className="h-full p-4 flex gap-20">
         <p
@@ -142,17 +146,14 @@ export default function YouthDesktop() {
             </div>
           </div>
         </div>
-        <div className="flex gap-8">
+        <div className="flex flex-row gap-8">
           <SectionTitle
             title="ᠮᠣᠩᠭᠣᠯ ᠤ᠋ᠨ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠡᠰᠢᠩᠯᠡ ᠶ᠋ᠢᠨ ᠳᠡᠮᠵᠢᢉᠴᠢ ᠪᠣᠯᠤᠨ ᢉᠡᠰᠢᢉᠦᠨ ᠦ᠋ ᠶ᠋ᠢᠨ ᠢᠯᠭᠠᠭ᠎ᠠ ᠨᠢ ᠶᠠᠭᠤ ᠪᠤᠢ?"
             className="text-xl font-bold"
           />
-          <div className="grid grid-cols-1 grid-rows-2 grid-flow-col gap-4">
-            {youtItems.map((item) => (
-              <div
-                key={item.id}
-                className="flex gap-7 col-span-1 w-full max-w-max"
-              >
+          <div className="flex flex-col gap-4">
+            {youthItems.map((item) => (
+              <div key={item.id} className="flex gap-7 max-h-[400px]">
                 <h3
                   className="text-2xl font-bold"
                   style={{
@@ -174,7 +175,7 @@ export default function YouthDesktop() {
                 <Button
                   text={"ᠠᠻᠲ᠋ᠢᠸᠢᠰᠮ ᠳ᠋ᠤ ᠣᠷᠤᠯᠴᠠᠬᠤ"}
                   type="primary"
-                  className="min-w-12 max-h-min whitespace-nowrap"
+                  className="w-12 whitespace-nowrap"
                 />
               </div>
             ))}
@@ -185,7 +186,7 @@ export default function YouthDesktop() {
   );
 }
 
-const youtItems = [
+const youthItems = [
   {
     id: 1,
     title: "ᠳᠡᠮᠵᠢᢉᠴᠢ",
