@@ -2,6 +2,7 @@ import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import SectionTitle from "@/components/common/SectionTitle";
 import StructureDiagramMobile from "./StructureDiagramMobile";
+import StaticHeader from "@/components/common/StaticHeader";
 
 export default function StructureMobile() {
   return (

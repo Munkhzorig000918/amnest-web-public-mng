@@ -4,6 +4,7 @@ import BannerSlider from "@/components/common/BannerSlider";
 import { bannerImages } from "@/constants/bannerImages";
 import Button from "@/components/common/Button";
 import { useRouter } from "next/router";
+import StaticHeader from "@/components/common/StaticHeader";
 
 export default function StructureChapterMembersMobile() {
   const router = useRouter();
@@ -31,7 +32,12 @@ export default function StructureChapterMembersMobile() {
   return (
     <div className="w-full block sm:hidden">
       <div className="relative w-full h-[40vh]">
-        <BannerSlider images={bannerImages} width="90rem" />
+        <StaticHeader
+          title="ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠡᠰᠢᠯ ᠦ᠋ᠨ ᠪᠦᠯᠦᢉ ᠦ᠋ᠳ"
+          description="ᠮᠣᠩᠭᠣᠯ ᠤ᠋ᠨ ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠡᠰᠢᠨᠯ (ᠮᠡᠶᠢ) ᠨᠢ ᠪᠠᠶᠢᠭᠤᠯᠤᠭᠳᠠᠭᠰᠠᠨ ᠴᠠᠭ ᠠ᠋ᠴᠠ
+            ᠪᠠᠨ ᠡᢈᠢᠯᠡᠨ ᠥᠨᠦ ᠶ᠋ᠢ ᢈᠦᠷᠲᠡᠯ᠎ᠡ ᠣᠷᠤᠨ ᠳᠠᠶᠠᠭᠠᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠬᠠᠮᠠᠭᠠᠯᠠᠭᠴᠢ
+            ᠑᠐'᠐᠐᠐ ᠭᠠᠷᠤᠢ ᢉᠡᠰᠢᢉᠦᠳ᠂ ᠳᠡᠮᠵᠢᢉᠴᠢᠳ ᠲᠡᠢ ᠪᠣᠯᠤᠭᠰᠠᠨ᠃"
+        />
       </div>
       <div className="flex flex-col gap-12 p-4 h-full">
         {/* Header Section */}
