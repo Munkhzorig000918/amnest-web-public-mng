@@ -498,7 +498,7 @@ export default function MemberDesktop({
   );
 
   return (
-    <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-hidden">
+    <div className="h-full hidden sm:flex gap-20 w-auto flex-shrink-0">
       <StaticHeader
         image="/images/news1.png"
         alt="Member Page Header"

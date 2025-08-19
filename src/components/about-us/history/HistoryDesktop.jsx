@@ -5,7 +5,7 @@ import SectionTitle from "@/components/common/SectionTitle";
 
 export default function HistoryDesktop() {
   return (
-    <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen overflow-y-auto">
+    <div className="h-full hidden sm:flex gap-20 w-auto flex-shrink-0">
       <StaticHeader
         image="/images/news1.png"
         alt="History Page Header"

@@ -189,7 +189,7 @@ export default function NewsDesktop() {
   // Loading state
   if (isLoading && currentData.length === 0) {
     return (
-      <div className="h-full hidden sm:flex gap-10 overflow-x-auto overflow-y-hidden w-auto flex-shrink-0 max-h-screen items-center justify-center">
+      <div className="h-full hidden sm:flex gap-10 w-auto flex-shrink-0 items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 mx-auto"></div>
           <p
@@ -206,7 +206,7 @@ export default function NewsDesktop() {
   // Error state
   if (error) {
     return (
-      <div className="h-full hidden sm:flex gap-10 overflow-x-auto overflow-y-hidden w-auto flex-shrink-0 max-h-screen items-center justify-center">
+      <div className="h-full hidden sm:flex gap-10 w-auto flex-shrink-0 items-center justify-center">
         <div className="text-center text-red-600">
           <p style={{ writingMode: "vertical-lr", textOrientation: "upright" }}>
             ᠮᠡᠳᠡᢉᠡ ᠠᠴᠢᠶᠠᠯᠠᠬᠤ ᠳ᠋ᠤ ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠪᠠ
@@ -218,7 +218,7 @@ export default function NewsDesktop() {
   }
 
   return (
-    <div className="h-full hidden sm:flex gap-10 overflow-x-auto overflow-y-hidden w-auto flex-shrink-0 max-h-screen">
+    <div className="h-full hidden sm:flex gap-10 w-auto flex-shrink-0">
       <StaticHeader
         image="/images/news1.png"
         alt="News Page Header"

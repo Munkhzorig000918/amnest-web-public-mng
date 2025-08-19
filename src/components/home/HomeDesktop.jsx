@@ -124,7 +124,7 @@ export default function HomeDesktop() {
   }
 
   return (
-    <div className="h-full gap-10 overflow-x-auto w-auto flex-shrink-0 hidden md:flex">
+    <div className="h-full gap-10 w-auto flex-shrink-0 hidden md:flex">
       <BannerSlider width="90rem" useDynamic={true} />
       <div className="h-full p-4">
         <div className="h-full flex gap-10">

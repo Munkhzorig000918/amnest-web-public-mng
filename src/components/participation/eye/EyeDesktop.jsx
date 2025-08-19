@@ -44,7 +44,7 @@ export default function EyeDesktop() {
   };
 
   return (
-    <div className="h-full hidden sm:flex gap-10 overflow-x-auto w-auto flex-shrink-0">
+    <div className="h-full hidden sm:flex gap-10 w-auto flex-shrink-0">
       <BannerSlider images={bannerImages} width="90rem" />
 
       <div className="h-full p-4 flex gap-20">

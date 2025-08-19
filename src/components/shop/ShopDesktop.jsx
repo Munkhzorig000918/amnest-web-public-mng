@@ -7,7 +7,7 @@ export default function ShopDesktop({ merchandise = [] }) {
   console.log("ShopDesktop merchandise:", merchandise);
 
   return (
-    <div className="h-full hidden sm:flex gap-10 overflow-x-auto overflow-y-hidden flex-shrink-0 p-4 max-h-screen">
+    <div className="h-full hidden sm:flex gap-10 flex-shrink-0 p-4">
       <BannerSlider images={bannerImages} width="90rem" useDynamic={true} />
       <div className="h-full p-4">
         <div className="h-full flex gap-10">
