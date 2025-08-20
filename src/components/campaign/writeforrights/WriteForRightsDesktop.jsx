@@ -3,8 +3,9 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import Button from "@/components/common/Button";
 import StaticHeader from "@/components/common/StaticHeader";
+import { getImageUrl } from "@/utils/fetcher";
 
-export default function WriteForRightsDesktop() {
+export default function WriteForRightsDesktop({ actions = [], error = null }) {
   const router = useRouter();
   const [formData, setFormData] = useState({
     firstName: "",
@@ -16,35 +17,12 @@ export default function WriteForRightsDesktop() {
   const [errorMessage, setErrorMessage] = useState("");
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  // Mock data for Write for Rights actions - in real app this would come from API
-  const writeForRightsActions = [
-    {
-      id: 1,
-      title: "ᠵᠠᢈᠢᠳᠠᠯ ᠪᠢᢈᠢᢈᠦ ᠠᠶᠠᠨ 1",
-      description:
-        "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠵᠠᢈᠢᠳᠠᠯ ᠪᠢᢈᠢᢈᠦ ᠠᠶᠠᠨ ᠤ᠋ ᠨᠢᢉᠡ ᢈᠡᠰᠡᢉ",
-      cover: "/images/campaign/writeforrights1.jpg",
-    },
-    {
-      id: 2,
-      title: "ᠵᠠᢈᠢᠳᠠᠯ ᠪᠢᢈᠢᢈᠦ ᠠᠶᠠᠨ 2",
-      description:
-        "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠵᠠᢈᠢᠳᠠᠯ ᠪᠢᢈᠢᢈᠦ ᠠᠶᠠᠨ ᠤ᠋ ᢈᠣᠶᠢᠳᠤᠭᠠᠷ ᢈᠡᠰᠡᢉ",
-      cover: "/images/campaign/writeforrights2.jpg",
-    },
-    {
-      id: 3,
-      title: "ᠵᠠᢈᠢᠳᠠᠯ ᠪᠢᢈᠢᢈᠦ ᠠᠶᠠᠨ 3",
-      description:
-        "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠵᠠᢈᠢᠳᠠᠯ ᠪᠢᢈᠢᢈᠦ ᠠᠶᠠᠨ ᠤ᠋ ᠭᠤᠷᠪᠠᠳᠤᠭᠠᠷ ᢈᠡᠰᠡᢉ",
-      cover: "/images/campaign/writeforrights3.jpg",
-    },
-  ];
-
   useEffect(() => {
     // Select all items by default
-    setSelectedItems(writeForRightsActions.map((action) => action.id));
-  }, []);
+    if (actions && actions.length > 0) {
+      setSelectedItems(actions.map((action) => action.id));
+    }
+  }, [actions]);
 
   const handleCheckboxChange = (actionId, isChecked) => {
     if (isChecked) {
@@ -79,6 +57,34 @@ export default function WriteForRightsDesktop() {
   const handleActionClick = (actionId) => {
     router.push(`/campaign/writeforrights/${actionId}`);
   };
+
+  // Show error state if there's an API error
+  if (error) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="text-center">
+          <h1
+            className="text-2xl font-bold text-red-600 mb-4"
+            style={{
+              writingMode: "vertical-lr",
+              textOrientation: "upright",
+            }}
+          >
+            ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠪᠠ
+          </h1>
+          <p
+            className="text-gray-600 mb-4"
+            style={{
+              writingMode: "vertical-lr",
+              textOrientation: "upright",
+            }}
+          >
+            ᠲᠠᠯᠪᠢᠭᠰᠠᠨ ᠠᠵᠢᠯ ᠤ᠋ᠯᠠᠭ᠎ᠠ ᠦᠵᠡᠭᠳᠡᠵᠤ ᠴᠢᠳᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full hidden sm:flex overflow-x-auto w-auto flex-shrink-0 max-h-screen min-w-screen">
@@ -115,63 +121,87 @@ export default function WriteForRightsDesktop() {
         </div>
 
         <div className="flex-1 flex flex-row gap-4 overflow-x-auto">
-          {writeForRightsActions.map((action) => (
-            <div
-              key={action.id}
-              className="flex flex-col items-center justify-between h-full gap-2 bg-white p-4"
-            >
-              <div className="flex flex-col items-center gap-4">
-                <div className="w-[150px] h-[120px] flex-shrink-0">
-                  <Image
-                    src={action.cover}
-                    alt={action.title}
-                    width={150}
-                    height={120}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.target.src = "/images/no-image.png";
-                    }}
+          {actions && actions.length > 0 ? (
+            actions.map((action) => (
+              <div
+                key={action.id}
+                className="flex flex-col items-center justify-between h-full gap-2 bg-white p-4"
+              >
+                <div className="flex flex-col items-center gap-4">
+                  <div className="w-[150px] h-[120px] flex-shrink-0">
+                    {action.cover ? (
+                      <Image
+                        src={getImageUrl(action.cover)}
+                        alt={action.title}
+                        width={150}
+                        height={120}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.src = "/images/no-image.png";
+                        }}
+                      />
+                    ) : (
+                      <Image
+                        src="/images/no-image.png"
+                        alt="No image"
+                        width={150}
+                        height={120}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+                  <div className="flex flex-row gap-2">
+                    <h3
+                      className="font-bold mb-2 text-sm"
+                      style={{
+                        writingMode: "vertical-lr",
+                        textOrientation: "upright",
+                      }}
+                    >
+                      {action.title}
+                    </h3>
+                    <p
+                      className="text-xs"
+                      style={{
+                        writingMode: "vertical-lr",
+                        textOrientation: "upright",
+                      }}
+                    >
+                      {action.description}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-4 items-center justify-center">
+                  <Button
+                    text="ᠳᠡᠯᠭᠡᠷᠡᠩᠭᠦᠢ"
+                    type="secondary"
+                    className="text-xs px-2 py-1"
+                    onClick={() => handleActionClick(action.id)}
+                  />
+                  <input
+                    type="checkbox"
+                    className="w-6 h-6 accent-gray-500"
+                    checked={selectedItems.includes(action.id)}
+                    onChange={(e) =>
+                      handleCheckboxChange(action.id, e.target.checked)
+                    }
                   />
                 </div>
-                <div className="flex flex-row gap-2">
-                  <h3
-                    className="font-bold mb-2 text-sm"
-                    style={{
-                      writingMode: "vertical-lr",
-                      textOrientation: "upright",
-                    }}
-                  >
-                    {action.title}
-                  </h3>
-                  <p
-                    className="text-xs"
-                    style={{
-                      writingMode: "vertical-lr",
-                      textOrientation: "upright",
-                    }}
-                  >
-                    {action.description}
-                  </p>
-                </div>
               </div>
-              <div className="flex flex-col gap-4 items-center justify-center">
-                <Button
-                  text="ᠳᠡᠯᠭᠡᠷᠡᠩᠭᠦᠢ"
-                  type="secondary"
-                  className="text-xs px-2 py-1"
-                  onClick={() => handleActionClick(action.id)}
-                />
-                <input
-                  type="checkbox"
-                  className="w-6 h-6 accent-gray-500"
-                  checked={selectedItems.includes(action.id)}
-                  onChange={(e) =>
-                    handleCheckboxChange(action.id, e.target.checked)
-                  }
-                />
-              </div>
+            ))
+          ) : (
+            <div className="flex items-center justify-center w-full">
+              <p
+                className="text-white text-lg"
+                style={{
+                  writingMode: "vertical-lr",
+                  textOrientation: "upright",
+                }}
+              >
+                ᠠᠵᠢᠯ ᠤ᠋ᠯᠠᠭ᠎ᠠ ᠦᠵᠡᠭᠳᠡᠵᠤ ᠴᠢᠳᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ
+              </p>
             </div>
-          ))}
+          )}
         </div>
       </div>
 

@@ -3,8 +3,9 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import Button from "@/components/common/Button";
 import StaticHeader from "@/components/common/StaticHeader";
+import { getImageUrl } from "@/utils/fetcher";
 
-export default function WriteForRightsMobile() {
+export default function WriteForRightsMobile({ actions = [], error = null }) {
   const router = useRouter();
   const [formData, setFormData] = useState({
     firstName: "",
@@ -16,35 +17,12 @@ export default function WriteForRightsMobile() {
   const [errorMessage, setErrorMessage] = useState("");
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  // Mock data for Write for Rights actions - in real app this would come from API
-  const writeForRightsActions = [
-    {
-      id: 1,
-      title: "ᠵᠠᢈᠢᠳᠠᠯ ᠪᠢᢈᠢᢈᠦ ᠠᠶᠠᠨ 1",
-      description:
-        "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠵᠠᢈᠢᠳᠠᠯ ᠪᠢᢈᠢᢈᠦ ᠠᠶᠠᠨ ᠤ᠋ ᠨᠢᢉᠡ ᢈᠡᠰᠡᢉ",
-      cover: "/images/campaign/writeforrights1.jpg",
-    },
-    {
-      id: 2,
-      title: "ᠵᠠᢈᠢᠳᠠᠯ ᠪᠢᢈᠢᢈᠦ ᠠᠶᠠᠨ 2",
-      description:
-        "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠵᠠᢈᠢᠳᠠᠯ ᠪᠢᢈᠢᢈᠦ ᠠᠶᠠᠨ ᠤ᠋ ᢈᠣᠶᠢᠳᠤᠭᠠᠷ ᢈᠡᠰᠡᢉ",
-      cover: "/images/campaign/writeforrights2.jpg",
-    },
-    {
-      id: 3,
-      title: "ᠵᠠᢈᠢᠳᠠᠯ ᠪᠢᢈᠢᢈᠦ ᠠᠶᠠᠨ 3",
-      description:
-        "ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠵᠠᢈᠢᠳᠠᠯ ᠪᠢᢈᠢᢈᠦ ᠠᠶᠠᠨ ᠤ᠋ ᠭᠤᠷᠪᠠᠳᠤᠭᠠᠷ ᢈᠡᠰᠡᢉ",
-      cover: "/images/campaign/writeforrights3.jpg",
-    },
-  ];
-
   useEffect(() => {
     // Select all items by default
-    setSelectedItems(writeForRightsActions.map((action) => action.id));
-  }, []);
+    if (actions && actions.length > 0) {
+      setSelectedItems(actions.map((action) => action.id));
+    }
+  }, [actions]);
 
   const handleCheckboxChange = (actionId, isChecked) => {
     if (isChecked) {
@@ -80,6 +58,34 @@ export default function WriteForRightsMobile() {
     router.push(`/campaign/writeforrights/${actionId}`);
   };
 
+  // Show error state if there's an API error
+  if (error) {
+    return (
+      <div className="sm:hidden flex flex-col min-h-screen bg-[#43a6ac] items-center justify-center">
+        <div className="text-center">
+          <h1
+            className="text-xl font-bold text-red-600 mb-4"
+            style={{
+              writingMode: "vertical-lr",
+              textOrientation: "upright",
+            }}
+          >
+            ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠪᠠ
+          </h1>
+          <p
+            className="text-white mb-4"
+            style={{
+              writingMode: "vertical-lr",
+              textOrientation: "upright",
+            }}
+          >
+            ᠲᠠᠯᠪᠢᠭᠰᠠᠨ ᠠᠵᠢᠯ ᠤ᠋ᠯᠠᠭ᠎ᠠ ᠦᠵᠡᠭᠳᠡᠵᠤ ᠴᠢᠳᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="sm:hidden flex flex-col min-h-screen bg-[#43a6ac]">
       {/* Header Section */}
@@ -93,11 +99,11 @@ export default function WriteForRightsMobile() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-4">
+      <div className="flex-1 space-y-4 p-4">
         {/* Introduction */}
-        <div className="mb-6">
+        <div className="flex flex-row max-h-[300px] overflow-x-auto gap-2">
           <h2
-            className="bg-black text-white p-2 text-lg font-bold inline-block mb-4"
+            className="bg-black text-white p-2 text-lg font-bold"
             style={{
               writingMode: "vertical-lr",
               textOrientation: "upright",
@@ -119,63 +125,87 @@ export default function WriteForRightsMobile() {
 
         {/* Actions List */}
         <div className="space-y-4 mb-8">
-          {writeForRightsActions.map((action) => (
-            <div
-              key={action.id}
-              className="bg-white rounded-lg overflow-hidden"
-            >
-              <div className="flex">
-                <div className="w-[100px] h-[80px] flex-shrink-0">
-                  <Image
-                    src={action.cover}
-                    alt={action.title}
-                    width={100}
-                    height={80}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.target.src = "/images/no-image.png";
-                    }}
-                  />
-                </div>
-                <div className="flex-1 p-3">
-                  <h3
-                    className="font-bold mb-1 text-xs line-clamp-2"
-                    style={{
-                      writingMode: "vertical-lr",
-                      textOrientation: "upright",
-                    }}
-                  >
-                    {action.title}
-                  </h3>
-                  <p
-                    className="text-xs mb-2 line-clamp-2"
-                    style={{
-                      writingMode: "vertical-lr",
-                      textOrientation: "upright",
-                    }}
-                  >
-                    {action.description}
-                  </p>
-                  <Button
-                    text="ᠳᠡᠯᠭᠡᠷᠡᠩᠭᠦᠢ"
-                    type="secondary"
-                    className="text-xs px-2 py-1"
-                    onClick={() => handleActionClick(action.id)}
-                  />
-                </div>
-                <div className="flex items-center justify-center p-3">
-                  <input
-                    type="checkbox"
-                    className="w-5 h-5 accent-gray-500"
-                    checked={selectedItems.includes(action.id)}
-                    onChange={(e) =>
-                      handleCheckboxChange(action.id, e.target.checked)
-                    }
-                  />
+          {actions && actions.length > 0 ? (
+            actions.map((action) => (
+              <div
+                key={action.id}
+                className="bg-white rounded-lg overflow-hidden"
+              >
+                <div className="flex">
+                  <div className="w-[100px] h-[80px] flex-shrink-0">
+                    {action.cover ? (
+                      <Image
+                        src={getImageUrl(action.cover)}
+                        alt={action.title}
+                        width={100}
+                        height={80}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.src = "/images/no-image.png";
+                        }}
+                      />
+                    ) : (
+                      <Image
+                        src="/images/no-image.png"
+                        alt="No image"
+                        width={100}
+                        height={80}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+                  <div className="flex-1 p-3">
+                    <h3
+                      className="font-bold mb-1 text-xs line-clamp-2"
+                      style={{
+                        writingMode: "vertical-lr",
+                        textOrientation: "upright",
+                      }}
+                    >
+                      {action.title}
+                    </h3>
+                    <p
+                      className="text-xs mb-2 line-clamp-2"
+                      style={{
+                        writingMode: "vertical-lr",
+                        textOrientation: "upright",
+                      }}
+                    >
+                      {action.description}
+                    </p>
+                    <Button
+                      text="ᠳᠡᠯᠭᠡᠷᠡᠩᠭᠦᠢ"
+                      type="secondary"
+                      className="text-xs px-2 py-1"
+                      onClick={() => handleActionClick(action.id)}
+                    />
+                  </div>
+                  <div className="flex items-center justify-center p-3">
+                    <input
+                      type="checkbox"
+                      className="w-5 h-5 accent-gray-500"
+                      checked={selectedItems.includes(action.id)}
+                      onChange={(e) =>
+                        handleCheckboxChange(action.id, e.target.checked)
+                      }
+                    />
+                  </div>
                 </div>
               </div>
+            ))
+          ) : (
+            <div className="bg-white rounded-lg p-4 text-center">
+              <p
+                className="text-gray-600"
+                style={{
+                  writingMode: "vertical-lr",
+                  textOrientation: "upright",
+                }}
+              >
+                ᠠᠵᠢᠯ ᠤ᠋ᠯᠠᠭ᠎ᠠ ᠦᠵᠡᠭᠳᠡᠵᠤ ᠴᠢᠳᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ
+              </p>
             </div>
-          ))}
+          )}
         </div>
 
         {/* Form Section */}

@@ -206,6 +206,20 @@ export const actionsService = {
         "pagination[pageSize]": params.pageSize || 10,
       };
 
+      // Add filters if provided
+      if (params.filters) {
+        Object.keys(params.filters).forEach((key) => {
+          queryParams[key] = params.filters[key];
+        });
+      }
+
+      // Add other query parameters
+      Object.keys(params).forEach((key) => {
+        if (key !== 'filters' && key !== 'page' && key !== 'pageSize') {
+          queryParams[key] = params[key];
+        }
+      });
+
       const endpoint = buildEndpointUrl(API_ENDPOINTS.ACTIONS, queryParams);
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);

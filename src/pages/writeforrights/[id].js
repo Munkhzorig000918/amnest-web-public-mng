@@ -1,22 +1,37 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "@/components/layout/Layout";
 import Image from "next/image";
-import { useGetActionByIdQuery } from "@/redux/services/apiService";
-import { getImageUrl } from "@/config/api";
+import { actionsService } from "@/services/apiService";
+import { getImageUrl } from "@/utils/fetcher";
 
-export default function WriteForRightsDetail() {
+export async function getServerSideProps({ params }) {
+  try {
+    const { id } = params;
+    
+    // Fetch action data by ID
+    const actionResponse = await actionsService.getActionById(id);
+    
+    return {
+      props: {
+        action: actionResponse.data || null,
+        error: null,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching action:", error);
+    return {
+      props: {
+        action: null,
+        error: "Failed to load action",
+      },
+    };
+  }
+}
+
+export default function WriteForRightsDetail({ action, error }) {
   const router = useRouter();
   const { id } = router.query;
-
-  // Fetch action data by ID
-  const {
-    data: action,
-    error,
-    isLoading,
-  } = useGetActionByIdQuery(id, {
-    skip: !id, // Skip the query if id is not available yet
-  });
 
   // Form state
   const [firstName, setFirstName] = useState("");
@@ -26,6 +41,13 @@ export default function WriteForRightsDetail() {
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [formSubmitted, setFormSubmitted] = useState(false);
+
+  // Set default message when action loads
+  useEffect(() => {
+    if (action && action.placeholder_message) {
+      setMessage(action.placeholder_message);
+    }
+  }, [action]);
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -72,15 +94,8 @@ export default function WriteForRightsDetail() {
     }
   };
 
-  // Set default message when action loads
-  useState(() => {
-    if (action && action.placeholder_message) {
-      setMessage(action.placeholder_message);
-    }
-  }, [action]);
-
   // Loading state
-  if (isLoading || !id) {
+  if (!id) {
     return (
       <Layout>
         <div className="min-h-screen flex items-center justify-center">
