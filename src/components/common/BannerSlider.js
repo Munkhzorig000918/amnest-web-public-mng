@@ -74,7 +74,7 @@ export default function BannerSlider({
         return {
           id: post.id,
           src: coverImageUrl
-            ? `http://localhost:1337${coverImageUrl}`
+            ? `${process.env.NEXT_PUBLIC_MEDIA_URL}${coverImageUrl}`
             : "/images/news1.png",
           alt: post.title || `News ${post.id}`,
           caption: {

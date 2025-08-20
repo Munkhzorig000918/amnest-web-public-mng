@@ -1,18 +1,19 @@
 // API Configuration for Amnesty CMS
 export const API_CONFIG = {
   // Base URL for the Strapi CMS API
-  BASE_URL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:1337/api",
+  BASE_URL: process.env.NEXT_PUBLIC_API_URL,
+
+  // Media URL for images and files
+  MEDIA_URL: process.env.NEXT_PUBLIC_MEDIA_URL,
 
   // Users API URL for contact form and other user-related features
-  USERS_API_URL:
-    process.env.NEXT_PUBLIC_PROD_API_USERS_URL ||
-    "https://api.amnesty.mn/users",
+  USERS_API_URL: process.env.NEXT_PUBLIC_PROD_API_USERS_URL,
 
   // Locale for content - using Cyrillic as primary with Mongol Bichig as additional field
-  LOCALE: process.env.NEXT_PUBLIC_CMS_LOCALE || "mn",
+  LOCALE: process.env.NEXT_PUBLIC_CMS_LOCALE,
 
   // Demo mode - set to false to use real CMS data
-  DEMO_MODE: process.env.NEXT_PUBLIC_DEMO_MODE === "true" || false, // Changed to false
+  DEMO_MODE: process.env.NEXT_PUBLIC_DEMO_MODE === "true",
 
   // API endpoints - using actual CMS structure
   ENDPOINTS: {
@@ -36,13 +37,13 @@ export const API_CONFIG = {
 
   // Default query parameters for standard endpoints
   DEFAULT_PARAMS: {
-    locale: process.env.NEXT_PUBLIC_CMS_LOCALE || "mn", // Changed to 'mn' for Cyrillic
+    locale: process.env.NEXT_PUBLIC_CMS_LOCALE,
     populate: "*",
   },
 
   // Default query parameters for posts
   POST_PARAMS: {
-    locale: process.env.NEXT_PUBLIC_CMS_LOCALE || "mn", // Changed to 'mn' for Cyrillic
+    locale: process.env.NEXT_PUBLIC_CMS_LOCALE,
     limit: 10,
     page: 1,
   },
@@ -209,7 +210,10 @@ export const buildPostApiUrl = (endpoint, params = {}) => {
 };
 
 // Helper function to get image URL from Strapi media
-export const getImageUrl = (imageData, baseUrl = "http://localhost:1337") => {
+export const getImageUrl = (
+  imageData,
+  baseUrl = process.env.NEXT_PUBLIC_MEDIA_URL
+) => {
   if (!imageData) return null;
 
   // Handle different response formats from Strapi

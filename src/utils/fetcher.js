@@ -1,8 +1,7 @@
 // API Fetcher utility for Amnesty CMS - Mongol Bichig Version
 // Based on the mn version's Fetcher.ts structure
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:1337/api";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY || process.env.STRAPI_API_KEY;
 
 // Mongolian Bichig number mapping
@@ -146,7 +145,6 @@ export async function FetcherPost(url, body, baseUrl = API_BASE_URL) {
       body: JSON.stringify(body),
     });
 
-
     // Get the response text first to check what we're dealing with
     const responseText = await response.text();
 
@@ -155,7 +153,6 @@ export async function FetcherPost(url, body, baseUrl = API_BASE_URL) {
     try {
       responseData = JSON.parse(responseText);
     } catch (parseError) {
-
       // If it's an HTML response, it's likely a server error
       if (
         responseText.includes("<html") ||
@@ -184,7 +181,10 @@ export async function FetcherPost(url, body, baseUrl = API_BASE_URL) {
 }
 
 // Helper function to get image URL from Strapi media
-export const getImageUrl = (imageData, baseUrl = "http://localhost:1337") => {
+export const getImageUrl = (
+  imageData,
+  baseUrl = process.env.NEXT_PUBLIC_MEDIA_URL
+) => {
   if (!imageData) return null;
 
   // Handle different response formats from Strapi

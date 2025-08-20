@@ -15,7 +15,9 @@ export default function ReportDesktop() {
       try {
         setLoading(true);
         const response = await fetch(
-          "http://localhost:1337/api/reports?populate=*"
+          `${
+            process.env.NEXT_PUBLIC_API_URL
+          }/reports?populate=*`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

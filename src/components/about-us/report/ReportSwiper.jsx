@@ -75,7 +75,9 @@ export default function ReportSwiper({
 
           // Add base URL if the image URL is a relative path from the API
           const fullImageUrl = imageUrl.startsWith("/uploads/")
-            ? `http://localhost:1337${imageUrl}`
+            ? `${
+                process.env.NEXT_PUBLIC_MEDIA_URL
+              }${imageUrl}`
             : imageUrl;
 
           const pdfUrl =
@@ -85,7 +87,9 @@ export default function ReportSwiper({
           // Add base URL if the PDF URL is a relative path from the API
           const fullPdfUrl =
             pdfUrl && pdfUrl.startsWith("/uploads/")
-              ? `http://localhost:1337${pdfUrl}`
+              ? `${
+                  process.env.NEXT_PUBLIC_MEDIA_URL
+                }${pdfUrl}`
               : pdfUrl;
 
           return {

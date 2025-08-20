@@ -26,7 +26,9 @@ export default function ReportDetail() {
       try {
         // Fetch single report
         const reportResponse = await fetch(
-          `http://localhost:1337/api/reports/${id}?populate=deep`
+          `${
+            process.env.NEXT_PUBLIC_API_URL
+          }/reports/${id}?populate=deep`
         );
         if (!reportResponse.ok) {
           throw new Error(`HTTP error! status: ${reportResponse.status}`);
@@ -36,7 +38,9 @@ export default function ReportDetail() {
 
         // Fetch all reports for related section
         const allReportsResponse = await fetch(
-          "http://localhost:1337/api/reports?populate=deep"
+          `${
+            process.env.NEXT_PUBLIC_API_URL
+          }/reports?populate=deep`
         );
         if (!allReportsResponse.ok) {
           throw new Error(`HTTP error! status: ${allReportsResponse.status}`);
@@ -57,7 +61,9 @@ export default function ReportDetail() {
     if (report?.attributes?.pdf_file?.data?.attributes?.url) {
       const pdfUrl = report.attributes.pdf_file.data.attributes.url;
       const fullUrl = pdfUrl.startsWith("/uploads/")
-        ? `http://localhost:1337${pdfUrl}`
+        ? `${
+            process.env.NEXT_PUBLIC_MEDIA_URL
+          }${pdfUrl}`
         : pdfUrl;
 
       const link = document.createElement("a");
@@ -73,7 +79,9 @@ export default function ReportDetail() {
     if (report?.attributes?.pdf_file?.data?.attributes?.url) {
       const pdfUrl = report.attributes.pdf_file.data.attributes.url;
       return pdfUrl.startsWith("/uploads/")
-        ? `http://localhost:1337${pdfUrl}`
+        ? `${
+            process.env.NEXT_PUBLIC_MEDIA_URL
+          }${pdfUrl}`
         : pdfUrl;
     }
     return null;
