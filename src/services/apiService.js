@@ -215,7 +215,7 @@ export const actionsService = {
 
       // Add other query parameters
       Object.keys(params).forEach((key) => {
-        if (key !== 'filters' && key !== 'page' && key !== 'pageSize') {
+        if (key !== "filters" && key !== "page" && key !== "pageSize") {
           queryParams[key] = params[key];
         }
       });
@@ -264,6 +264,20 @@ export const videosService = {
       throw error;
     }
   },
+
+  async getVideoById(id) {
+    try {
+      const endpoint = buildEndpointUrl(`${API_ENDPOINTS.VIDEOS}/${id}`, {
+        populate: "*",
+        locale: "mn",
+      });
+      const response = await Fetcher(endpoint);
+      return formatStrapiResponse(response);
+    } catch (error) {
+      console.error("Error fetching video by ID:", error);
+      throw error;
+    }
+  },
 };
 
 // Libraries Service - Using standard routes
@@ -296,6 +310,20 @@ export const librariesService = {
       return formatStrapiResponse(response);
     } catch (error) {
       console.error("Error fetching library groups:", error);
+      throw error;
+    }
+  },
+
+  async getLibraryById(id) {
+    try {
+      const endpoint = buildEndpointUrl(`${API_ENDPOINTS.LIBRARIES}/${id}`, {
+        populate: "*",
+        locale: "mn",
+      });
+      const response = await Fetcher(endpoint);
+      return formatStrapiResponse(response);
+    } catch (error) {
+      console.error("Error fetching library by ID:", error);
       throw error;
     }
   },

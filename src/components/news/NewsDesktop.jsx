@@ -32,15 +32,20 @@ export default function NewsDesktop() {
       setIsLoading(true);
       setError(null);
 
+      console.log(`Fetching ${activeCategory} data for page ${currentPage}...`);
+
       try {
         switch (activeCategory) {
           case "news":
             // Regular news posts
+            console.log("Making API call to getPostsList...");
             const posts = await apiService.posts.getPostsList({
               page: currentPage,
               pageSize: itemsPerPage,
             });
             console.log("Posts response:", posts);
+            console.log("Posts data array:", posts.data);
+            console.log("Posts data length:", posts.data?.length);
             setPostsData(posts.data || []);
             break;
 
@@ -92,6 +97,13 @@ export default function NewsDesktop() {
     default:
       currentData = [];
   }
+
+  // Debug current data
+  console.log(`Current category: ${activeCategory}`);
+  console.log(`Current data:`, currentData);
+  console.log(`Current data length:`, currentData.length);
+  console.log(`Is loading:`, isLoading);
+  console.log(`Error:`, error);
 
   // Convert data to unified format
   const newsItems = currentData.map((item, index) => {
