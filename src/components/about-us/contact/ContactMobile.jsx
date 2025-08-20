@@ -70,7 +70,6 @@ export default function ContactMobile() {
       // Reset form
       reset();
     } catch (error) {
-      console.error("Contact form submission error:", error);
 
       // Show error toast
       toast.error(

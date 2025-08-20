@@ -52,9 +52,6 @@ export default function RightSwiper({
   const [isMobile, setIsMobile] = useState(false);
   const { toMongolianNumeral } = useMongolianNumeral();
 
-  console.log(`RightSwiper [${sectionTitle}] received data:`, data);
-  console.log(`RightSwiper [${sectionTitle}] data length:`, data?.length);
-
   // Check if screen is mobile size
   useEffect(() => {
     const checkMobile = () => {
@@ -112,8 +109,6 @@ export default function RightSwiper({
     // Determine the route based on section title
     let route = "";
 
-    console.log(`Section title: "${sectionTitle}"`);
-
     // Check if section title contains specific keywords
     if (
       sectionTitle.includes("ᠴᠠᠬᠢᠮ ᠰᠤᠷᠭᠠᠯᠲᠤ") ||
@@ -141,11 +136,9 @@ export default function RightSwiper({
     ) {
       route = `/right/podcasts/${itemId}`;
     } else {
-      console.warn(`Unknown section type: ${sectionTitle}`);
       return;
     }
 
-    console.log(`Navigating to: ${route}`);
     router.push(route);
   };
 

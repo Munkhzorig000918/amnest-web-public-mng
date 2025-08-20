@@ -18,7 +18,6 @@ export default function Shop() {
         });
         setMerchandise(response || []);
       } catch (err) {
-        console.error("Error fetching merchandise:", err);
         setError(err.message || "Failed to fetch merchandise");
       } finally {
         setLoading(false);

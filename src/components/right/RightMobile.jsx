@@ -33,13 +33,7 @@ export default function RightMobile() {
           podcastsService.getPodcasts({ pageSize: 6 }),
         ]);
 
-      console.log("Mobile - Fetched content:", {
-        lessons,
-        onlineLessons,
-        libraries,
-        videos,
-        podcasts,
-      });
+        // Data fetched successfully
 
       // Create swiper data structure (matching old knowrights page structure)
       const dynamicSwiperData = [
@@ -87,7 +81,6 @@ export default function RightMobile() {
 
       setSwiperData(dynamicSwiperData);
     } catch (error) {
-      console.error("Mobile - Error fetching content:", error);
       // Set empty array if API fails
       setSwiperData([]);
     } finally {

@@ -32,20 +32,14 @@ export default function NewsDesktop() {
       setIsLoading(true);
       setError(null);
 
-      console.log(`Fetching ${activeCategory} data for page ${currentPage}...`);
-
       try {
         switch (activeCategory) {
           case "news":
             // Regular news posts
-            console.log("Making API call to getPostsList...");
             const posts = await apiService.posts.getPostsList({
               page: currentPage,
               pageSize: itemsPerPage,
             });
-            console.log("Posts response:", posts);
-            console.log("Posts data array:", posts.data);
-            console.log("Posts data length:", posts.data?.length);
             setPostsData(posts.data || []);
             break;
 
@@ -55,7 +49,6 @@ export default function NewsDesktop() {
               page: currentPage,
               pageSize: itemsPerPage,
             });
-            console.log("Statements response:", statements);
             setStatementsData(statements.data || []);
             break;
 
@@ -66,12 +59,10 @@ export default function NewsDesktop() {
               pageSize: itemsPerPage,
               post_category: "good_news",
             });
-            console.log("Good news response:", goodNews);
             setGoodNewsData(goodNews.data || []);
             break;
         }
       } catch (err) {
-        console.error("Error fetching data:", err);
         setError(err);
       } finally {
         setIsLoading(false);
@@ -98,23 +89,9 @@ export default function NewsDesktop() {
       currentData = [];
   }
 
-  // Debug current data
-  console.log(`Current category: ${activeCategory}`);
-  console.log(`Current data:`, currentData);
-  console.log(`Current data length:`, currentData.length);
-  console.log(`Is loading:`, isLoading);
-  console.log(`Error:`, error);
-
   // Convert data to unified format
   const newsItems = currentData.map((item, index) => {
     let title, image, description;
-
-    // Debug logging
-    if (activeCategory === "statements") {
-      console.log("Processing statement item:", item);
-      console.log("Item has attributes?", !!item.attributes);
-      console.log("Item keys:", Object.keys(item));
-    }
 
     switch (activeCategory) {
       case "news":

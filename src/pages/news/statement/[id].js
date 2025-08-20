@@ -26,7 +26,6 @@ export default function SingleStatement() {
       try {
         // Fetch single statement
         const statementData = await apiService.statements.getStatementById(id);
-        console.log("Single statement response:", statementData);
         setStatement(statementData);
 
         // Fetch recommended statements
@@ -36,14 +35,12 @@ export default function SingleStatement() {
           "sort[id]": "desc",
           "filters[id][$ne]": id, // Exclude current statement
         });
-        console.log("Recommended statements response:", recommendedData);
         setRecommended(
           Array.isArray(recommendedData)
             ? recommendedData
             : recommendedData?.data || []
         );
       } catch (err) {
-        console.error("Error fetching statement data:", err);
         setError(err);
       } finally {
         setIsLoading(false);

@@ -217,7 +217,6 @@ const InteractiveMap = () => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         setCoordinatedProvinces(provinces);
       } catch (error) {
-        console.error("Error loading provinces:", error);
         setCoordinatedProvinces(provinces); // Fallback to static data
       } finally {
         setLoading(false);

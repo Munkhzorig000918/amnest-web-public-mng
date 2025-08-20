@@ -79,7 +79,6 @@ export default function WriteForRightsActionMobile({ actionId }) {
     } else {
       setErrorMessage("");
       // Here you would submit to API
-      console.log("Submitting action:", { ...formData, actionId });
       setFormSubmitted(true);
     }
   };

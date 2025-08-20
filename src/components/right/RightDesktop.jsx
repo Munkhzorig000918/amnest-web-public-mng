@@ -31,13 +31,7 @@ export default function RightDesktop() {
           podcastsService.getPodcasts({ pageSize: 6 }),
         ]);
 
-      console.log("Fetched content:", {
-        lessons,
-        onlineLessons,
-        libraries,
-        videos,
-        podcasts,
-      });
+        // Data fetched successfully
 
       // Create swiper data structure (matching old knowrights page structure)
       const dynamicSwiperData = [
@@ -83,17 +77,10 @@ export default function RightDesktop() {
         },
       ];
 
-      console.log(
-        "Dynamic swiper data before setting state:",
-        dynamicSwiperData
-      );
-      console.log("Videos data length:", videos?.length);
-      console.log("Online lessons data length:", onlineLessons?.length);
-      console.log("Podcasts data length:", podcasts?.length);
+
 
       setSwiperData(dynamicSwiperData);
     } catch (error) {
-      console.error("Error fetching content:", error);
       // Set empty array if API fails
       setSwiperData([]);
     } finally {

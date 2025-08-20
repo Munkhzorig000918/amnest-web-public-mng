@@ -74,7 +74,6 @@ export default function Donation() {
           setErrorMessage(response1.message || "ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠪᠠ"); // Error occurred
         }
       } catch (error) {
-        console.error("Donation error:", error);
         setErrorMessage("ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠪᠠ"); // Error occurred
       } finally {
         setIsLoading(false);
@@ -99,7 +98,6 @@ export default function Donation() {
         setErrorMessage(qpayResponse.message || "QPay ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠪᠠ"); // QPay error
       }
     } catch (error) {
-      console.error("QPay error:", error);
       setErrorMessage("QPay ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠪᠠ"); // QPay error
     } finally {
       setIsLoading(false);
@@ -130,7 +128,6 @@ export default function Donation() {
             clearInterval(interval);
           }
         } catch (error) {
-          console.error("Payment check error:", error);
         }
       }, 2000); // Check every 2 seconds
     }

@@ -28,7 +28,6 @@ export const authService = {
       );
       return response;
     } catch (error) {
-      console.error("Registration error:", error);
       throw error;
     }
   },
@@ -43,7 +42,6 @@ export const authService = {
       );
       return response;
     } catch (error) {
-      console.error("SMS verification error:", error);
       throw error;
     }
   },
@@ -61,7 +59,6 @@ export const authService = {
       }
       return response;
     } catch (error) {
-      console.error("Login error:", error);
       throw error;
     }
   },
@@ -83,7 +80,6 @@ export const authService = {
       );
       return response;
     } catch (error) {
-      console.error("Reset password send error:", error);
       throw error;
     }
   },
@@ -98,7 +94,6 @@ export const authService = {
       );
       return response;
     } catch (error) {
-      console.error("Reset password confirm error:", error);
       throw error;
     }
   },
@@ -113,7 +108,6 @@ export const authService = {
       );
       return response;
     } catch (error) {
-      console.error("Phone verification error:", error);
       throw error;
     }
   },
@@ -128,7 +122,6 @@ export const authService = {
       );
       return response;
     } catch (error) {
-      console.error("Phone confirmation error:", error);
       throw error;
     }
   },
@@ -143,7 +136,6 @@ export const authService = {
       );
       return response;
     } catch (error) {
-      console.error("Email verification error:", error);
       throw error;
     }
   },
@@ -158,7 +150,6 @@ export const authService = {
       );
       return response;
     } catch (error) {
-      console.error("Email confirmation error:", error);
       throw error;
     }
   },
@@ -177,7 +168,6 @@ export const userService = {
       });
       return await response.json();
     } catch (error) {
-      console.error("Get profile error:", error);
       throw error;
     }
   },
@@ -195,7 +185,6 @@ export const userService = {
       });
       return await response.json();
     } catch (error) {
-      console.error("Update profile error:", error);
       throw error;
     }
   },
@@ -212,7 +201,6 @@ export const userService = {
       });
       return await response.json();
     } catch (error) {
-      console.error("Avatar upload error:", error);
       throw error;
     }
   },
@@ -227,7 +215,6 @@ export const userService = {
       );
       return response;
     } catch (error) {
-      console.error("Change password error:", error);
       throw error;
     }
   },
@@ -242,7 +229,6 @@ export const userService = {
       );
       return response;
     } catch (error) {
-      console.error("Delete account error:", error);
       throw error;
     }
   },
@@ -258,7 +244,6 @@ export const userService = {
       });
       return await response.json();
     } catch (error) {
-      console.error("Get user groups error:", error);
       throw error;
     }
   },
@@ -276,7 +261,6 @@ export const memberService = {
       );
       return response;
     } catch (error) {
-      console.error("Membership request error:", error);
       throw error;
     }
   },
@@ -292,7 +276,6 @@ export const memberService = {
       });
       return await response.json();
     } catch (error) {
-      console.error("Subscription status error:", error);
       throw error;
     }
   },
@@ -307,7 +290,6 @@ export const memberService = {
       );
       return response;
     } catch (error) {
-      console.error("Subscribe error:", error);
       throw error;
     }
   },
@@ -323,7 +305,6 @@ export const memberService = {
       });
       return await response.json();
     } catch (error) {
-      console.error("Get user events error:", error);
       throw error;
     }
   },
@@ -342,7 +323,6 @@ export const memberService = {
       );
       return await response.json();
     } catch (error) {
-      console.error("Payment history error:", error);
       throw error;
     }
   },
@@ -362,7 +342,6 @@ export const donationService = {
       });
       return await response.json();
     } catch (error) {
-      console.error("Anonymous donation error:", error);
       return {
         success: false,
         message: error.message,
@@ -382,7 +361,6 @@ export const donationService = {
       });
       return await response.json();
     } catch (error) {
-      console.error("Donation check error:", error);
       return {
         success: false,
         message: error.message,
@@ -400,7 +378,6 @@ export const donationService = {
       );
       return response;
     } catch (error) {
-      console.error("QPay donation error:", error);
       throw error;
     }
   },
@@ -417,7 +394,6 @@ export const donationService = {
       });
       return await response.json();
     } catch (error) {
-      console.error("Bank QPay donation error:", error);
       return {
         success: false,
         message: error.message,
@@ -437,7 +413,6 @@ export const donationService = {
         );
         return response;
       } catch (error) {
-        console.error("Recurring donation register error:", error);
         throw error;
       }
     },
@@ -452,7 +427,6 @@ export const donationService = {
         );
         return response;
       } catch (error) {
-        console.error("Recurring donation login error:", error);
         throw error;
       }
     },
@@ -467,7 +441,6 @@ export const donationService = {
         );
         return response;
       } catch (error) {
-        console.error("Recurring donation email verification error:", error);
         throw error;
       }
     },
@@ -486,7 +459,6 @@ export const donationService = {
         );
         return await response.json();
       } catch (error) {
-        console.error("Get recurring donation info error:", error);
         throw error;
       }
     },
@@ -505,7 +477,6 @@ export const donationService = {
         );
         return await response.json();
       } catch (error) {
-        console.error("Get card list error:", error);
         throw error;
       }
     },
@@ -520,7 +491,6 @@ export const donationService = {
         );
         return response;
       } catch (error) {
-        console.error("Remove card error:", error);
         throw error;
       }
     },
@@ -535,7 +505,6 @@ export const donationService = {
         );
         return response;
       } catch (error) {
-        console.error("Create invoice error:", error);
         throw error;
       }
     },
@@ -554,7 +523,6 @@ export const donationService = {
         );
         return await response.json();
       } catch (error) {
-        console.error("Get subscription list error:", error);
         throw error;
       }
     },
@@ -573,7 +541,6 @@ export const contactService = {
       );
       return response;
     } catch (error) {
-      console.error("Contact request error:", error);
       throw error;
     }
   },
@@ -584,7 +551,6 @@ export const contactService = {
       const response = await fetch(`${USER_API_BASE_URL}/provinces/list`);
       return await response.json();
     } catch (error) {
-      console.error("Get provinces error:", error);
       throw error;
     }
   },
@@ -597,7 +563,6 @@ export const contactService = {
       );
       return await response.json();
     } catch (error) {
-      console.error("Get human rights subjects error:", error);
       throw error;
     }
   },
@@ -610,7 +575,6 @@ export const contactService = {
       );
       return await response.json();
     } catch (error) {
-      console.error("Get human rights stats error:", error);
       throw error;
     }
   },
@@ -625,7 +589,6 @@ export const contactService = {
       );
       return response;
     } catch (error) {
-      console.error("Submit human rights report error:", error);
       throw error;
     }
   },
@@ -643,7 +606,6 @@ export const eventService = {
       );
       return response;
     } catch (error) {
-      console.error("Event calendar error:", error);
       throw error;
     }
   },

@@ -36,7 +36,6 @@ export const postsService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching posts:", error);
       throw error;
     }
   },
@@ -102,7 +101,6 @@ export const postsService = {
 
       return response;
     } catch (error) {
-      console.error("Error fetching posts list:", error);
       throw error;
     }
   },
@@ -114,7 +112,6 @@ export const postsService = {
       const response = await Fetcher(endpoint);
       return response;
     } catch (error) {
-      console.error("Error fetching post by ID:", error);
       throw error;
     }
   },
@@ -134,7 +131,6 @@ export const postsService = {
       const response = await Fetcher(endpoint);
       return response;
     } catch (error) {
-      console.error("Error fetching recommended posts:", error);
       throw error;
     }
   },
@@ -153,7 +149,6 @@ export const postsService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching statements:", error);
       throw error;
     }
   },
@@ -175,7 +170,6 @@ export const eventsService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching events:", error);
       throw error;
     }
   },
@@ -189,7 +183,6 @@ export const eventsService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching event by ID:", error);
       throw error;
     }
   },
@@ -224,7 +217,6 @@ export const actionsService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching actions:", error);
       throw error;
     }
   },
@@ -238,7 +230,6 @@ export const actionsService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching action by ID:", error);
       throw error;
     }
   },
@@ -260,7 +251,6 @@ export const videosService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching videos:", error);
       throw error;
     }
   },
@@ -274,7 +264,6 @@ export const videosService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching video by ID:", error);
       throw error;
     }
   },
@@ -295,7 +284,6 @@ export const librariesService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching libraries:", error);
       throw error;
     }
   },
@@ -309,7 +297,6 @@ export const librariesService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching library groups:", error);
       throw error;
     }
   },
@@ -323,7 +310,6 @@ export const librariesService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching library by ID:", error);
       throw error;
     }
   },
@@ -345,7 +331,6 @@ export const storiesService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching stories:", error);
       throw error;
     }
   },
@@ -359,7 +344,6 @@ export const storiesService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching story by ID:", error);
       throw error;
     }
   },
@@ -380,7 +364,6 @@ export const faqsService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching FAQs:", error);
       throw error;
     }
   },
@@ -394,7 +377,6 @@ export const faqsService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching FAQ by ID:", error);
       throw error;
     }
   },
@@ -416,7 +398,6 @@ export const slideshowsService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching slideshows:", error);
       throw error;
     }
   },
@@ -444,7 +425,6 @@ export const slideshowsService = {
         meta: response?.meta || {},
       };
     } catch (error) {
-      console.error("Error fetching homepage sliders:", error);
       // Return empty array if homepage-slider content doesn't exist yet
       return {
         data: [],
@@ -469,7 +449,6 @@ export const reportsService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching reports:", error);
       throw error;
     }
   },
@@ -483,7 +462,6 @@ export const reportsService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching report by ID:", error);
       throw error;
     }
   },
@@ -507,7 +485,6 @@ export const campaignsService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching company works:", error);
       throw error;
     }
   },
@@ -522,7 +499,6 @@ export const campaignsService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching company work by ID:", error);
       throw error;
     }
   },
@@ -537,7 +513,6 @@ export const campaignsService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching company work features:", error);
       throw error;
     }
   },
@@ -550,7 +525,6 @@ export const settingsService = {
       const response = await Fetcher(`${API_ENDPOINTS.CONTACT_INFO}?locale=mn`);
       return response?.data?.attributes || null;
     } catch (error) {
-      console.error("Error fetching contact info:", error);
       throw error;
     }
   },
@@ -562,7 +536,6 @@ export const settingsService = {
       );
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching website settings:", error);
       throw error;
     }
   },
@@ -585,7 +558,6 @@ export const merchService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching merchandises:", error);
       throw error;
     }
   },
@@ -606,7 +578,6 @@ export const lessonsService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching lessons:", error);
       throw error;
     }
   },
@@ -620,7 +591,6 @@ export const lessonsService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching lesson by ID:", error);
       throw error;
     }
   },
@@ -644,7 +614,6 @@ export const onlineLessonsService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching online lessons:", error);
       throw error;
     }
   },
@@ -661,7 +630,6 @@ export const onlineLessonsService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching online lesson by ID:", error);
       throw error;
     }
   },
@@ -682,7 +650,6 @@ export const podcastsService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching podcasts:", error);
       throw error;
     }
   },
@@ -696,7 +663,6 @@ export const podcastsService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching podcast by ID:", error);
       throw error;
     }
   },
@@ -722,7 +688,6 @@ export const statementsService = {
         meta: response.meta || {},
       };
     } catch (error) {
-      console.error("Error fetching statements:", error);
       throw error;
     }
   },
@@ -736,7 +701,6 @@ export const statementsService = {
       const response = await Fetcher(endpoint);
       return formatStrapiResponse(response);
     } catch (error) {
-      console.error("Error fetching statement by ID:", error);
       throw error;
     }
   },

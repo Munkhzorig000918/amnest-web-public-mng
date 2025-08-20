@@ -28,16 +28,12 @@ export default function SingleNews() {
       try {
         // Fetch single post
         const postData = await apiService.posts.getPostById(id);
-        console.log("Single post response:", postData);
         setPost(postData);
 
         // Fetch recommended posts
         const recommendedData = await apiService.posts.getRecommendedPosts({
           limit: 6,
         });
-        console.log("Recommended posts response:", recommendedData);
-        console.log("Recommended posts data:", recommendedData?.data);
-        console.log("Recommended posts length:", recommendedData?.data?.length);
         setRecommended(
           Array.isArray(recommendedData)
             ? recommendedData
@@ -54,11 +50,9 @@ export default function SingleNews() {
               "filters[id][$ne]": id, // Exclude current post
             },
           });
-          console.log("Related news response:", relatedData);
           setRelatedNews(relatedData?.data || []);
         }
       } catch (err) {
-        console.error("Error fetching single news data:", err);
         setError(err);
       } finally {
         setIsLoading(false);

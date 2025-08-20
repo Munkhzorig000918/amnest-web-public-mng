@@ -57,7 +57,6 @@ export default function EventsDesktop() {
         .join("");
       return result || num.toString(); // Fallback to regular numbers if conversion fails
     } catch (error) {
-      console.error("Error converting to Mongolian numerals:", error);
       return num.toString(); // Fallback to regular numbers
     }
   };
@@ -80,30 +79,16 @@ export default function EventsDesktop() {
         locale: "mn",
       };
 
-      console.log("API request params:", params);
-      console.log("Date range:", {
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
-        year,
-        month,
-      });
-
       const response = await eventsService.getEvents(params);
-      console.log("API response:", response);
-      console.log("Response type:", typeof response);
-      console.log("Is array:", Array.isArray(response));
 
       if (response && (response.data || Array.isArray(response))) {
         const eventData = response.data || response;
-        console.log("Event data to process:", eventData);
         processEventsData(eventData);
       } else {
-        console.log("No events found for this month");
         // No events found for this month
         setEvents({});
       }
     } catch (err) {
-      console.error("Error fetching events:", err);
       setError(err.message);
       // Clear events on error
       setEvents({});
@@ -114,19 +99,11 @@ export default function EventsDesktop() {
 
   // Process API response data into calendar format
   const processEventsData = (eventData) => {
-    console.log("Processing events data:", eventData);
-    console.log("Event data length:", eventData.length);
     const eventsMap = {};
 
     eventData.forEach((event, index) => {
-      console.log(`Processing event ${index}:`, event);
-      console.log(`Event ${index} keys:`, Object.keys(event));
-      console.log(`Event ${index} has attributes:`, !!event.attributes);
-      console.log(`Event ${index} structure:`, JSON.stringify(event, null, 2));
-
       // Handle both possible event structures
       const eventAttrs = event.attributes || event;
-      console.log(`Event ${index} attributes:`, eventAttrs);
 
       const startDate = new Date(eventAttrs.start_date);
       const endDate = new Date(eventAttrs.end_date);
@@ -138,16 +115,6 @@ export default function EventsDesktop() {
         currentDate.getFullYear() < 2025 ? new Date(2025, 0, 1) : currentDate;
       const isPastEvent = endDate < referenceDate;
 
-      console.log(`Event ${index} details:`, {
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
-        dateKey,
-        isPastEvent,
-        title: eventAttrs.title,
-        membersOnly: eventAttrs.members_only,
-        referenceDate: referenceDate.toISOString(),
-      });
-
       // Color coding based on event type and status
       let eventColor = "bg-[#D9D9D9]"; // Default/past events
       if (!isPastEvent) {
@@ -157,8 +124,6 @@ export default function EventsDesktop() {
           eventColor = "bg-[#FFFF00]"; // Public events - yellow
         }
       }
-
-      console.log(`Event ${index} color assigned:`, eventColor);
 
       const eventObj = {
         id: event.id,
@@ -177,9 +142,6 @@ export default function EventsDesktop() {
 
       // Handle multiple events on the same date
       if (eventsMap[dateKey]) {
-        console.log(
-          `Multiple events on ${dateKey}, keeping the first one for now`
-        );
         // For now, keep the first event (could be enhanced to show multiple)
       } else {
         eventsMap[dateKey] = eventObj;
@@ -203,7 +165,6 @@ export default function EventsDesktop() {
       }
     });
 
-    console.log("Final events map:", eventsMap);
     setEvents(eventsMap);
   };
 
@@ -272,14 +233,6 @@ export default function EventsDesktop() {
     const firstDay = getFirstDayOfMonth(currentDate);
     const prevMonthDays = getPrevMonthDays(currentDate);
     const days = [];
-
-    console.log("Calendar Debug:", {
-      currentDate: currentDate.toISOString(),
-      daysInMonth,
-      firstDay,
-      prevMonthDays,
-      eventsCount: Object.keys(events).length,
-    });
 
     // Previous month's trailing days
     for (let i = firstDay - 1; i >= 0; i--) {
@@ -401,7 +354,6 @@ export default function EventsDesktop() {
       );
     }
 
-    console.log("Total calendar days rendered:", days.length);
     return days;
   };
 

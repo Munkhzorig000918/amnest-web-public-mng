@@ -3,7 +3,6 @@ import MerchItem from "./MerchItem";
 import SectionTitle from "../common/SectionTitle";
 
 export default function ShopDesktop({ merchandise = [] }) {
-  console.log("ShopDesktop merchandise:", merchandise);
 
   return (
     <div className="h-full hidden sm:flex gap-10 flex-shrink-0 p-4">

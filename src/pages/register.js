@@ -46,7 +46,6 @@ export default function Register() {
       const response = await userApiService.user.getUserGroups();
       setGroups(response.payload || response);
     } catch (error) {
-      console.error("Failed to load user groups:", error);
       setMessage("Бүлгийн мэдээлэл ачаалахад алдаа гарлаа");
     }
   };

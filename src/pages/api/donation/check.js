@@ -44,7 +44,6 @@ export default async function handler(req, res) {
       payload: mockStatusData,
     });
   } catch (error) {
-    console.error("Donation check API Error:", error);
 
     res.status(500).json({
       success: false,

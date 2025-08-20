@@ -49,7 +49,6 @@ export default function WriteForRightsDesktop({ actions = [], error = null }) {
     } else {
       setErrorMessage("");
       // Here you would submit to API
-      console.log("Submitting:", { ...formData, selectedItems });
       setFormSubmitted(true);
     }
   };

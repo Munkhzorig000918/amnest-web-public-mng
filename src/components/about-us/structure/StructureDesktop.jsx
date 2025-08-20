@@ -20,20 +20,17 @@ export default function StructureDesktop() {
       setError(null);
 
       try {
-        console.log("Fetching libraries data for structure page...");
         const libraries = await apiService.libraries.getLibraries({
           page: 1,
           pageSize: 20,
           sort: "publishedAt:desc",
         });
-        console.log("Libraries response:", libraries);
 
         const librariesArray = Array.isArray(libraries)
           ? libraries
           : libraries?.data || [];
         setLibrariesData(librariesArray);
       } catch (err) {
-        console.error("Error fetching libraries data:", err);
         setError(err);
       } finally {
         setIsLoading(false);

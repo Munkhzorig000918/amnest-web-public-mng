@@ -28,7 +28,6 @@ const makeApiCall = async (endpoint, options = {}) => {
 
     return data;
   } catch (error) {
-    console.error("Local API call error:", error);
     throw error;
   }
 };
@@ -44,7 +43,6 @@ export const localContactService = {
       });
       return response;
     } catch (error) {
-      console.error("Local contact request error:", error);
       throw error;
     }
   },
@@ -61,7 +59,6 @@ export const localReportsService = {
       });
       return response;
     } catch (error) {
-      console.error("Local reports fetch error:", error);
       throw error;
     }
   },
@@ -71,7 +68,6 @@ export const localReportsService = {
       const response = await makeApiCall(`/reports/${id}`);
       return response;
     } catch (error) {
-      console.error("Local report fetch error:", error);
       throw error;
     }
   },

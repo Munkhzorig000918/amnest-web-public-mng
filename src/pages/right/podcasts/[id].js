@@ -26,19 +26,16 @@ export default function PodcastDetail() {
       try {
         // Fetch single podcast
         const podcastData = await podcastsService.getPodcastById(id);
-        console.log("Single podcast response:", podcastData);
         setPodcast(podcastData);
 
         // Fetch related podcasts
         const relatedData = await podcastsService.getPodcasts({
           pageSize: 6,
         });
-        console.log("Related podcasts response:", relatedData);
         setRelatedPodcasts(
           relatedData?.data?.filter((item) => item.id !== parseInt(id)) || []
         );
       } catch (err) {
-        console.error("Error fetching podcast data:", err);
         setError(err);
       } finally {
         setIsLoading(false);

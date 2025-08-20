@@ -36,7 +36,6 @@ export default function NewsMobile() {
               page: currentPage,
               pageSize: itemsPerPage,
             });
-            console.log("Posts response:", posts);
             setPostsData(posts.data || []);
             break;
 
@@ -46,7 +45,6 @@ export default function NewsMobile() {
               page: currentPage,
               pageSize: itemsPerPage,
             });
-            console.log("Statements response:", statements);
             setStatementsData(statements.data || []);
             break;
 
@@ -57,12 +55,10 @@ export default function NewsMobile() {
               pageSize: itemsPerPage,
               post_category: "good_news",
             });
-            console.log("Good news response:", goodNews);
             setGoodNewsData(goodNews.data || []);
             break;
         }
       } catch (err) {
-        console.error("Error fetching data:", err);
         setError(err);
       } finally {
         setIsLoading(false);
@@ -92,13 +88,6 @@ export default function NewsMobile() {
   // Convert data to unified format
   const newsItems = currentData.map((item, index) => {
     let title, image, description;
-
-    // Debug logging
-    if (activeCategory === "statements") {
-      console.log("Processing statement item:", item);
-      console.log("Item has attributes?", !!item.attributes);
-      console.log("Item keys:", Object.keys(item));
-    }
 
     switch (activeCategory) {
       case "news":

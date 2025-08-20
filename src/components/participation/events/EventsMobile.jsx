@@ -58,7 +58,6 @@ export default function EventsMobile() {
         .join("");
       return result || num.toString(); // Fallback to regular numbers if conversion fails
     } catch (error) {
-      console.error("Error converting to Mongolian numerals:", error);
       return num.toString(); // Fallback to regular numbers
     }
   };
@@ -81,30 +80,16 @@ export default function EventsMobile() {
         locale: "mn",
       };
 
-      console.log("Mobile API request params:", params);
-      console.log("Mobile date range:", {
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
-        year,
-        month,
-      });
-
       const response = await eventsService.getEvents(params);
-      console.log("Mobile API response:", response);
-      console.log("Mobile response type:", typeof response);
-      console.log("Mobile is array:", Array.isArray(response));
 
       if (response && (response.data || Array.isArray(response))) {
         const eventData = response.data || response;
-        console.log("Mobile event data to process:", eventData);
         processEventsData(eventData);
       } else {
-        console.log("No events found for this month (mobile)");
         // No events found for this month
         setEvents({});
       }
     } catch (err) {
-      console.error("Error fetching events (mobile):", err);
       setError(err.message);
       // Clear events on error
       setEvents({});
@@ -115,25 +100,11 @@ export default function EventsMobile() {
 
   // Process API response data into calendar format
   const processEventsData = (eventData) => {
-    console.log("Processing events data (mobile):", eventData);
-    console.log("Event data length (mobile):", eventData.length);
     const eventsMap = {};
 
     eventData.forEach((event, index) => {
-      console.log(`Processing event ${index} (mobile):`, event);
-      console.log(`Event ${index} keys (mobile):`, Object.keys(event));
-      console.log(
-        `Event ${index} has attributes (mobile):`,
-        !!event.attributes
-      );
-      console.log(
-        `Event ${index} structure (mobile):`,
-        JSON.stringify(event, null, 2)
-      );
-
       // Handle both possible event structures
       const eventAttrs = event.attributes || event;
-      console.log(`Event ${index} attributes (mobile):`, eventAttrs);
 
       const startDate = new Date(eventAttrs.start_date);
       const endDate = new Date(eventAttrs.end_date);
@@ -145,16 +116,6 @@ export default function EventsMobile() {
         currentDate.getFullYear() < 2025 ? new Date(2025, 0, 1) : currentDate;
       const isPastEvent = endDate < referenceDate;
 
-      console.log(`Event ${index} details (mobile):`, {
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
-        dateKey,
-        isPastEvent,
-        title: eventAttrs.title,
-        membersOnly: eventAttrs.members_only,
-        referenceDate: referenceDate.toISOString(),
-      });
-
       // Color coding based on event type and status
       let eventColor = "bg-[#D9D9D9]"; // Default/past events
       if (!isPastEvent) {
@@ -165,7 +126,6 @@ export default function EventsMobile() {
         }
       }
 
-      console.log(`Event ${index} color assigned (mobile):`, eventColor);
 
       const eventObj = {
         id: event.id,
@@ -184,9 +144,6 @@ export default function EventsMobile() {
 
       // Handle multiple events on the same date
       if (eventsMap[dateKey]) {
-        console.log(
-          `Multiple events on ${dateKey} (mobile), keeping the first one for now`
-        );
         // For now, keep the first event (could be enhanced to show multiple)
       } else {
         eventsMap[dateKey] = eventObj;
@@ -210,7 +167,6 @@ export default function EventsMobile() {
       }
     });
 
-    console.log("Final events map (mobile):", eventsMap);
     setEvents(eventsMap);
   };
 

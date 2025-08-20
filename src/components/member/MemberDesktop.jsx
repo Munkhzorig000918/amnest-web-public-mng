@@ -36,17 +36,12 @@ export default function MemberDesktop({
   const handleLogin = async (data) => {
     setIsLoading(true);
     try {
-      console.log("Login attempt with data:", {
-        phone: data.phone,
-        password: "***",
-      });
 
       const response = await authService.login({
         phone: data.phone,
         password: data.password,
       });
 
-      console.log("Login response:", response);
 
       if (response.token) {
         localStorage.setItem("auth_token", response.token);
@@ -56,7 +51,6 @@ export default function MemberDesktop({
         window.location.reload();
       }
     } catch (error) {
-      console.error("Login error details:", error);
 
       let errorMessage = "ᠦᠨᠴᠠᠷᠠᠭᠤᠯᠠᠭᠰᠠᠨ ᠠᠯᠳᠠᠭ᠎ᠠ";
 

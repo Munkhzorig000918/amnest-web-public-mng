@@ -33,7 +33,6 @@ export default async function handler(
 
     return res.status(200).json(response.data);
   } catch (error) {
-    console.error("Contact form submission error:", error);
     return res.status(500).json({
       message:
         error.response?.data?.message ||

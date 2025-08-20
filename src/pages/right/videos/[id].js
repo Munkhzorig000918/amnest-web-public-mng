@@ -26,19 +26,16 @@ export default function VideoDetail() {
       try {
         // Fetch single video
         const videoData = await videosService.getVideoById(id);
-        console.log("Single video response:", videoData);
         setVideo(videoData);
 
         // Fetch related videos
         const relatedData = await videosService.getVideos({
           pageSize: 6,
         });
-        console.log("Related videos response:", relatedData);
         setRelatedVideos(
           relatedData?.data?.filter((item) => item.id !== parseInt(id)) || []
         );
       } catch (err) {
-        console.error("Error fetching video data:", err);
         setError(err);
       } finally {
         setIsLoading(false);

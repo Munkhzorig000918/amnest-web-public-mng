@@ -44,7 +44,6 @@ export default function ReportDetail() {
         const allReportsData = await allReportsResponse.json();
         setAllReports(allReportsData.data || []);
       } catch (err) {
-        console.error("Error fetching report data:", err);
         setError(err.message);
       } finally {
         setIsLoading(false);

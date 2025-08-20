@@ -50,7 +50,6 @@ export default async function handler(req, res) {
       payload: mockInvoiceData,
     });
   } catch (error) {
-    console.error("Anonymous donation API Error:", error);
 
     res.status(500).json({
       success: false,

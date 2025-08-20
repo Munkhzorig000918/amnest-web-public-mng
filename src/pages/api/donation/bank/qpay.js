@@ -51,7 +51,6 @@ export default async function handler(req, res) {
       payload: mockQPayData,
     });
   } catch (error) {
-    console.error("QPay donation API Error:", error);
 
     res.status(500).json({
       success: false,

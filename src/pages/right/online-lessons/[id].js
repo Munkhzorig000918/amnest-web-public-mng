@@ -26,19 +26,16 @@ export default function OnlineLessonDetail() {
       try {
         // Fetch single online lesson
         const lessonData = await onlineLessonsService.getOnlineLessonById(id);
-        console.log("Single online lesson response:", lessonData);
         setOnlineLesson(lessonData);
 
         // Fetch related online lessons
         const relatedData = await onlineLessonsService.getOnlineLessons({
           pageSize: 6,
         });
-        console.log("Related online lessons response:", relatedData);
         setRelatedLessons(
           relatedData?.data?.filter((item) => item.id !== parseInt(id)) || []
         );
       } catch (err) {
-        console.error("Error fetching online lesson data:", err);
         setError(err);
       } finally {
         setIsLoading(false);

@@ -19,7 +19,6 @@ export async function getServerSideProps({ params }) {
       },
     };
   } catch (error) {
-    console.error("Error fetching action:", error);
     return {
       props: {
         action: null,

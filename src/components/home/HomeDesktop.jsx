@@ -55,19 +55,16 @@ export default function HomeDesktop() {
       setError(null);
 
       try {
-        console.log("Fetching posts data...");
         // Use the correct posts/list API endpoint
         const posts = await apiService.posts.getPostsList({
           page: 1,
           pageSize: 6,
         });
-        console.log("Posts response:", posts);
 
         // Handle the consistent data structure
         const postsArray = Array.isArray(posts) ? posts : posts?.data || [];
         setPostsData(postsArray);
       } catch (err) {
-        console.error("Error fetching data:", err);
         setError(err);
       } finally {
         setIsLoading(false);
@@ -79,7 +76,6 @@ export default function HomeDesktop() {
 
   // Convert posts data to the format expected by the component
   const newsItems = postsData.map((post) => {
-    console.log("Processing post:", post.id, post);
     return {
       id: post.id,
       title: post.title || "ᠭᠠᠷᠴᠢᠭ ᠦᠭᠡᠢ",

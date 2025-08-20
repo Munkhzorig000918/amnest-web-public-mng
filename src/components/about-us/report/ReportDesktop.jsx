@@ -23,7 +23,6 @@ export default function ReportDesktop() {
         const data = await response.json();
         setReports(data.data || []);
       } catch (err) {
-        console.error("Error fetching reports:", err);
         setError(err.message);
       } finally {
         setLoading(false);

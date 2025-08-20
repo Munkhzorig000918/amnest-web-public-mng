@@ -26,19 +26,16 @@ export default function LibraryDetail() {
       try {
         // Fetch single library item
         const libraryData = await librariesService.getLibraryById(id);
-        console.log("Single library response:", libraryData);
         setLibrary(libraryData);
 
         // Fetch related library items
         const relatedData = await librariesService.getLibraries({
           pageSize: 6,
         });
-        console.log("Related libraries response:", relatedData);
         setRelatedLibraries(
           relatedData?.data?.filter((item) => item.id !== parseInt(id)) || []
         );
       } catch (err) {
-        console.error("Error fetching library data:", err);
         setError(err);
       } finally {
         setIsLoading(false);

@@ -154,24 +154,13 @@ export default async function handler(req, res) {
           html: emailContent,
           replyTo: email,
         });
-
-        console.log(`Contact email sent to ${forwardEmailAddress}`);
       } catch (emailError) {
-        console.error("Failed to send email:", emailError);
         // Don't fail the entire request if email fails
       }
     }
 
     // In a real implementation, you would also save to database here
-    // For now, we'll just log the submission
-    console.log("Contact form submission:", {
-      name,
-      email,
-      phone,
-      contactType: contactTypeLabel,
-      message: message.substring(0, 100) + "...",
-      timestamp: new Date().toISOString(),
-    });
+    // Contact request data would be saved to database here
 
     // Return success response
     res.status(200).json({
@@ -187,8 +176,6 @@ export default async function handler(req, res) {
       },
     });
   } catch (error) {
-    console.error("Contact API Error:", error);
-
     res.status(500).json({
       success: false,
       message: "Хүсэлт илгээхэд алдаа гарлаа",

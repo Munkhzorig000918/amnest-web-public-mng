@@ -2,26 +2,19 @@ import { getImageUrl } from "@/utils/fetcher";
 import Image from "next/image";
 
 export default function MerchItem({ merchItem }) {
-  console.log("MerchItem data:", merchItem);
-  console.log("Images data:", merchItem?.images);
-
   // Fix: The data is flattened, so images is directly on merchItem, not under attributes
   const hasImage = Boolean(merchItem?.images?.data?.attributes?.url);
-  console.log("Has image:", hasImage);
 
   let imageUrl;
   if (hasImage) {
     // Try direct URL first
     const directUrl = merchItem.images.data.attributes.url;
-    console.log("Direct URL:", directUrl);
     imageUrl = directUrl.startsWith("http")
       ? directUrl
       : `http://localhost:1337${directUrl}`;
   } else {
     imageUrl = "/images/no-image-icon.png";
   }
-
-  console.log("Final image URL:", imageUrl);
 
   let price = merchItem?.price;
 

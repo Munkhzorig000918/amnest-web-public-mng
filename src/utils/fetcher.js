@@ -60,7 +60,6 @@ export const formatMongolianDate = (
 export default async function Fetcher(url, baseUrl = API_BASE_URL) {
   try {
     const fullUrl = `${baseUrl}${url}`;
-    console.log("Fetching from:", fullUrl);
 
     const headers = {
       "Content-Type": "application/json",
@@ -87,7 +86,6 @@ export default async function Fetcher(url, baseUrl = API_BASE_URL) {
 
     return await response.json();
   } catch (e) {
-    console.error("Fetcher Error:", e);
     throw e;
   }
 }
@@ -95,7 +93,6 @@ export default async function Fetcher(url, baseUrl = API_BASE_URL) {
 export async function FetcherPut(url, body, baseUrl = API_BASE_URL) {
   try {
     const fullUrl = `${baseUrl}${url}`;
-    console.log("PUT request to:", fullUrl);
 
     const headers = {
       "Content-Type": "application/json",
@@ -125,7 +122,6 @@ export async function FetcherPut(url, body, baseUrl = API_BASE_URL) {
 
     return await response.json();
   } catch (e) {
-    console.error("FetcherPut Error:", e);
     throw e;
   }
 }
@@ -133,8 +129,6 @@ export async function FetcherPut(url, body, baseUrl = API_BASE_URL) {
 export async function FetcherPost(url, body, baseUrl = API_BASE_URL) {
   try {
     const fullUrl = `${baseUrl}${url}`;
-    console.log("POST request to:", fullUrl);
-    console.log("POST body:", body);
 
     const headers = {
       "Content-Type": "application/json",
@@ -152,20 +146,15 @@ export async function FetcherPost(url, body, baseUrl = API_BASE_URL) {
       body: JSON.stringify(body),
     });
 
-    console.log("Response status:", response.status);
-    console.log("Response headers:", response.headers);
 
     // Get the response text first to check what we're dealing with
     const responseText = await response.text();
-    console.log("Response text:", responseText);
 
     // Try to parse as JSON
     let responseData;
     try {
       responseData = JSON.parse(responseText);
     } catch (parseError) {
-      console.error("Failed to parse response as JSON:", parseError);
-      console.error("Response was:", responseText);
 
       // If it's an HTML response, it's likely a server error
       if (
@@ -190,7 +179,6 @@ export async function FetcherPost(url, body, baseUrl = API_BASE_URL) {
 
     return responseData;
   } catch (e) {
-    console.error("FetcherPost Error:", e);
     throw e;
   }
 }

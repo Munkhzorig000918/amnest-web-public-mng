@@ -36,7 +36,6 @@ export default function BannerSlider({
 
           setFeaturedNewsData(newsData);
         } catch (error) {
-          console.error("Error fetching featured news:", error);
           setFeaturedNewsError(error);
         } finally {
           setFeaturedNewsLoading(false);
@@ -155,9 +154,6 @@ export default function BannerSlider({
 
   // Show error state for dynamic content
   if (useDynamic && featuredNewsError) {
-    console.warn(
-      "Failed to load featured news data, falling back to static images"
-    );
     // Fall back to static images if provided
     if (!images || images.length === 0) {
       return (

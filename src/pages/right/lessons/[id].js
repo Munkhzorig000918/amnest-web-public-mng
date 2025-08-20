@@ -26,19 +26,16 @@ export default function LessonDetail() {
       try {
         // Fetch single lesson
         const lessonData = await lessonsService.getLessonById(id);
-        console.log("Single lesson response:", lessonData);
         setLesson(lessonData);
 
         // Fetch related lessons
         const relatedData = await lessonsService.getLessons({
           pageSize: 6,
         });
-        console.log("Related lessons response:", relatedData);
         setRelatedLessons(
           relatedData?.data?.filter((item) => item.id !== parseInt(id)) || []
         );
       } catch (err) {
-        console.error("Error fetching lesson data:", err);
         setError(err);
       } finally {
         setIsLoading(false);
