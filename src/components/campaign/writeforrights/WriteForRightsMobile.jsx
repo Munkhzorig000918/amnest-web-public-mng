@@ -124,72 +124,56 @@ export default function WriteForRightsMobile({ actions = [], error = null }) {
         </div>
 
         {/* Actions List */}
-        <div className="space-y-4 mb-8">
+        <div className="flex flex-row gap-2 overflow-x-auto mb-8">
           {actions && actions.length > 0 ? (
             actions.map((action) => (
               <div
                 key={action.id}
-                className="bg-white rounded-lg overflow-hidden"
+                className="flex flex-col items-center justify-between gap-2 p-3 w-[100px] bg-white rounded-lg"
               >
-                <div className="flex">
-                  <div className="w-[100px] h-[80px] flex-shrink-0">
-                    {action.cover ? (
-                      <Image
-                        src={getImageUrl(action.cover)}
-                        alt={action.title}
-                        width={100}
-                        height={80}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.target.src = "/images/no-image.png";
-                        }}
-                      />
-                    ) : (
-                      <Image
-                        src="/images/no-image.png"
-                        alt="No image"
-                        width={100}
-                        height={80}
-                        className="w-full h-full object-cover"
-                      />
-                    )}
-                  </div>
-                  <div className="flex-1 p-3">
-                    <h3
-                      className="font-bold mb-1 text-xs line-clamp-2"
-                      style={{
-                        writingMode: "vertical-lr",
-                        textOrientation: "upright",
-                      }}
-                    >
-                      {action.title}
-                    </h3>
-                    <p
-                      className="text-xs mb-2 line-clamp-2"
-                      style={{
-                        writingMode: "vertical-lr",
-                        textOrientation: "upright",
-                      }}
-                    >
-                      {action.description}
-                    </p>
-                    <Button
-                      text="ᠳᠡᠯᠭᠡᠷᠡᠩᠭᠦᠢ"
-                      type="secondary"
-                      className="text-xs px-2 py-1"
-                      onClick={() => handleActionClick(action.id)}
-                    />
-                  </div>
-                  <div className="flex items-center justify-center p-3">
-                    <input
-                      type="checkbox"
-                      className="w-5 h-5 accent-gray-500"
-                      checked={selectedItems.includes(action.id)}
-                      onChange={(e) =>
-                        handleCheckboxChange(action.id, e.target.checked)
-                      }
-                    />
-                  </div>
+                <div className="w-[80px] h-[80px] flex-shrink-0">
+                  <Image
+                    src={getImageUrl(action.cover)}
+                    width={100}
+                    height={80}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex-1 p-3">
+                  <h3
+                    className="font-bold mb-1 text-xs line-clamp-2"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                  >
+                    {action.title}
+                  </h3>
+                  <p
+                    className="text-xs mb-2 line-clamp-2"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                  >
+                    {action.description}
+                  </p>
+                </div>
+                <div className="flex flex-col gap-2 items-center justify-center">
+                  <Button
+                    text="ᠳᠡᠯᠭᠡᠷᠡᠩᠭᠦᠢ"
+                    type="secondary"
+                    className="text-xs px-2 py-1"
+                    onClick={() => handleActionClick(action.id)}
+                  />
+                  <input
+                    type="checkbox"
+                    className="w-5 h-5 accent-gray-500"
+                    checked={selectedItems.includes(action.id)}
+                    onChange={(e) =>
+                      handleCheckboxChange(action.id, e.target.checked)
+                    }
+                  />
                 </div>
               </div>
             ))
