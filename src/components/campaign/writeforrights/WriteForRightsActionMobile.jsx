@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import Button from "@/components/common/Button";
 import StaticHeader from "@/components/common/StaticHeader";
+import { getImageUrl } from "@/utils/fetcher";
 
 export default function WriteForRightsActionMobile({ actionId }) {
   const router = useRouter();
@@ -27,9 +28,9 @@ export default function WriteForRightsActionMobile({ actionId }) {
       problem: "ᠠᠰᠠᠭᠤᠳᠠᠯ",
       action: "ᠦᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭ᠎ᠠ",
       problemDescription:
-        "ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᠶᠠᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠴᠥᠯᠦᠦ ᠳ᠋ᠤ ᢈᠠᠯᠳᠠᠰᠠᠷ ᠪᠠᠶᠢᠨ᠎ᠠ᠃",
+        "ᠳᠡᠯᠡᢈᠡᠢ ᠳᠠᠶᠠᠷ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠴᠥᠯᠦᠦ ᠳ᠋ᠤ ᢈᠠᠯᠳᠠᠰᠠᠷ ᠪᠠᠶᠢᠨ᠎ᠠ᠃ ᠦᠭᠡ ᢈᠡᠯᠵᠦ᠂ ᠦᠵᠡᠯ ᠪᠣᠳᠯᠠᠭ᠎ᠠ ᠢᠯᠡᠷᢈᠢᠶᠯᠡᠰᠨᠢᢉ ᠨᠤ ᠲᠥᠯᠦᢉᠡ ᢈᠣᠷᠢᠵᠤ᠂ ᠡᠷᠦᠦᠳᠡᠨ ᢈᠦᠦᠵᠦ᠂ ᢈᠢᠯᠰ ᢈᠡᠷᠭᠡᠡᠷ ᠶᠠᠯᠯᠠᠵᠤ᠂ ᠳᠦᠷᠪᠡᠭᠰᠡᠳ ᠠᠶᠤᠤᠯᠲᠠᠢ ᠣᠷᠴᠢᠨ ᠳ᠋ᠤ ᠭᠠᠳᠤᠤᠷᢈᠠᠭᠳᠠᠨ ᠣᠷᢈᠢᠭᠳᠠᠵᠤ ᠪᠠᠶᠢᠨ᠎ᠠ᠃",
       actionDescription:
-        "ᠲᠠᠨ ᠤ᠋ ᠦᠭᠡ᠂ ᠵᠠᢈᠢᠳᠠᠯ᠂ ᠦᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭ᠎ᠠ ᢈᠢᠶᠳᠪᠦᠷ ᠭᠠᠷᠭᠠᠭᠴᠢ ᠨᠠᠷ ᠳ᠋ᠤ ᠨᠥᠯᠦᠦᠯᠵᠦ᠂ ᠥᠪᠡᠷᢉᠢᠯᢉᠡ ᢈᠢᠶᠡᢉᠡᢉᠡ᠃",
+        "ᠲᠠᠨ ᠤ᠋ ᠦᠭᠡ᠂ ᠵᠠᢈᠢᠳᠠᠯ᠂ ᠦᠢᠯᠡ ᠠᠵᠢᠯᠯᠠᠭ᠎ᠠ ᢈᠢᠶᠳᠪᠦᠷ ᠭᠠᠷᠭᠠᠭᠴᠢ ᠨᠠᠷ ᠳ᠋ᠤ ᠨᠥᠯᠦᠦᠯᠵᠦ᠂ ᠵᠠᠰᠠᠭ ᠤ᠋ᠨ ᠭᠠᠵᠠᠷᠤᠤᠳ ᠡᠷᠦᠦᠳᠡᠨ ᢈᠦᠦᠭᠴᠢᠳ ᠲᠡᠢ ᢈᠠᠷᠢᠤᠴᠯᠠᠭ᠎ᠠ ᠲᠣᠣᠴᠣᠵᠤ᠂ ᠦᠵᠡᠯ ᠰᠠᠨᠠᠭ᠎ᠠ ᠶ᠋ᠢᠨ ᢈᠣᠷᠢᠭᠳᠯᠤᠤᠳ ᠢ ᠰᠤᠯᠯᠠᠵᠤ᠂ ᠢᠯᠦᠦ ᠣᠯᠠᠨ ᢈᠦᠮᠦᠨ ᠳ᠋ᠤ ᠡᠷᢈᠡ ᠴᠥᠯᠦᠦ ᠥᠪᠡᠷ ᠠᠪᢈᠤ ᠠᠪᠠᢈᠤ ᠳ᠋ᠤ ᠨᠤ ᠲᠤᠰᠯᠠᢈᠤ ᢈᠦᢉᠲᠡᠢ᠃",
     },
     2: {
       id: 2,
@@ -85,7 +86,7 @@ export default function WriteForRightsActionMobile({ actionId }) {
 
   if (!actionData) {
     return (
-      <div className="sm:hidden flex items-center justify-center min-h-screen">
+      <div className="sm:hidden flex items-center justify-center min-h-screen bg-[#43a6ac]">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
       </div>
     );
@@ -93,22 +94,21 @@ export default function WriteForRightsActionMobile({ actionId }) {
 
   return (
     <div className="sm:hidden flex flex-col min-h-screen">
-      {/* Header with Cover Image */}
+      {/* Header Section */}
       <div className="relative">
         <StaticHeader
           imageSrc={actionData.cover}
           alt={actionData.title}
-          width={400}
           title={actionData.title}
         />
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-4 space-y-6">
-        {/* Content Section */}
-        <div>
+      <div className="flex-1 space-y-4 p-4">
+        {/* Introduction */}
+        <div className="flex flex-row max-h-[200px] overflow-x-auto gap-2">
           <h2
-            className="text-xl font-bold mb-4"
+            className="text-sm font-bold"
             style={{
               writingMode: "vertical-lr",
               textOrientation: "upright",
@@ -116,55 +116,14 @@ export default function WriteForRightsActionMobile({ actionId }) {
           >
             {actionData.title}
           </h2>
-
           <p
-            className="text-base mb-6"
+            className="text-[10px]"
             style={{
               writingMode: "vertical-lr",
               textOrientation: "upright",
             }}
           >
             {actionData.description}
-          </p>
-
-          <h3
-            className="text-lg font-bold mb-3"
-            style={{
-              writingMode: "vertical-lr",
-              textOrientation: "upright",
-            }}
-          >
-            {actionData.problem}
-          </h3>
-
-          <p
-            className="text-sm mb-6"
-            style={{
-              writingMode: "vertical-lr",
-              textOrientation: "upright",
-            }}
-          >
-            {actionData.problemDescription}
-          </p>
-
-          <h3
-            className="text-lg font-bold mb-3"
-            style={{
-              writingMode: "vertical-lr",
-              textOrientation: "upright",
-            }}
-          >
-            {actionData.action}
-          </h3>
-
-          <p
-            className="text-sm mb-6"
-            style={{
-              writingMode: "vertical-lr",
-              textOrientation: "upright",
-            }}
-          >
-            {actionData.actionDescription}
           </p>
         </div>
 
