@@ -98,6 +98,13 @@ export default function NewsDesktop() {
       currentData = [];
   }
 
+  // Debug current data
+  console.log(`Current category: ${activeCategory}`);
+  console.log(`Current data:`, currentData);
+  console.log(`Current data length:`, currentData.length);
+  console.log(`Is loading:`, isLoading);
+  console.log(`Error:`, error);
+
   // Convert data to unified format
   const newsItems = currentData.map((item, index) => {
     let title, image, description;
