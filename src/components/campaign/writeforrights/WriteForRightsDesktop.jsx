@@ -81,7 +81,7 @@ export default function WriteForRightsDesktop() {
   };
 
   return (
-    <div className="h-full hidden sm:flex gap-20 overflow-x-auto w-auto flex-shrink-0 max-h-screen min-w-screen">
+    <div className="h-full hidden sm:flex overflow-x-auto w-auto flex-shrink-0 max-h-screen min-w-screen">
       {/* Header Section */}
       <StaticHeader
         imageSrc="/images/campaign/writeforrights-header.jpg"
@@ -90,10 +90,10 @@ export default function WriteForRightsDesktop() {
       />
 
       {/* Actions List Section */}
-      <div className="w-[700px] bg-[#43a6ac] p-6 flex-shrink-0 max-h-screen overflow-y-auto">
-        <div className="mb-6">
+      <div className="bg-[#43a6ac] p-6 flex flex-row gap-4 flex-shrink-0">
+        <div className="flex flex-row gap-2">
           <h2
-            className="bg-black text-white p-2 text-xl font-bold inline-block mb-4"
+            className="bg-black text-white p-2 text-xl inline-block font-bold"
             style={{
               writingMode: "vertical-lr",
               textOrientation: "upright",
@@ -114,48 +114,53 @@ export default function WriteForRightsDesktop() {
           </p>
         </div>
 
-        <div className="space-y-4">
+        <div className="flex-1 flex flex-row gap-4 overflow-x-auto">
           {writeForRightsActions.map((action) => (
-            <div key={action.id} className="flex bg-white">
-              <div className="w-[150px] h-[120px] flex-shrink-0">
-                <Image
-                  src={action.cover}
-                  alt={action.title}
-                  width={150}
-                  height={120}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.target.src = "/images/no-image.png";
-                  }}
-                />
+            <div
+              key={action.id}
+              className="flex flex-col items-center justify-between h-full gap-2 bg-white p-4"
+            >
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-[150px] h-[120px] flex-shrink-0">
+                  <Image
+                    src={action.cover}
+                    alt={action.title}
+                    width={150}
+                    height={120}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.src = "/images/no-image.png";
+                    }}
+                  />
+                </div>
+                <div className="flex flex-row gap-2">
+                  <h3
+                    className="font-bold mb-2 text-sm"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                  >
+                    {action.title}
+                  </h3>
+                  <p
+                    className="text-xs"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                  >
+                    {action.description}
+                  </p>
+                </div>
               </div>
-              <div className="flex-1 p-4">
-                <h3
-                  className="font-bold mb-2 text-sm"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                >
-                  {action.title}
-                </h3>
-                <p
-                  className="text-sm mb-3 overflow-hidden max-h-[60px]"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                >
-                  {action.description}
-                </p>
+              <div className="flex flex-col gap-4 items-center justify-center">
                 <Button
                   text="ᠳᠡᠯᠭᠡᠷᠡᠩᠭᠦᠢ"
                   type="secondary"
                   className="text-xs px-2 py-1"
                   onClick={() => handleActionClick(action.id)}
                 />
-              </div>
-              <div className="flex items-center justify-center p-4">
                 <input
                   type="checkbox"
                   className="w-6 h-6 accent-gray-500"
@@ -171,9 +176,9 @@ export default function WriteForRightsDesktop() {
       </div>
 
       {/* Form Section */}
-      <div className="w-[400px] bg-[#1b4244] flex-shrink-0 max-h-screen overflow-y-auto">
+      <div className="bg-[#1b4244] p-4">
         {!formSubmitted ? (
-          <div className="flex gap-7 mt-4 w-full">
+          <div className="flex gap-7 w-full">
             <h2
               className="text-white text-xl font-bold"
               style={{
@@ -184,7 +189,7 @@ export default function WriteForRightsDesktop() {
               ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢᠨ ᠲᠥᠯᠦᢉᠡ ᠨᠢᢉᠡᠳᠡᠨᠡ ᠦᠦ
             </h2>
 
-            <form onSubmit={handleSubmit} className="flex gap-2">
+            <form onSubmit={handleSubmit} className="flex gap-4">
               {/* Last Name Field */}
               <div className="flex gap-2">
                 <p
@@ -202,7 +207,7 @@ export default function WriteForRightsDesktop() {
                   onChange={(e) =>
                     handleInputChange("lastName", e.target.value)
                   }
-                  className="border rounded-md p-2 w-20"
+                  className="border rounded-md w-20 h-auto"
                   style={{
                     writingMode: "vertical-lr",
                     textOrientation: "upright",
@@ -318,7 +323,6 @@ export default function WriteForRightsDesktop() {
                   style={{
                     writingMode: "vertical-lr",
                     textOrientation: "upright",
-                    width: "200px",
                   }}
                 >
                   ᠲᠠᠨ ᠤ᠋ ᠥᠭᠦᠰᠦᠨ ᢈᠤᠪᠢᠶᠠᠨ ᠮᠡᠳᠡᢉᠡᠯᠦᠯ ᠢ ᠪᠢᠳ ᠵᠥᠪᢈᠥᠨ ᠡᠨᠡ ᠻᠠᠮᠫᠠᠨᠢᠲ ᠠᠵᠢᠯ
