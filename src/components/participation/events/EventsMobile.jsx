@@ -287,9 +287,7 @@ export default function EventsMobile() {
       days.push(
         <div
           key={`prev-${day}`}
-          className={`border-b border-gray-200 p-2 text-gray-400 text-[8px] cursor-pointer hover:bg-gray-50 flex flex-col h-full min-h-[40px] w-full min-w-[40px] ${
-            isLastInRow ? "" : "border-r"
-          }`}
+          className={`border-b border-r border-gray-200 p-2 text-gray-400 text-[8px] cursor-pointer hover:bg-gray-50 flex flex-col h-full min-h-[40px] w-full min-w-[40px]`}
         >
           {toMongolianNumerals(day)}
         </div>
@@ -308,17 +306,31 @@ export default function EventsMobile() {
       days.push(
         <div
           key={day}
-          className={`border-b border-gray-200 p-2 text-[8px] cursor-pointer hover:bg-gray-50 relative flex flex-col h-full min-h-[40px] w-full min-w-[40px] ${
-            isLastInRow ? "" : "border-r"
-          } ${event ? "hover:bg-blue-50" : ""}`}
+          className={`border-b border-r border-gray-200 p-2 text-[8px] cursor-pointer hover:bg-gray-50 relative h-full min-h-[40px] w-full min-w-[40px] ${
+            event ? "hover:bg-blue-50" : ""
+          }`}
           onClick={() => handleDayClick(dateString)}
         >
-          <span className="font-medium">{toMongolianNumerals(day)}</span>
+          <span className="absolute top-1 left-1 font-medium">
+            {toMongolianNumerals(day)}
+          </span>
           {event && (
-            <div
-              className={`absolute bottom-1 left-1 right-1 ${event.color} rounded text-[4px] truncate w-6 py-[0.5px] px-[0.5px]`}
-            >
-              {event.title}
+            <div className="group relative">
+              <div
+                className={`relative top-4 left-6 ${event.color} w-3 h-3 rounded cursor-pointer`}
+              ></div>
+              {/* Tooltip */}
+              <div className="absolute bottom-full right-0 mb-1 px-2 py-1 bg-black text-white text-[8px] rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap max-w-[120px]">
+                <div
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                >
+                  {event.title}
+                </div>
+                <div className="absolute top-full right-1 w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-black"></div>
+              </div>
             </div>
           )}
         </div>
@@ -333,9 +345,7 @@ export default function EventsMobile() {
       days.push(
         <div
           key={`next-${day}`}
-          className={`border-b border-gray-200 p-2 text-gray-400 text-[8px] cursor-pointer hover:bg-gray-50 flex flex-col h-full min-h-[40px] w-full min-w-[40px] ${
-            isLastInRow ? "" : "border-r"
-          }`}
+          className={`border-b border-r border-gray-200 p-2 text-gray-400 text-[8px] cursor-pointer hover:bg-gray-50 flex flex-col h-full min-h-[40px] w-full min-w-[40px]`}
         >
           {toMongolianNumerals(day)}
         </div>
