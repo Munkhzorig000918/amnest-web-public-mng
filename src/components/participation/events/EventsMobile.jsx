@@ -126,7 +126,6 @@ export default function EventsMobile() {
         }
       }
 
-
       const eventObj = {
         id: event.id,
         title: eventAttrs.title,

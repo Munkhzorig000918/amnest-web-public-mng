@@ -33,7 +33,7 @@ export default function RightMobile() {
           podcastsService.getPodcasts({ pageSize: 6 }),
         ]);
 
-        // Data fetched successfully
+      // Data fetched successfully
 
       // Create swiper data structure (matching old knowrights page structure)
       const dynamicSwiperData = [

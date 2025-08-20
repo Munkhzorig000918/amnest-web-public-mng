@@ -36,12 +36,10 @@ export default function MemberDesktop({
   const handleLogin = async (data) => {
     setIsLoading(true);
     try {
-
       const response = await authService.login({
         phone: data.phone,
         password: data.password,
       });
-
 
       if (response.token) {
         localStorage.setItem("auth_token", response.token);
@@ -51,7 +49,6 @@ export default function MemberDesktop({
         window.location.reload();
       }
     } catch (error) {
-
       let errorMessage = "ᠦᠨᠴᠠᠷᠠᠭᠤᠯᠠᠭᠰᠠᠨ ᠠᠯᠳᠠᠭ᠎ᠠ";
 
       if (error.message && error.message.includes("JSON.parse")) {
