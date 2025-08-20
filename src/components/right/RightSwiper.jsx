@@ -11,6 +11,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import SectionTitle from "@/components/common/SectionTitle";
 import { getImageUrl } from "@/utils/fetcher";
 
@@ -45,6 +46,7 @@ export default function RightSwiper({
   sectionTitle,
   data = [],
 }) {
+  const router = useRouter();
   const swiperRef = useRef(null);
   const [currentSlide, setCurrentSlide] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
@@ -101,6 +103,50 @@ export default function RightSwiper({
 
   const handleSlideChange = (swiper) => {
     setCurrentSlide(swiper.activeIndex + 1);
+  };
+
+  // Navigate to detail page based on content type
+  const navigateToDetail = (item) => {
+    const itemId = item.id;
+
+    // Determine the route based on section title
+    let route = "";
+
+    console.log(`Section title: "${sectionTitle}"`);
+
+    // Check if section title contains specific keywords
+    if (
+      sectionTitle.includes("ᠴᠠᠬᠢᠮ ᠰᠤᠷᠭᠠᠯᠲᠤ") ||
+      sectionTitle.toLowerCase().includes("online lesson")
+    ) {
+      route = `/right/online-lessons/${itemId}`;
+    } else if (
+      sectionTitle.includes("ᠰᠤᠷᠭᠠᠯᠲᠤ") ||
+      sectionTitle.toLowerCase().includes("lesson")
+    ) {
+      route = `/right/lessons/${itemId}`;
+    } else if (
+      sectionTitle.includes("ᠸᠢᠳᠧᠤ") ||
+      sectionTitle.toLowerCase().includes("video")
+    ) {
+      route = `/right/videos/${itemId}`;
+    } else if (
+      sectionTitle.includes("ᠨᠣᠮ ᠲᠣᠪᠴᠢᠮᠠᠯ") ||
+      sectionTitle.toLowerCase().includes("librar")
+    ) {
+      route = `/right/libraries/${itemId}`;
+    } else if (
+      sectionTitle.includes("ᠫᠣᠳᠺᠠᠰᠲ") ||
+      sectionTitle.toLowerCase().includes("podcast")
+    ) {
+      route = `/right/podcasts/${itemId}`;
+    } else {
+      console.warn(`Unknown section type: ${sectionTitle}`);
+      return;
+    }
+
+    console.log(`Navigating to: ${route}`);
+    router.push(route);
   };
 
   // Don't render if no data
@@ -184,9 +230,12 @@ export default function RightSwiper({
           }}
           onSlideChange={handleSlideChange}
         >
-          {slides.map((slide) => (
+          {slides.map((slide, index) => (
             <SwiperSlide key={slide.id}>
-              <div className="w-full h-full flex gap-2">
+              <div
+                className="w-full h-full flex gap-2 cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={() => navigateToDetail({ id: slide.id })}
+              >
                 <div className="flex flex-col items-center gap-4 justify-between max-h-[200px] sm:max-h-max">
                   <p
                     className="text-[9px] sm:text-sm"
@@ -222,7 +271,7 @@ export default function RightSwiper({
                     textOrientation: "upright",
                   }}
                 >
-                  ᠲᠤᠩ ᠤᠳᠠᠬᠤ ᠦᢉᠡᠢ
+                  ᠤᠩᠰᠢᠬᠤ
                 </p>
               </div>
             </SwiperSlide>
