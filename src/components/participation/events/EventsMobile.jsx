@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { eventsService } from "@/services/apiService";
-import EventModalMobile from "./EventModalMobile";
+import EventModal from "./EventModal";
 
 export default function EventsMobile() {
   const [currentDate, setCurrentDate] = useState(new Date(2025, 5, 1)); // June 2025 to match test event
@@ -511,7 +511,7 @@ export default function EventsMobile() {
       </div>
 
       {/* Event Details Modal */}
-      <EventModalMobile
+      <EventModal
         selectedEvent={selectedEvent}
         showModal={showModal}
         closeModal={closeModal}

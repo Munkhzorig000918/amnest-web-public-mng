@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { eventsService } from "@/services/apiService";
-import EventModalDesktop from "./EventModalDesktop";
+import EventModal from "./EventModal";
 
 export default function EventsDesktop() {
   const [currentDate, setCurrentDate] = useState(new Date(2025, 5, 1)); // June 2025 to match test event
@@ -592,7 +592,7 @@ export default function EventsDesktop() {
       </div>
 
       {/* Event Details Modal */}
-      <EventModalDesktop
+      <EventModal
         selectedEvent={selectedEvent}
         showModal={showModal}
         closeModal={closeModal}
