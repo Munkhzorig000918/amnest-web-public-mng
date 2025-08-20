@@ -2,8 +2,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { eventsService } from "@/services/apiService";
 
-export default function EventsMobile() {
-  const [currentDate, setCurrentDate] = useState(new Date(2025, 5, 1)); // June 2025 to match test event
+export default function Events() {
+  const [currentDate, setCurrentDate] = useState(new Date(2025, 5, 1));
   const [showModal, setShowModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [events, setEvents] = useState({});
@@ -35,7 +35,6 @@ export default function EventsMobile() {
     "ᠪᠢᠮᠪᠠ",
   ];
 
-  // Convert Arabic numerals to Mongolian Bichig numerals
   const toMongolianNumerals = (num) => {
     try {
       const mongolianDigits = [
@@ -55,23 +54,18 @@ export default function EventsMobile() {
         .split("")
         .map((digit) => mongolianDigits[parseInt(digit)])
         .join("");
-      return result || num.toString(); // Fallback to regular numbers if conversion fails
+      return result || num.toString();
     } catch (error) {
-      console.error("Error converting to Mongolian numerals:", error);
-      return num.toString(); // Fallback to regular numbers
+      return num.toString();
     }
   };
 
-  // Fetch events data for the current month
   const fetchEventsData = async (year, month) => {
     setLoading(true);
     setError(null);
-
     try {
-      // Use the direct events API endpoint
       const startDate = new Date(year, month, 1);
       const endDate = new Date(year, month + 1, 0);
-
       const params = {
         "filters[start_date][$gte]": startDate.toISOString().split("T")[0],
         "filters[start_date][$lte]": endDate.toISOString().split("T")[0],
@@ -79,92 +73,41 @@ export default function EventsMobile() {
         populate: "*",
         locale: "mn",
       };
-
-      console.log("Mobile API request params:", params);
-      console.log("Mobile date range:", {
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
-        year,
-        month,
-      });
-
       const response = await eventsService.getEvents(params);
-      console.log("Mobile API response:", response);
-      console.log("Mobile response type:", typeof response);
-      console.log("Mobile is array:", Array.isArray(response));
-
       if (response && (response.data || Array.isArray(response))) {
         const eventData = response.data || response;
-        console.log("Mobile event data to process:", eventData);
         processEventsData(eventData);
       } else {
-        console.log("No events found for this month (mobile)");
-        // No events found for this month
         setEvents({});
       }
     } catch (err) {
-      console.error("Error fetching events (mobile):", err);
       setError(err.message);
-      // Clear events on error
       setEvents({});
     } finally {
       setLoading(false);
     }
   };
 
-  // Process API response data into calendar format
   const processEventsData = (eventData) => {
-    console.log("Processing events data (mobile):", eventData);
-    console.log("Event data length (mobile):", eventData.length);
     const eventsMap = {};
-
-    eventData.forEach((event, index) => {
-      console.log(`Processing event ${index} (mobile):`, event);
-      console.log(`Event ${index} keys (mobile):`, Object.keys(event));
-      console.log(
-        `Event ${index} has attributes (mobile):`,
-        !!event.attributes
-      );
-      console.log(
-        `Event ${index} structure (mobile):`,
-        JSON.stringify(event, null, 2)
-      );
-
-      // Handle both possible event structures
+    eventData.forEach((event) => {
       const eventAttrs = event.attributes || event;
-      console.log(`Event ${index} attributes (mobile):`, eventAttrs);
-
       const startDate = new Date(eventAttrs.start_date);
       const endDate = new Date(eventAttrs.end_date);
       const dateKey = startDate.toISOString().split("T")[0];
-
-      // For events in 2025, use a reference date in 2025 for comparison
       const currentDate = new Date();
       const referenceDate =
         currentDate.getFullYear() < 2025 ? new Date(2025, 0, 1) : currentDate;
       const isPastEvent = endDate < referenceDate;
 
-      console.log(`Event ${index} details (mobile):`, {
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
-        dateKey,
-        isPastEvent,
-        title: eventAttrs.title,
-        membersOnly: eventAttrs.members_only,
-        referenceDate: referenceDate.toISOString(),
-      });
-
-      // Color coding based on event type and status
-      let eventColor = "bg-[#D9D9D9]"; // Default/past events
+      let eventColor = "bg-[#D9D9D9]";
       if (!isPastEvent) {
         if (eventAttrs.members_only) {
-          eventColor = "bg-[#FB00FF]"; // Members only - purple
+          eventColor = "bg-[#FB00FF]";
         } else {
-          eventColor = "bg-[#FFFF00]"; // Public events - yellow
+          eventColor = "bg-[#FFFF00]";
         }
       }
-
-      console.log(`Event ${index} color assigned (mobile):`, eventColor);
 
       const eventObj = {
         id: event.id,
@@ -181,21 +124,13 @@ export default function EventsMobile() {
         endDate: eventAttrs.end_date,
       };
 
-      // Handle multiple events on the same date
-      if (eventsMap[dateKey]) {
-        console.log(
-          `Multiple events on ${dateKey} (mobile), keeping the first one for now`
-        );
-        // For now, keep the first event (could be enhanced to show multiple)
-      } else {
+      if (!eventsMap[dateKey]) {
         eventsMap[dateKey] = eventObj;
       }
 
-      // Also add events for multi-day events (if end date is different)
       if (startDate.toDateString() !== endDate.toDateString()) {
         const currentDateIter = new Date(startDate);
         currentDateIter.setDate(currentDateIter.getDate() + 1);
-
         while (currentDateIter <= endDate) {
           const multiDayKey = currentDateIter.toISOString().split("T")[0];
           if (!eventsMap[multiDayKey]) {
@@ -208,12 +143,9 @@ export default function EventsMobile() {
         }
       }
     });
-
-    console.log("Final events map (mobile):", eventsMap);
     setEvents(eventsMap);
   };
 
-  // Format time from ISO string
   const formatTime = (isoString) => {
     const date = new Date(isoString);
     return date.toLocaleTimeString("en-US", {
@@ -223,7 +155,6 @@ export default function EventsMobile() {
     });
   };
 
-  // Fetch events when component mounts or date changes
   useEffect(() => {
     fetchEventsData(currentDate.getFullYear(), currentDate.getMonth());
   }, [currentDate]);
@@ -283,13 +214,20 @@ export default function EventsMobile() {
     for (let i = firstDay - 1; i >= 0; i--) {
       const day = prevMonthDays - i;
       const dayIndex = firstDay - 1 - i;
-      const isLastInRow = (dayIndex + 1) % 7 === 0;
       days.push(
         <div
           key={`prev-${day}`}
-          className={`border-b border-r border-gray-200 p-2 text-gray-400 text-[8px] cursor-pointer hover:bg-gray-50 flex flex-col h-full min-h-[40px] w-full min-w-[40px]`}
+          className="border-b border-r border-gray-200 p-2 text-gray-400 text-[8px] sm:text-sm cursor-pointer hover:bg-gray-50 relative h-full min-h-[40px] sm:min-h-[80px] w-full min-w-[40px] sm:min-w-[240px]"
         >
-          {toMongolianNumerals(day)}
+          <div className="absolute top-2 left-2 text-xs opacity-50">
+            {daysOfWeek[(((firstDay - 1 - i) % 7) + 7) % 7]}
+          </div>
+          <div
+            className="absolute top-2 right-2"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+          >
+            {toMongolianNumerals(day)}
+          </div>
         </div>
       );
     }
@@ -301,26 +239,30 @@ export default function EventsMobile() {
       ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
       const event = events[dateString];
       const dayIndex = firstDay + day - 1;
-      const isLastInRow = dayIndex % 7 === 0;
 
       days.push(
         <div
           key={day}
-          className={`border-b border-r border-gray-200 p-2 text-[8px] cursor-pointer hover:bg-gray-50 relative h-full min-h-[40px] w-full min-w-[40px] ${
+          className={`border-b border-r border-gray-200 p-2 text-[8px] sm:text-sm cursor-pointer hover:bg-gray-50 relative h-full min-h-[40px] sm:min-h-[80px] w-full min-w-[40px] sm:min-w-[240px] ${
             event ? "hover:bg-blue-50" : ""
           }`}
           onClick={() => handleDayClick(dateString)}
         >
-          <span className="absolute top-1 left-1 font-medium">
+          <div className="absolute top-2 left-2 text-xs opacity-50">
+            {daysOfWeek[dayIndex % 7]}
+          </div>
+          <div
+            className="absolute top-2 right-0 font-medium"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+          >
             {toMongolianNumerals(day)}
-          </span>
+          </div>
           {event && (
             <div className="group relative">
               <div
-                className={`relative top-4 left-6 ${event.color} w-3 h-3 rounded cursor-pointer`}
+                className={`absolute right-0 bottom-4 ${event.color} w-5 h-5 rounded cursor-pointer`}
               ></div>
-              {/* Tooltip */}
-              <div className="absolute bottom-full right-0 mb-1 px-2 py-1 bg-black text-white text-[8px] rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap max-w-[120px]">
+              <div className="absolute -right-3 px-3 py-2 bg-black text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap">
                 <div
                   style={{
                     writingMode: "vertical-lr",
@@ -329,7 +271,7 @@ export default function EventsMobile() {
                 >
                   {event.title}
                 </div>
-                <div className="absolute top-full right-1 w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-black"></div>
+                <div className="absolute top-full right-2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-black"></div>
               </div>
             </div>
           )}
@@ -337,17 +279,24 @@ export default function EventsMobile() {
       );
     }
 
-    // Next month's leading days to fill the grid
+    // Next month's leading days
     const totalCells = Math.ceil(days.length / 7) * 7;
     for (let day = 1; days.length < totalCells; day++) {
       const dayIndex = days.length;
-      const isLastInRow = (dayIndex + 1) % 7 === 0;
       days.push(
         <div
           key={`next-${day}`}
-          className={`border-b border-r border-gray-200 p-2 text-gray-400 text-[8px] cursor-pointer hover:bg-gray-50 flex flex-col h-full min-h-[40px] w-full min-w-[40px]`}
+          className="border-b border-r border-gray-200 p-2 text-gray-400 text-[8px] sm:text-sm cursor-pointer hover:bg-gray-50 relative h-full min-h-[40px] sm:min-h-[80px] w-full min-w-[40px] sm:min-w-[240px]"
         >
-          {toMongolianNumerals(day)}
+          <div className="absolute top-2 left-2 text-xs opacity-50">
+            {daysOfWeek[dayIndex % 7]}
+          </div>
+          <div
+            className="absolute top-2 right-0"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+          >
+            {toMongolianNumerals(day)}
+          </div>
         </div>
       );
     }
@@ -356,15 +305,13 @@ export default function EventsMobile() {
   };
 
   return (
-    <div className="h-full w-full sm:hidden p-4 flex flex-col gap-7">
-      <div className="h-full flex gap-10">
-        <div className="h-full flex gap-4 max-h-[180px]">
+    <div className="h-full w-full p-4 sm:p-14 flex flex-col gap-7 sm:gap-10 overflow-x-auto">
+      {/* Legend */}
+      <div className="h-full flex gap-4 sm:gap-10">
+        <div className="h-full flex gap-4 sm:gap-12 max-h-[180px] sm:max-h-none">
           <h2
-            className="text-xs font-bold"
-            style={{
-              writingMode: "vertical-lr",
-              textOrientation: "upright",
-            }}
+            className="text-xs sm:text-base font-bold"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
           >
             ᠪᠢᠳᠡ ᠰᠢᠳᠤᠷᠭᠤ ᠶᠣᠰᠤ᠂ ᠡᠷᢈᠡ ᠴᠢᠯᠦᢉᠡ᠂ ᠦᠨᠡᠨ᠂ ᠪᠣᠯᠤᠨ ᠨᠡᠷ᠎ᠡ ᠲᠥᠷᠦ ᠨᠢ
             ᠦᢉᠡᠶᠢᠰᢈᠡᢉᠳᠡᢉᠰᠡᠨ ᢈᠦᠮᠦᠨ ᠪᠦᠷᠢ ᠶ᠋ᠢᠨ ᢈᠦᠮᠦᠨ ᠦ᠋ ᠡᠷᢈᠡ ᠶ᠋ᠢ ᠬᠠᠮᠠᠭᠠᠯᠠᠬᠤ ᠪᠠᠷ
@@ -372,34 +319,55 @@ export default function EventsMobile() {
             ᢈᠥᠳᠡᠯᢉᠡᢉᠡᠨ᠃
           </h2>
           <h2
-            className="text-xs font-bold"
-            style={{
-              writingMode: "vertical-lr",
-              textOrientation: "upright",
-            }}
+            className="text-xs sm:text-base font-bold"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
           >
             ᠡᠮᠨᠧᠰᠲ᠋ᠢ ᠪᠣᠯ ᢈᠦᠮᠦᠰ ᠦ᠋ᠨ ᠨᠢᢉᠡᠳᠦᠯ᠃ ᠣᠯᠠᠨ ᢈᠦᠮᠦᠰ ᠰᠢᠳᠤᠷᠭᠤ ᠶᠣᠰᠤᠨ ᠤ᠋ ᠲᠥᠯᠦᢉᠡ
             ᠳᠤᠤᠭᠠᠷᠳᠠᠭ ᠤᠴᠢᠷ ᠠ᠋ᠴᠠ ᠡᠮᠨᠧᠰᠲ ᠢᠨ᠋ᠲ᠋ᠧᠷᠨᠧᠱᠢᠨ᠋ᠯ ᠭᠠᠶᠢᠬᠠᠯᠲᠠᠢ ᠠᠮᠵᠢᠯᠲᠠ ᠳ᠋ᠤ
             ᢈᠦᠷᠴᠦ ᠴᠢᠳᠠᠭᠰᠠᠨ ᠶᠤᠮ᠃
           </h2>
           <h2
-            className="text-xs font-bold"
-            style={{
-              writingMode: "vertical-lr",
-              textOrientation: "upright",
-            }}
+            className="text-xs sm:text-base font-bold"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
           >
             ᠲᠠᠨ ᠤ᠋ ᠣᠷᠤᠯᠴᠠᠬᠤ ᠪᠣᠯᠤᠮᠵᠢᠲᠠᠢ ᠤᠯᠠᠮᠵᠢᠯᠠᠯᠲᠤ᠂ ᠵᠢᠯ ᠪᠣᠯᠭᠠᠨ ᠵᠣᢈᠢᠶᠠᠨ
             ᠪᠠᠶᠢᠭᠤᠯᠳᠠᠭ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠨᠦ᠋ᢉᠦᠳ᠃
           </h2>
+          <div className="flex flex-col gap-2">
+            <div className="bg-[#D9D9D9] w-4 h-4 aspect-square"></div>
+            <p
+              className="text-[10px] sm:text-xs"
+              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+            >
+              ᠵᠣᢈᠢᠶᠠᠭᠳᠠᠭᠰᠠᠨ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ
+            </p>
+          </div>
+          <div className="flex flex-col gap-2">
+            <div className="bg-[#FB00FF] w-4 h-4 aspect-square"></div>
+            <p
+              className="text-[10px] sm:text-xs"
+              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+            >
+              ᠪᠠᠭ᠂ ᠪᠦᠯᠦᢉ᠂ ᠪᠦᢈᠦ ᢉᠡᠰᠢᢉᠦᠳ ᠦ᠋ᠨ ᠠᠭᠤᠯᠵᠠᠯᠲᠠ
+            </p>
+          </div>
+          <div className="flex flex-col gap-2">
+            <div className="bg-[#FFFF00] w-4 h-4 aspect-square"></div>
+            <p
+              className="text-[10px] sm:text-xs"
+              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+            >
+              ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶ᠋ᠢᠨ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Right side - Calendar Grid */}
-      <div className="flex-1 bg-white flex flex-col gap-4 h-full">
+      {/* Calendar Grid */}
+      <div className="flex-1 bg-white flex flex-col gap-4 sm:gap-6 h-full">
         {/* Calendar Header */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 sm:gap-4">
             <button
               onClick={() => navigateMonth(-1)}
               disabled={loading}
@@ -417,25 +385,49 @@ export default function EventsMobile() {
             <button
               onClick={navigateToToday}
               disabled={loading}
-              className="px-2 py-1 hover:bg-gray-100 text-[10px] border rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-2 sm:px-4 py-1 sm:py-2 hover:bg-gray-100 text-[10px] sm:text-sm border rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <p>ᠥᠨᠥᠳᠦᠷ</p>
+              <p
+                style={{
+                  writingMode: "vertical-lr",
+                  textOrientation: "upright",
+                }}
+              >
+                ᠥᠨᠥᠳᠦᠷ
+              </p>
             </button>
           </div>
-          <div className="flex flex-col items-center gap-1">
-            <h2 className="text-xs font-bold">
+          <div className="flex flex-col items-center gap-1 sm:gap-4">
+            <h2
+              className="text-xs sm:text-xl font-bold sm:font-semibold"
+              style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+            >
               {monthNames[currentDate.getMonth()]}{" "}
               {toMongolianNumerals(currentDate.getFullYear())}
             </h2>
             {loading && (
               <div className="flex items-center text-gray-500">
-                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-gray-600 mr-1"></div>
-                <span className="text-[10px]">ᠠᠴᠢᠯᠠᠭᠤᠯᠵᠤ...</span>
+                <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-gray-600 mr-1 sm:mr-2"></div>
+                <span
+                  className="text-[10px] sm:text-sm"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                >
+                  ᠠᠴᠢᠯᠠᠭᠤᠯᠵᠤ ᠪᠠᠶᠢᠨ᠎ᠠ...
+                </span>
               </div>
             )}
             {error && (
-              <div className="text-red-500 text-[10px] text-center">
-                ᠠᠯᠳᠠᠭ᠎ᠠ
+              <div
+                className="text-red-500 text-[10px] sm:text-sm text-center"
+                style={{
+                  writingMode: "vertical-lr",
+                  textOrientation: "upright",
+                }}
+              >
+                ᠠᠯᠳᠠᠭ᠎ᠠ: {error}
               </div>
             )}
           </div>
@@ -444,67 +436,8 @@ export default function EventsMobile() {
 
         {/* Calendar Grid */}
         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden flex-1 flex flex-col">
-          {/* Days of week header */}
-          <div className="grid grid-cols-7 bg-gray-50">
-            {daysOfWeek.map((day, index) => (
-              <div
-                key={day}
-                style={{
-                  writingMode: "vertical-lr",
-                  textOrientation: "upright",
-                }}
-                className={`p-2 flex items-center justify-center text-[10px] font-medium text-gray-700 border-r border-gray-200 ${
-                  index === 6 ? "border-r-0" : ""
-                }`}
-              >
-                {day}
-              </div>
-            ))}
-          </div>
-
-          {/* Calendar days */}
           <div className="grid grid-cols-7 flex-1 auto-rows-fr">
             {renderCalendarDays()}
-          </div>
-        </div>
-        <div className="w-full flex gap-5 max-h-[150px] justify-end">
-          <div className="flex flex-col items-center gap-2">
-            <div className="bg-[#D9D9D9] w-4 h-4 aspect-square"></div>
-            <p
-              className="text-[10px] pl-2"
-              style={{
-                writingMode: "vertical-lr",
-                textOrientation: "upright",
-              }}
-            >
-              ᠵᠣᢈᠢᠶᠠᠭᠳᠠᠭᠰᠠᠨ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ
-            </p>
-          </div>
-          <div className="flex flex-col items-center gap-2">
-            <div className="bg-[#FB00FF] w-4 h-4 aspect-square"></div>
-
-            <p
-              className="text-[10px] pl-2"
-              style={{
-                writingMode: "vertical-lr",
-                textOrientation: "upright",
-              }}
-            >
-              ᠪᠠᠭ᠂ ᠪᠦᠯᠦᢉ᠂ ᠪᠦᢈᠦ ᢉᠡᠰᠢᢉᠦᠳ ᠦ᠋ᠨ ᠠᠭᠤᠯᠵᠠᠯᠲᠠ
-            </p>
-          </div>
-          <div className="flex flex-col items-center gap-2">
-            <div className="bg-[#FFFF00] w-4 h-4 aspect-square"></div>
-
-            <p
-              className="text-[10px] pl-2"
-              style={{
-                writingMode: "vertical-lr",
-                textOrientation: "upright",
-              }}
-            >
-              ᠣᠯᠠᠨ ᠨᠡᠶᠢᠲᠡ ᠶ᠋ᠢᠨ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ
-            </p>
           </div>
         </div>
       </div>
@@ -520,25 +453,37 @@ export default function EventsMobile() {
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 sm:p-6 text-white">
               <div className="flex justify-between items-start">
-                <h3 className="text-2xl font-bold">{selectedEvent.title}</h3>
+                <h3
+                  className="text-lg sm:text-2xl font-bold"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                >
+                  {selectedEvent.title}
+                </h3>
                 <button
                   onClick={closeModal}
-                  className="text-white hover:text-gray-200 text-3xl font-light"
+                  className="text-white hover:text-gray-200 text-2xl sm:text-3xl font-light"
                 >
                   ×
                 </button>
               </div>
               <div className="mt-2">
                 <span
-                  className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
+                  className={`inline-block px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${
                     selectedEvent.color === "bg-[#D9D9D9]"
                       ? "bg-gray-200 text-gray-800"
                       : selectedEvent.color === "bg-[#FB00FF]"
                       ? "bg-pink-200 text-pink-800"
                       : "bg-yellow-200 text-yellow-800"
                   }`}
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
                 >
                   {selectedEvent.type}
                 </span>
@@ -546,13 +491,13 @@ export default function EventsMobile() {
             </div>
 
             {/* Modal Content */}
-            <div className="flex flex-col h-[70vh]">
+            <div className="flex flex-col lg:flex-row h-[70vh]">
               {/* Left Side - Event Details */}
-              <div className="w-full p-4 overflow-y-auto">
-                <div className="space-y-4">
-                  <div className="bg-gray-50 p-3 rounded-lg">
+              <div className="w-full lg:w-1/2 p-4 lg:p-6 overflow-y-auto">
+                <div className="space-y-4 lg:space-y-6">
+                  <div className="bg-gray-50 p-3 lg:p-4 rounded-lg">
                     <h4
-                      className="text-base font-semibold text-gray-800 mb-3"
+                      className="text-base lg:text-lg font-semibold text-gray-800 mb-3"
                       style={{
                         writingMode: "vertical-lr",
                         textOrientation: "upright",
@@ -560,10 +505,10 @@ export default function EventsMobile() {
                     >
                       ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠶ᠋ᠢᠨ ᠲᠠᠢᠢᠯᠪᠤᠷᠢ
                     </h4>
-                    <div className="grid grid-cols-1 gap-3">
-                      <div className="border-l-4 border-blue-500 pl-3">
+                    <div className="grid grid-cols-1 gap-3 lg:gap-4">
+                      <div className="border-l-4 border-blue-500 pl-3 lg:pl-4">
                         <p
-                          className="text-xs font-medium text-gray-600"
+                          className="text-xs lg:text-sm font-medium text-gray-600"
                           style={{
                             writingMode: "vertical-lr",
                             textOrientation: "upright",
@@ -572,7 +517,7 @@ export default function EventsMobile() {
                           ᠪᠤᠷᠲᠠᠯ ᠡᠬᠯᠠᠬᠤ:
                         </p>
                         <p
-                          className="text-sm text-gray-900 mt-1"
+                          className="text-sm lg:text-base text-gray-900 mt-1"
                           style={{
                             writingMode: "vertical-lr",
                             textOrientation: "upright",
@@ -586,10 +531,9 @@ export default function EventsMobile() {
                           {selectedEvent.startTime}
                         </p>
                       </div>
-
-                      <div className="border-l-4 border-red-500 pl-3">
+                      <div className="border-l-4 border-red-500 pl-3 lg:pl-4">
                         <p
-                          className="text-xs font-medium text-gray-600"
+                          className="text-xs lg:text-sm font-medium text-gray-600"
                           style={{
                             writingMode: "vertical-lr",
                             textOrientation: "upright",
@@ -598,7 +542,7 @@ export default function EventsMobile() {
                           ᠪᠤᠷᠲᠠᠯ ᠳᠤᠤᠰᠠᠬᠤ:
                         </p>
                         <p
-                          className="text-sm text-gray-900 mt-1"
+                          className="text-sm lg:text-base text-gray-900 mt-1"
                           style={{
                             writingMode: "vertical-lr",
                             textOrientation: "upright",
@@ -612,10 +556,9 @@ export default function EventsMobile() {
                           {selectedEvent.endTime}
                         </p>
                       </div>
-
-                      <div className="border-l-4 border-green-500 pl-3">
+                      <div className="border-l-4 border-green-500 pl-3 lg:pl-4">
                         <p
-                          className="text-xs font-medium text-gray-600"
+                          className="text-xs lg:text-sm font-medium text-gray-600"
                           style={{
                             writingMode: "vertical-lr",
                             textOrientation: "upright",
@@ -624,7 +567,7 @@ export default function EventsMobile() {
                           ᠬᠠᠭᠠᠢ:
                         </p>
                         <p
-                          className="text-sm text-gray-900 mt-1"
+                          className="text-sm lg:text-base text-gray-900 mt-1"
                           style={{
                             writingMode: "vertical-lr",
                             textOrientation: "upright",
@@ -633,11 +576,10 @@ export default function EventsMobile() {
                           {selectedEvent.location || "ᠲᠣᠭᠲᠠᠭᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ"}
                         </p>
                       </div>
-
                       {selectedEvent.membersOnly && (
-                        <div className="border-l-4 border-purple-500 pl-3">
+                        <div className="border-l-4 border-purple-500 pl-3 lg:pl-4">
                           <p
-                            className="text-xs font-medium text-gray-600"
+                            className="text-xs lg:text-sm font-medium text-gray-600"
                             style={{
                               writingMode: "vertical-lr",
                               textOrientation: "upright",
@@ -646,7 +588,7 @@ export default function EventsMobile() {
                             ᠠᠩᠭᠢᠯᠠᠯ:
                           </p>
                           <p
-                            className="text-sm text-purple-900 mt-1 font-medium"
+                            className="text-sm lg:text-base text-purple-900 mt-1 font-medium"
                             style={{
                               writingMode: "vertical-lr",
                               textOrientation: "upright",
@@ -658,10 +600,9 @@ export default function EventsMobile() {
                       )}
                     </div>
                   </div>
-
-                  <div className="bg-blue-50 p-3 rounded-lg">
+                  <div className="bg-blue-50 p-3 lg:p-4 rounded-lg">
                     <h4
-                      className="text-base font-semibold text-blue-800 mb-3"
+                      className="text-base lg:text-lg font-semibold text-blue-800 mb-3"
                       style={{
                         writingMode: "vertical-lr",
                         textOrientation: "upright",
@@ -671,7 +612,7 @@ export default function EventsMobile() {
                     </h4>
                     {selectedEvent.description ? (
                       <p
-                        className="text-sm text-gray-700 leading-relaxed"
+                        className="text-sm lg:text-base text-gray-700 leading-relaxed"
                         style={{
                           writingMode: "vertical-lr",
                           textOrientation: "upright",
@@ -681,7 +622,7 @@ export default function EventsMobile() {
                       </p>
                     ) : (
                       <p
-                        className="text-sm text-gray-500 italic leading-relaxed"
+                        className="text-sm lg:text-base text-gray-500 italic leading-relaxed"
                         style={{
                           writingMode: "vertical-lr",
                           textOrientation: "upright",
@@ -695,8 +636,8 @@ export default function EventsMobile() {
               </div>
 
               {/* Right Side - Google Map */}
-              <div className="w-full p-4">
-                <div className="h-48 bg-gray-200 rounded-lg overflow-hidden shadow-inner">
+              <div className="w-full lg:w-1/2 p-4 lg:p-6">
+                <div className="h-48 lg:h-full bg-gray-200 rounded-lg overflow-hidden shadow-inner">
                   {selectedEvent.location ? (
                     <iframe
                       src={`https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=${encodeURIComponent(
@@ -709,12 +650,6 @@ export default function EventsMobile() {
                       loading="lazy"
                       referrerPolicy="no-referrer-when-downgrade"
                       title="Event Location Map"
-                      onError={(e) => {
-                        // Fallback to search query if place API fails
-                        e.target.src = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2673.8007304077376!2d106.91693431534425!3d47.918754779196805!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5d9692d9c6bfde3d%3A0x8c1a7ac1e1b5f234!2s${encodeURIComponent(
-                          selectedEvent.location
-                        )}!5e0!3m2!1sen!2s!4v1645123456789!5m2!1sen!2s`;
-                      }}
                     ></iframe>
                   ) : (
                     <iframe
@@ -733,14 +668,14 @@ export default function EventsMobile() {
             </div>
 
             {/* Modal Footer */}
-            <div className="bg-gray-50 px-6 py-4 border-t">
+            <div className="bg-gray-50 px-4 sm:px-6 py-3 sm:py-4 border-t">
               <div className="flex justify-between items-center">
                 <div className="flex items-center space-x-2">
                   <div
-                    className={`w-4 h-4 rounded-full ${selectedEvent.color}`}
+                    className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full ${selectedEvent.color}`}
                   ></div>
                   <span
-                    className="text-sm text-gray-600"
+                    className="text-xs sm:text-sm text-gray-600"
                     style={{
                       writingMode: "vertical-lr",
                       textOrientation: "upright",
@@ -751,7 +686,7 @@ export default function EventsMobile() {
                 </div>
                 <button
                   onClick={closeModal}
-                  className="px-6 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
+                  className="px-4 sm:px-6 py-1 sm:py-2 bg-gray-600 text-white text-xs sm:text-sm rounded-md hover:bg-gray-700 transition-colors"
                 >
                   Close
                 </button>

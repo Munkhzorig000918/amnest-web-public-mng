@@ -639,13 +639,13 @@ export default function EventsDesktop() {
             </div>
 
             {/* Modal Content */}
-            <div className="flex h-[70vh]">
+            <div className="flex flex-col lg:flex-row h-[70vh]">
               {/* Left Side - Event Details */}
-              <div className="w-1/2 p-6 overflow-y-auto">
-                <div className="space-y-6">
-                  <div className="bg-gray-50 p-4 rounded-lg">
+              <div className="w-full lg:w-1/2 p-4 lg:p-6 overflow-y-auto">
+                <div className="space-y-4 lg:space-y-6">
+                  <div className="bg-gray-50 p-3 lg:p-4 rounded-lg">
                     <h4
-                      className="text-lg font-semibold text-gray-800 mb-3"
+                      className="text-base lg:text-lg font-semibold text-gray-800 mb-3"
                       style={{
                         writingMode: "vertical-lr",
                         textOrientation: "upright",
@@ -653,10 +653,10 @@ export default function EventsDesktop() {
                     >
                       ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠶ᠋ᠢᠨ ᠲᠠᠢᠢᠯᠪᠤᠷᠢ
                     </h4>
-                    <div className="grid grid-cols-1 gap-4">
-                      <div className="border-l-4 border-blue-500 pl-4">
+                    <div className="grid grid-cols-1 gap-3 lg:gap-4">
+                      <div className="border-l-4 border-blue-500 pl-3 lg:pl-4">
                         <p
-                          className="text-sm font-medium text-gray-600"
+                          className="text-xs lg:text-sm font-medium text-gray-600"
                           style={{
                             writingMode: "vertical-lr",
                             textOrientation: "upright",
@@ -665,7 +665,7 @@ export default function EventsDesktop() {
                           ᠪᠤᠷᠲᠠᠯ ᠡᠬᠯᠠᠬᠤ:
                         </p>
                         <p
-                          className="text-base text-gray-900 mt-1"
+                          className="text-sm lg:text-base text-gray-900 mt-1"
                           style={{
                             writingMode: "vertical-lr",
                             textOrientation: "upright",
@@ -680,9 +680,9 @@ export default function EventsDesktop() {
                         </p>
                       </div>
 
-                      <div className="border-l-4 border-red-500 pl-4">
+                      <div className="border-l-4 border-red-500 pl-3 lg:pl-4">
                         <p
-                          className="text-sm font-medium text-gray-600"
+                          className="text-xs lg:text-sm font-medium text-gray-600"
                           style={{
                             writingMode: "vertical-lr",
                             textOrientation: "upright",
@@ -691,7 +691,7 @@ export default function EventsDesktop() {
                           ᠪᠤᠷᠲᠠᠯ ᠳᠤᠤᠰᠠᠬᠤ:
                         </p>
                         <p
-                          className="text-base text-gray-900 mt-1"
+                          className="text-sm lg:text-base text-gray-900 mt-1"
                           style={{
                             writingMode: "vertical-lr",
                             textOrientation: "upright",
@@ -706,9 +706,9 @@ export default function EventsDesktop() {
                         </p>
                       </div>
 
-                      <div className="border-l-4 border-green-500 pl-4">
+                      <div className="border-l-4 border-green-500 pl-3 lg:pl-4">
                         <p
-                          className="text-sm font-medium text-gray-600"
+                          className="text-xs lg:text-sm font-medium text-gray-600"
                           style={{
                             writingMode: "vertical-lr",
                             textOrientation: "upright",
@@ -717,7 +717,7 @@ export default function EventsDesktop() {
                           ᠬᠠᠭᠠᠢ:
                         </p>
                         <p
-                          className="text-base text-gray-900 mt-1"
+                          className="text-sm lg:text-base text-gray-900 mt-1"
                           style={{
                             writingMode: "vertical-lr",
                             textOrientation: "upright",
@@ -728,9 +728,9 @@ export default function EventsDesktop() {
                       </div>
 
                       {selectedEvent.membersOnly && (
-                        <div className="border-l-4 border-purple-500 pl-4">
+                        <div className="border-l-4 border-purple-500 pl-3 lg:pl-4">
                           <p
-                            className="text-sm font-medium text-gray-600"
+                            className="text-xs lg:text-sm font-medium text-gray-600"
                             style={{
                               writingMode: "vertical-lr",
                               textOrientation: "upright",
@@ -739,7 +739,7 @@ export default function EventsDesktop() {
                             ᠠᠩᠭᠢᠯᠠᠯ:
                           </p>
                           <p
-                            className="text-base text-purple-900 mt-1 font-medium"
+                            className="text-sm lg:text-base text-purple-900 mt-1 font-medium"
                             style={{
                               writingMode: "vertical-lr",
                               textOrientation: "upright",
@@ -752,9 +752,9 @@ export default function EventsDesktop() {
                     </div>
                   </div>
 
-                  <div className="bg-blue-50 p-4 rounded-lg">
+                  <div className="bg-blue-50 p-3 lg:p-4 rounded-lg">
                     <h4
-                      className="text-lg font-semibold text-blue-800 mb-3"
+                      className="text-base lg:text-lg font-semibold text-blue-800 mb-3"
                       style={{
                         writingMode: "vertical-lr",
                         textOrientation: "upright",
@@ -764,7 +764,7 @@ export default function EventsDesktop() {
                     </h4>
                     {selectedEvent.description ? (
                       <p
-                        className="text-base text-gray-700 leading-relaxed"
+                        className="text-sm lg:text-base text-gray-700 leading-relaxed"
                         style={{
                           writingMode: "vertical-lr",
                           textOrientation: "upright",
@@ -774,7 +774,7 @@ export default function EventsDesktop() {
                       </p>
                     ) : (
                       <p
-                        className="text-base text-gray-500 italic leading-relaxed"
+                        className="text-sm lg:text-base text-gray-500 italic leading-relaxed"
                         style={{
                           writingMode: "vertical-lr",
                           textOrientation: "upright",
@@ -788,8 +788,8 @@ export default function EventsDesktop() {
               </div>
 
               {/* Right Side - Google Map */}
-              <div className="w-1/2 p-6">
-                <div className="h-full bg-gray-200 rounded-lg overflow-hidden shadow-inner">
+              <div className="w-full lg:w-1/2 p-4 lg:p-6">
+                <div className="h-64 lg:h-full bg-gray-200 rounded-lg overflow-hidden shadow-inner">
                   {selectedEvent.location ? (
                     <iframe
                       src={`https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=${encodeURIComponent(
