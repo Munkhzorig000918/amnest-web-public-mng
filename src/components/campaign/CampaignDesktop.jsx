@@ -77,7 +77,7 @@ export default function CampaignDesktop() {
   // Loading state
   if (companyWorksLoading || featuresLoading) {
     return (
-      <div className="h-full hidden sm:flex gap-10 overflow-x-auto w-auto flex-shrink-0 items-center justify-center">
+      <div className="h-full hidden sm:flex gap-10 overflow-x-auto w-auto flex-shrink-0 items-center justify-center min-w-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900 mx-auto"></div>
           <p
@@ -94,7 +94,7 @@ export default function CampaignDesktop() {
   // Error state
   if (companyWorksError && featuresError) {
     return (
-      <div className="h-full hidden sm:flex gap-10 overflow-x-auto w-auto flex-shrink-0 items-center justify-center">
+      <div className="h-full hidden sm:flex gap-10 overflow-x-auto w-auto flex-shrink-0 items-center justify-center min-w-screen">
         <div className="text-center text-red-600">
           <p
             className="text-sm"
@@ -108,7 +108,7 @@ export default function CampaignDesktop() {
   }
 
   return (
-    <div className="h-full hidden sm:flex gap-10 w-auto flex-shrink-0">
+    <div className="h-full hidden sm:flex gap-10 w-auto flex-shrink-0 min-w-screen">
       <StaticHeader
         image="/images/news1.png"
         alt="Campaign Page Header"
