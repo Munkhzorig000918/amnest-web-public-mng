@@ -106,7 +106,7 @@ export default function RightDesktop() {
       <StaticHeader
         image="/images/news1.png"
         alt="Rights Page Header"
-        width="90rem"
+        width="100rem"
         title="ᠬᠦᠮᠦᠨ ᠦ ᠡᠷᠬᠡ ᠶᠢᠨ ᠲᠠᠯᠠᠭᠠᠷ ᠮᠡᠳᠡᠬᠦ"
       />
       <div className="h-full p-4">
