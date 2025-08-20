@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import apiService from "@/services/apiService";
 import { getImageUrl } from "@/utils/fetcher";
+import StaticHeader from "../common/StaticHeader";
 
 export default function NewsMobile() {
   const router = useRouter();
@@ -204,12 +205,7 @@ export default function NewsMobile() {
 
   return (
     <div className="block sm:hidden h-full overflow-y-auto overflow-x-hidden">
-      <StaticHeader
-        image="/images/news1.png"
-        alt="Youth Page Header"
-        width="100%"
-        title="ᠵᠠᠯᠠᠭᠤᠴᠤᠳ ᠤ᠋ᠨ ᠣᠷᠤᠯᠴᠠᠭ᠎ᠠ"
-      />
+      <BannerSlider width="90rem" useDynamic={true} />
       <div className="p-4 flex gap-5">
         {/* Category Buttons */}
         <div className="flex flex-col gap-2">

@@ -44,7 +44,7 @@ export default function StructureDesktop() {
   }, []);
 
   return (
-    <div className="h-full hidden sm:flex gap-20 w-auto flex-shrink-0">
+    <div className="h-full hidden sm:flex gap-20 w-auto flex-shrink-0 min-w-screen">
       <StaticHeader
         image="/images/news1.png"
         alt="Structure Page Header"

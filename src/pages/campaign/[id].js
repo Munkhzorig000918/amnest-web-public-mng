@@ -2,11 +2,12 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
 import Image from "next/image";
+import StaticHeader from "@/components/common/StaticHeader";
+import Button from "@/components/common/Button";
 import {
   useGetCompanyWorksQuery,
   useGetCompanyWorkByIdQuery,
   useGetCompanyWorkFeaturesQuery,
-  useGetPostsQuery,
 } from "@/redux/services/apiService";
 import { getImageUrl } from "@/config/api";
 
@@ -29,7 +30,7 @@ export default function CampaignDetail() {
       populate: "deep",
     },
     {
-      skip: !id, // Skip the query if id is not available yet
+      skip: !id,
     }
   );
 
@@ -66,31 +67,54 @@ export default function CampaignDetail() {
       populate: "deep",
     },
     {
-      skip: !companyWorkId, // Skip the query if company work ID is not available yet
+      skip: !companyWorkId,
     }
   );
 
   // Get posts from the populated company work data
-  const companyWorkPosts = companyWork?.posts || [];
+  const postsData = companyWork?.posts || [];
 
-  // Fetch recent posts as fallback when no company work posts exist
-  const {
-    data: recentPostsData,
-    error: postsError,
-    isLoading: postsLoading,
-  } = useGetPostsQuery(
+  // Static news for testing purposes
+  const staticNews = [
     {
-      "pagination[pageSize]": 6,
-      sort: "publishedAt:desc",
+      id: "test-1",
+      title:
+        "ᠮᠣᠩᠭᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠬᠦᠮᠦᠨ ᠦᠨ ᠡᠷᠬᠡ ᠶ᠋ᠢᠨ ᠲᠡᠭᠦᠨ ᠤ᠋ᠯᠠᠭ᠎ᠠ ᠦᠵᠡᠭᠳᠡᠵᠤ ᠴᠢᠳᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ",
+      cover: "/images/news1.png",
     },
     {
-      skip: companyWorkPosts.length > 0, // Skip if company work has posts
-    }
-  );
+      id: "test-2",
+      title: "ᠬᠦᠮᠦᠨ ᠦᠨ ᠡᠷᠬᠡ ᠶ᠋ᠢᠨ ᠲᠡᠭᠦᠨ ᠤ᠋ᠯᠠᠭ᠎ᠠ ᠦᠵᠡᠭᠳᠡᠵᠤ ᠴᠢᠳᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ ᠪᠠᠢᠨ᠎ᠠ",
+      cover: "/images/news1.png",
+    },
+    {
+      id: "test-3",
+      title:
+        "ᠬᠦᠮᠦᠨ ᠦᠨ ᠡᠷᠬᠡ ᠶ᠋ᠢᠨ ᠲᠡᠭᠦᠨ ᠤ᠋ᠯᠠᠭ᠎ᠠ ᠦᠵᠡᠭᠳᠡᠵᠤ ᠴᠢᠳᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ ᠪᠠᠢᠨ᠎ᠠ ᠪᠠᠢᠨ᠎ᠠ",
+      cover: "/images/news1.png",
+    },
+    {
+      id: "test-4",
+      title:
+        "ᠬᠦᠮᠦᠨ ᠦᠨ ᠡᠷᠬᠡ ᠶ᠋ᠢᠨ ᠲᠡᠭᠦᠨ ᠤ᠋ᠯᠠᠭ᠎ᠠ ᠦᠵᠡᠭᠳᠡᠵᠤ ᠴᠢᠳᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ ᠪᠠᠢᠨ᠎ᠠ ᠪᠠᠢᠨ᠎ᠠ ᠪᠠᠢᠨ᠎ᠠ",
+      cover: "/images/news1.png",
+    },
+    {
+      id: "test-5",
+      title:
+        "ᠬᠦᠮᠦᠨ ᠦᠨ ᠡᠷᠬᠡ ᠶ᠋ᠢᠨ ᠲᠡᠭᠦᠨ ᠤ᠋ᠯᠠᠭ᠎ᠠ ᠦᠵᠡᠭᠳᠡᠵᠤ ᠴᠢᠳᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ ᠪᠠᠢᠨ᠎ᠠ ᠪᠠᠢᠨ᠎ᠠ ᠪᠠᠢᠨ᠎ᠠ ᠪᠠᠢᠨ᠎ᠠ",
+      cover: "/images/news1.png",
+    },
+    {
+      id: "test-6",
+      title:
+        "ᠬᠦᠮᠦᠨ ᠦᠨ ᠡᠷᠬᠡ ᠶ᠋ᠢᠨ ᠲᠡᠭᠦᠨ ᠤ᠋ᠯᠠᠭ᠎ᠠ ᠦᠵᠡᠭᠳᠡᠵᠤ ᠴᠢᠳᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ ᠪᠠᠢᠨ᠎ᠠ ᠪᠠᠢᠨ᠎ᠠ ᠪᠠᠢᠨ᠎ᠠ ᠪᠠᠢᠨ᠎ᠠ ᠪᠠᠢᠨ᠎ᠠ",
+      cover: "/images/news1.png",
+    },
+  ];
 
-  // Use company work posts if available, otherwise use recent posts
-  const postsData =
-    companyWorkPosts.length > 0 ? companyWorkPosts : recentPostsData || [];
+  // Use static news for testing if no real posts exist
+  const displayPosts = postsData.length > 0 ? postsData : staticNews;
 
   // Determine loading state
   const isLoading = companyWorkStaticLoading || companyWorkByIdLoading || !id;
@@ -140,9 +164,10 @@ export default function CampaignDetail() {
 
   return (
     <Layout>
-      <div className="sm:h-screen flex flex-col overflow-hidden flex-1">
-        {/* Hero Section */}
-        <div className="relative h-[200px] sm:h-[300px] w-full flex-shrink-0">
+      {/* Mobile Layout */}
+      <div className="sm:hidden flex flex-col w-full">
+        {/* Mobile Hero Section */}
+        <div className="relative h-[200px] w-full flex-shrink-0">
           {companyWork.cover ? (
             <Image
               src={getImageUrl(companyWork.cover)}
@@ -157,7 +182,7 @@ export default function CampaignDetail() {
           <div className="absolute inset-0 bg-black bg-opacity-40" />
           <div className="absolute inset-0 flex items-center justify-center">
             <h1
-              className="p-4 text-white text-[10px] sm:text-lg md:text-xl lg:text-2xl font-bold text-start max-h-[150px] sm:max-h-[250px] w-full flex justify-center items-center overflow-x-auto"
+              className="p-4 text-white text-lg font-bold text-center"
               style={{
                 writingMode: "vertical-lr",
                 textOrientation: "upright",
@@ -168,217 +193,330 @@ export default function CampaignDetail() {
           </div>
         </div>
 
-        {/* Content and Sidebar Container */}
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-7 overflow-hidden">
-          {/* Content Section */}
-          <div className="sm:flex-1 p-4">
-            <div className="flex flex-row gap-2 sm:gap-10">
-              {/* Info Header */}
-              <div className="flex flex-row sm:flex-col items-start sm:items-center justify-between gap-4 flex-shrink-0">
-                <div className="flex flex-col items-start gap-4">
-                  <div
-                    style={{
-                      writingMode: "vertical-lr",
-                      textOrientation: "upright",
-                    }}
-                    className="border border-gray-300 px-2 sm:px-4 py-2 sm:py-3 text-[10px] sm:text-sm"
-                  >
-                    ᠻᠠᠮᠫᠠᠨᠢᠲᠤ
-                  </div>
+        {/* Mobile Content */}
+        <div className="flex flex-col gap-6 p-4">
+          {/* Mobile Description */}
+          {companyWork.description && (
+            <div className="flex flex-row gap-2">
+              <h2
+                className="text-xl font-bold mb-4"
+                style={{
+                  writingMode: "vertical-lr",
+                  textOrientation: "upright",
+                }}
+              >
+                ᠲᠠᠢᠯᠪᠤᠷᠢ
+              </h2>
+              <div
+                className="text-base text-gray-800"
+                style={{
+                  writingMode: "vertical-lr",
+                  textOrientation: "upright",
+                }}
+                dangerouslySetInnerHTML={{
+                  __html: companyWork.description,
+                }}
+              />
+            </div>
+          )}
 
-                  {/* Campaign Status */}
-                  {companyWork.status && (
-                    <div
-                      className={`px-2 sm:px-4 py-2 sm:py-3 text-[10px] sm:text-sm font-medium ${
-                        companyWork.status === "active"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-gray-100 text-gray-800"
-                      }`}
-                      style={{
-                        writingMode: "vertical-lr",
-                        textOrientation: "upright",
-                      }}
-                    >
-                      {companyWork.status === "active"
-                        ? "ᠢᠳᠡᠪᢈᠢᠲᠡᠢ"
-                        : "ᠳᠦᠦᠷᠡᠭᠰᠡᠨ"}
-                    </div>
-                  )}
-
-                  {/* Action Buttons */}
-                  <button
-                    className="bg-blue-600 text-white px-2 sm:px-4 py-2 sm:py-3 text-[10px] sm:text-sm font-semibold hover:bg-blue-700 transition-colors"
-                    onClick={() => router.push("/participation")}
-                    style={{
-                      writingMode: "vertical-lr",
-                      textOrientation: "upright",
-                    }}
-                  >
-                    ᠣᠷᠤᠯᠴᠠᠬᠤ
-                  </button>
-
-                  <button
-                    className="bg-gray-200 text-gray-800 px-2 sm:px-4 py-2 sm:py-3 text-[10px] sm:text-sm font-semibold hover:bg-gray-300 transition-colors"
-                    onClick={() => router.push("/campaign")}
-                    style={{
-                      writingMode: "vertical-lr",
-                      textOrientation: "upright",
-                    }}
-                  >
-                    ᠪᠤᠰᠠᠳ ᠻᠠᠮᠫᠠᠨᠢᠲᠤ ᠦᠵᠡᠬᠦ
-                  </button>
-                </div>
-
-                {/* Campaign Date */}
-                {companyWork.publishedAt && (
-                  <div
-                    className="text-xs sm:text-lg font-semibold"
-                    style={{
-                      writingMode: "vertical-lr",
-                      textOrientation: "upright",
-                    }}
-                  >
-                    {new Date(companyWork.publishedAt).toLocaleDateString(
-                      "mn-MN"
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div className="flex gap-2 flex-1 overflow-x-auto max-h-[300px]">
-                {/* Campaign Description */}
-                {companyWork.description && (
-                  <div
-                    className="text-xs sm:text-xl md:text-2xl font-semibold text-gray-800 border-r border-gray-200 pr-4"
-                    style={{
-                      writingMode: "vertical-lr",
-                      textOrientation: "upright",
-                    }}
-                    dangerouslySetInnerHTML={{
-                      __html: companyWork.description,
-                    }}
-                  />
-                )}
-
-                {/* Campaign Features */}
-                {featuresData && featuresData.length > 0 && (
-                  <div className="flex gap-4 overflow-x-auto">
-                    {featuresData.map((feature, index) => (
-                      <div
-                        key={feature.id || index}
-                        className="flex flex-col items-center gap-2 min-w-[200px] border-r border-gray-200 pr-4 last:border-r-0"
-                      >
-                        {feature.image && (
-                          <div className="w-16 h-16 sm:w-24 sm:h-24 relative">
-                            <Image
-                              src={getImageUrl(feature.image)}
-                              alt={feature.title || "Feature image"}
-                              fill
-                              className="object-cover rounded"
-                            />
-                          </div>
-                        )}
-                        <h3
-                          className="text-[10px] sm:text-base font-semibold"
-                          style={{
-                            writingMode: "vertical-lr",
-                            textOrientation: "upright",
-                          }}
-                        >
-                          {feature.title}
-                        </h3>
-                        {feature.description && (
-                          <p
-                            className="text-[9px] sm:text-sm text-gray-600"
-                            style={{
-                              writingMode: "vertical-lr",
-                              textOrientation: "upright",
-                            }}
-                          >
-                            {feature.description}
-                          </p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* Campaign Icon */}
-                {companyWork.icon && (
-                  <div className="flex flex-col items-center gap-2 min-w-[100px]">
-                    <div className="w-16 h-16 sm:w-24 sm:h-24 relative">
-                      <Image
-                        src={getImageUrl(companyWork.icon)}
-                        alt={companyWork.title || "Campaign icon"}
-                        fill
-                        className="object-cover rounded"
-                      />
-                    </div>
-                    <p
-                      className="text-[10px] sm:text-sm font-medium"
-                      style={{
-                        writingMode: "vertical-lr",
-                        textOrientation: "upright",
-                      }}
-                    >
-                      ᠻᠠᠮᠫᠠᠨᠢᠲᠤ ᠶ᠋ᠢᠨ ᠲᠡᠮᠳᠡᠭ
-                    </p>
-                  </div>
-                )}
+          {/* Mobile Video */}
+          {companyWork.video_url && (
+            <div>
+              <h2 className="text-xl font-bold mb-4">ᠪᠢᠳᠢᠶᠣ</h2>
+              <div className="w-full aspect-video relative">
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src={companyWork.video_url}
+                  title="Campaign Video"
+                  className="border-0 rounded"
+                  allowFullScreen
+                />
               </div>
             </div>
-          </div>
+          )}
 
-          {/* Related Posts Sidebar */}
-          <div className="w-full sm:w-20 bg-gray-50 overflow-y-auto max-h-[250px] sm:max-h-max">
-            {postsData && postsData.length > 0 ? (
-              <div className="bg-gray-100 p-4 w-full h-full flex flex-row sm:flex-col gap-4 items-start sm:items-center">
-                <h3
-                  className="text-xs sm:text-xl font-semibold"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                >
-                  ᠬᠠᠮᠠᠭ᠎ᠠᠯᠠᠯᠲᠠᠢ ᠮᠡᠳᠡᠭᠡ
-                </h3>
-                <div className="flex flex-row sm:flex-col gap-2 sm:gap-4 overflow-x-auto sm:overflow-x-visible">
-                  {postsData.slice(0, 5).map((post, index) => (
-                    <div
-                      key={post.id || index}
-                      className="bg-white p-3 cursor-pointer hover:bg-gray-50 transition-colors max-w-10 flex-shrink-0"
-                      onClick={() => router.push(`/news/${post.id}`)}
+          {/* Mobile Features */}
+          {featuresData && featuresData.length > 0 && (
+            <div>
+              <h2 className="text-xl font-bold mb-4">ᢈᠢᠨᠠᠷ</h2>
+              <div className="flex flex-col gap-4">
+                {featuresData.map((feature, index) => (
+                  <div
+                    key={feature.id || index}
+                    className="flex flex-col items-center gap-2"
+                  >
+                    {feature.image && (
+                      <div className="w-16 h-16 relative">
+                        <Image
+                          src={getImageUrl(feature.image)}
+                          alt={feature.title || "Feature image"}
+                          fill
+                          className="object-cover rounded"
+                        />
+                      </div>
+                    )}
+                    <h3 className="text-sm font-semibold">{feature.title}</h3>
+                    {feature.description && (
+                      <p className="text-xs text-gray-600 text-center">
+                        {feature.description}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Mobile Posts */}
+          {displayPosts && displayPosts.length > 0 && (
+            <div className="flex flex-row gap-2">
+              <h2
+                className="text-xl font-bold"
+                style={{
+                  writingMode: "vertical-lr",
+                  textOrientation: "upright",
+                }}
+              >
+                ᠬᠠᠮᠠᠭ᠎ᠠᠯᠠᠯᠲᠠᠢ ᠮᠡᠳᠡᠭᠡ
+              </h2>
+              <div className="grid grid-cols-1 gap-4">
+                {displayPosts.slice(0, 6).map((post, index) => (
+                  <div
+                    key={post.id || index}
+                    className="flex gap-4 max-h-[150px]"
+                  >
+                    <h3
+                      className="text-sm font-medium line-clamp-3 mb-2"
+                      style={{
+                        writingMode: "vertical-lr",
+                        textOrientation: "upright",
+                      }}
                     >
-                      <p
-                        className="text-[10px] sm:text-sm font-medium"
+                      {post.title?.length > 40
+                        ? `${post.title.substring(0, 40)}...`
+                        : post.title}
+                    </h3>
+                    <div className="relative aspect-square w-[150px] h-[150px] flex-shrink-0">
+                      <Image
+                        src={
+                          post.cover
+                            ? getImageUrl(post.cover)
+                            : "/images/news1.png"
+                        }
+                        alt={post.title || "News image"}
+                        fill
+                        className="object-cover rounded"
+                        onError={(e) => {
+                          e.target.src = "/images/news1.png";
+                        }}
+                      />
+                      <Button
+                        text="ᠮᠡᠳᠡᢉᠡ"
+                        type="primary"
+                        className="absolute -top-1 -right-1 text-black text-xs px-1 py-0.5 cursor-pointer hover:opacity-80 transition-opacity"
+                        onClick={() => router.push(`/news/${post.id}`)}
+                      />
+                    </div>
+                    <Button
+                      text="ᠤᠩᠰᠢᠬᠤ"
+                      type="secondary"
+                      className="text-black text-xs px-2 py-1 cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={() => router.push(`/news/${post.id}`)}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Desktop Layout */}
+      <div className="h-full p-4 hidden sm:flex gap-7 overflow-x-auto w-auto flex-shrink-0 max-h-screen min-w-screen">
+        {/* Campaign Title Header */}
+        <StaticHeader
+          image={
+            companyWork.cover
+              ? getImageUrl(companyWork.cover)
+              : "/images/news1.png"
+          }
+          alt="Campaign Page Header"
+          width="90rem"
+          title={companyWork.title}
+        />
+
+        {/* Campaign Description */}
+        {companyWork.description && (
+          <div className="flex gap-4">
+            <h2
+              className="text-2xl font-bold"
+              style={{
+                writingMode: "vertical-lr",
+                textOrientation: "upright",
+              }}
+            >
+              ᠲᠠᠢᠯᠪᠤᠷᠢ
+            </h2>
+            <div
+              className="text-lg text-gray-800 max-w-[600px]"
+              style={{
+                writingMode: "vertical-lr",
+                textOrientation: "upright",
+              }}
+              dangerouslySetInnerHTML={{
+                __html: companyWork.description,
+              }}
+            />
+          </div>
+        )}
+
+        {/* Video Section */}
+        {companyWork.video_url && (
+          <div className="flex gap-4">
+            <h2
+              className="text-2xl font-bold"
+              style={{
+                writingMode: "vertical-lr",
+                textOrientation: "upright",
+              }}
+            >
+              ᠪᠢᠳᠢᠶᠣ
+            </h2>
+            <div className="w-[600px] h-[315px] relative">
+              <iframe
+                width="600"
+                height="315"
+                src={companyWork.video_url}
+                title="Campaign Video"
+                className="border-0"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Campaign Features Section */}
+        {featuresData && featuresData.length > 0 && (
+          <div className="flex gap-4">
+            <h2
+              className="text-2xl font-bold"
+              style={{
+                writingMode: "vertical-lr",
+                textOrientation: "upright",
+              }}
+            >
+              ᠻᠠᠮᠫᠠᠨᠢᠲᠤ ᠶ᠋ᠢᠨ ᢈᠢᠨᠠᠷ
+            </h2>
+            <div className="max-h-[600px] overflow-y-auto">
+              <div className="grid gap-6">
+                {featuresData.map((feature, index) => (
+                  <div
+                    key={feature.id || index}
+                    className="flex gap-6 p-6 bg-gray-50 rounded-lg border"
+                  >
+                    {feature.image && (
+                      <div className="w-32 h-32 flex-shrink-0 relative">
+                        <Image
+                          src={getImageUrl(feature.image)}
+                          alt={feature.title || "Feature image"}
+                          fill
+                          className="object-cover rounded"
+                        />
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <h3
+                        className="text-xl font-bold mb-4"
                         style={{
                           writingMode: "vertical-lr",
                           textOrientation: "upright",
                         }}
                       >
-                        {post.title?.length > 60
-                          ? `${post.title.substring(0, 60)}...`
-                          : post.title}
-                      </p>
+                        {feature.title}
+                      </h3>
+                      {feature.description && (
+                        <div
+                          className="text-base text-gray-700"
+                          style={{
+                            writingMode: "vertical-lr",
+                            textOrientation: "upright",
+                          }}
+                          dangerouslySetInnerHTML={{
+                            __html: feature.description,
+                          }}
+                        />
+                      )}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
-            ) : (
-              <div className="bg-gray-100 p-4 w-full h-full flex items-center justify-center">
-                <p
-                  className="text-xs text-gray-600"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                >
-                  ᠬᠠᠮᠠᠭ᠎ᠠᠯᠠᠯᠲᠠᠢ ᠮᠡᠳᠡᠭᠡ ᠦᠭᠡᠢ
-                </p>
-              </div>
-            )}
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* Related Posts Section - Using News Layout Pattern */}
+        {displayPosts && displayPosts.length > 0 && (
+          <div className="flex gap-4">
+            <h2
+              className="text-2xl font-bold"
+              style={{
+                writingMode: "vertical-lr",
+                textOrientation: "upright",
+              }}
+            >
+              ᠬᠠᠮᠠᠭ᠎ᠠᠯᠠᠯᠲᠠᠢ ᠮᠡᠳᠡᢉᠡ
+            </h2>
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] grid-rows-3 gap-4 max-w-[900px] min-h-[900px]">
+              {displayPosts.slice(0, 9).map((post, index) => (
+                <div
+                  key={post.id || index}
+                  className="w-full h-full flex items-end space-x-4 cursor-pointer hover:opacity-80 transition-opacity"
+                  onClick={() => router.push(`/news/${post.id}`)}
+                >
+                  <h3
+                    className="max-w-16 line-clamp-3 h-full text-sm"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                    title={post.title}
+                  >
+                    {post.title?.length > 50
+                      ? `${post.title.substring(0, 50)}...`
+                      : post.title}
+                  </h3>
+                  <div className="relative h-[300px] w-[300px] aspect-square shadow-md">
+                    <Image
+                      src={
+                        post.cover
+                          ? getImageUrl(post.cover)
+                          : "/images/news1.png"
+                      }
+                      alt={post.title || "News image"}
+                      fill
+                      className="object-cover rounded-xl w-full h-full"
+                      onError={(e) => {
+                        e.target.src = "/images/news1.png";
+                      }}
+                    />
+                    <Button
+                      text="ᠮᠡᠳᠡᢉᠡ"
+                      type="primary"
+                      className="absolute top-0 right-0 text-black"
+                    />
+                  </div>
+                  <Button
+                    text="ᠤᠩᠰᠢᠬᠤ"
+                    type="secondary"
+                    className="text-black h-48"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </Layout>
   );
