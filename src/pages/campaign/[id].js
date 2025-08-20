@@ -74,6 +74,48 @@ export default function CampaignDetail() {
   // Get posts from the populated company work data
   const postsData = companyWork?.posts || [];
 
+  // Static news for testing purposes
+  const staticNews = [
+    {
+      id: "test-1",
+      title:
+        "ᠮᠣᠩᠭᠣᠯ ᠤᠯᠤᠰ ᠤᠨ ᠬᠦᠮᠦᠨ ᠦᠨ ᠡᠷᠬᠡ ᠶ᠋ᠢᠨ ᠲᠡᠭᠦᠨ ᠤ᠋ᠯᠠᠭ᠎ᠠ ᠦᠵᠡᠭᠳᠡᠵᠤ ᠴᠢᠳᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ",
+      cover: "/images/news1.png",
+    },
+    {
+      id: "test-2",
+      title: "ᠬᠦᠮᠦᠨ ᠦᠨ ᠡᠷᠬᠡ ᠶ᠋ᠢᠨ ᠲᠡᠭᠦᠨ ᠤ᠋ᠯᠠᠭ᠎ᠠ ᠦᠵᠡᠭᠳᠡᠵᠤ ᠴᠢᠳᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ ᠪᠠᠢᠨ᠎ᠠ",
+      cover: "/images/news1.png",
+    },
+    {
+      id: "test-3",
+      title:
+        "ᠬᠦᠮᠦᠨ ᠦᠨ ᠡᠷᠬᠡ ᠶ᠋ᠢᠨ ᠲᠡᠭᠦᠨ ᠤ᠋ᠯᠠᠭ᠎ᠠ ᠦᠵᠡᠭᠳᠡᠵᠤ ᠴᠢᠳᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ ᠪᠠᠢᠨ᠎ᠠ ᠪᠠᠢᠨ᠎ᠠ",
+      cover: "/images/news1.png",
+    },
+    {
+      id: "test-4",
+      title:
+        "ᠬᠦᠮᠦᠨ ᠦᠨ ᠡᠷᠬᠡ ᠶ᠋ᠢᠨ ᠲᠡᠭᠦᠨ ᠤ᠋ᠯᠠᠭ᠎ᠠ ᠦᠵᠡᠭᠳᠡᠵᠤ ᠴᠢᠳᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ ᠪᠠᠢᠨ᠎ᠠ ᠪᠠᠢᠨ᠎ᠠ ᠪᠠᠢᠨ᠎ᠠ",
+      cover: "/images/news1.png",
+    },
+    {
+      id: "test-5",
+      title:
+        "ᠬᠦᠮᠦᠨ ᠦᠨ ᠡᠷᠬᠡ ᠶ᠋ᠢᠨ ᠲᠡᠭᠦᠨ ᠤ᠋ᠯᠠᠭ᠎ᠠ ᠦᠵᠡᠭᠳᠡᠵᠤ ᠴᠢᠳᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ ᠪᠠᠢᠨ᠎ᠠ ᠪᠠᠢᠨ᠎ᠠ ᠪᠠᠢᠨ᠎ᠠ ᠪᠠᠢᠨ᠎ᠠ",
+      cover: "/images/news1.png",
+    },
+    {
+      id: "test-6",
+      title:
+        "ᠬᠦᠮᠦᠨ ᠦᠨ ᠡᠷᠬᠡ ᠶ᠋ᠢᠨ ᠲᠡᠭᠦᠨ ᠤ᠋ᠯᠠᠭ᠎ᠠ ᠦᠵᠡᠭᠳᠡᠵᠤ ᠴᠢᠳᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ ᠪᠠᠢᠨ᠎ᠠ ᠪᠠᠢᠨ᠎ᠠ ᠪᠠᠢᠨ᠎ᠠ ᠪᠠᠢᠨ᠎ᠠ ᠪᠠᠢᠨ᠎ᠠ",
+      cover: "/images/news1.png",
+    },
+  ];
+
+  // Use static news for testing if no real posts exist
+  const displayPosts = postsData.length > 0 ? postsData : staticNews;
+
   // Determine loading state
   const isLoading = companyWorkStaticLoading || companyWorkByIdLoading || !id;
 
@@ -228,21 +270,61 @@ export default function CampaignDetail() {
           )}
 
           {/* Mobile Posts */}
-          {postsData && postsData.length > 0 && (
-            <div>
-              <h2 className="text-xl font-bold mb-4">ᠬᠠᠮᠠᠭ᠎ᠠᠯᠠᠯᠲᠠᠢ ᠮᠡᠳᠡᠭᠡ</h2>
-              <div className="flex flex-col gap-2">
-                {postsData.slice(0, 3).map((post, index) => (
+          {displayPosts && displayPosts.length > 0 && (
+            <div className="flex flex-row gap-2">
+              <h2
+                className="text-xl font-bold"
+                style={{
+                  writingMode: "vertical-lr",
+                  textOrientation: "upright",
+                }}
+              >
+                ᠬᠠᠮᠠᠭ᠎ᠠᠯᠠᠯᠲᠠᠢ ᠮᠡᠳᠡᠭᠡ
+              </h2>
+              <div className="grid grid-cols-1 gap-4">
+                {displayPosts.slice(0, 6).map((post, index) => (
                   <div
                     key={post.id || index}
-                    className="bg-white p-3 cursor-pointer hover:bg-gray-50 transition-colors border border-gray-200 rounded"
-                    onClick={() => router.push(`/news/${post.id}`)}
+                    className="flex gap-4 max-h-[150px]"
                   >
-                    <p className="text-sm font-medium">
-                      {post.title?.length > 100
-                        ? `${post.title.substring(0, 100)}...`
+                    <h3
+                      className="text-sm font-medium line-clamp-3 mb-2"
+                      style={{
+                        writingMode: "vertical-lr",
+                        textOrientation: "upright",
+                      }}
+                    >
+                      {post.title?.length > 40
+                        ? `${post.title.substring(0, 40)}...`
                         : post.title}
-                    </p>
+                    </h3>
+                    <div className="relative aspect-square w-[150px] h-[150px] flex-shrink-0">
+                      <Image
+                        src={
+                          post.cover
+                            ? getImageUrl(post.cover)
+                            : "/images/news1.png"
+                        }
+                        alt={post.title || "News image"}
+                        fill
+                        className="object-cover rounded"
+                        onError={(e) => {
+                          e.target.src = "/images/news1.png";
+                        }}
+                      />
+                      <Button
+                        text="ᠮᠡᠳᠡᢉᠡ"
+                        type="primary"
+                        className="absolute -top-1 -right-1 text-black text-xs px-1 py-0.5 cursor-pointer hover:opacity-80 transition-opacity"
+                        onClick={() => router.push(`/news/${post.id}`)}
+                      />
+                    </div>
+                    <Button
+                      text="ᠤᠩᠰᠢᠬᠤ"
+                      type="secondary"
+                      className="text-black text-xs px-2 py-1 cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={() => router.push(`/news/${post.id}`)}
+                    />
                   </div>
                 ))}
               </div>
@@ -375,7 +457,7 @@ export default function CampaignDetail() {
         )}
 
         {/* Related Posts Section - Using News Layout Pattern */}
-        {postsData && postsData.length > 0 && (
+        {displayPosts && displayPosts.length > 0 && (
           <div className="flex gap-4">
             <h2
               className="text-2xl font-bold"
@@ -387,7 +469,7 @@ export default function CampaignDetail() {
               ᠬᠠᠮᠠᠭ᠎ᠠᠯᠠᠯᠲᠠᠢ ᠮᠡᠳᠡᢉᠡ
             </h2>
             <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] grid-rows-3 gap-4 max-w-[900px] min-h-[900px]">
-              {postsData.slice(0, 9).map((post, index) => (
+              {displayPosts.slice(0, 9).map((post, index) => (
                 <div
                   key={post.id || index}
                   className="w-full h-full flex items-end space-x-4 cursor-pointer hover:opacity-80 transition-opacity"
