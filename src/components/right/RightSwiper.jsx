@@ -129,7 +129,12 @@ export default function RightSwiper({
           />
         </div>
         <div className="flex items-center justify-center p-8">
-          <p className="text-sm text-gray-500">ᠮᠡᠳᠡᢉᠡᠯᠡᠯ ᠦᠭᠡᠢ ᠪᠠᠶᠢᠨ᠎ᠠ</p>
+          <p
+            className="text-sm text-gray-500"
+            style={{ writingMode: "vertical-lr", textOrientation: "upright" }}
+          >
+            ᠮᠡᠳᠡᢉᠡᠯᠡᠯ ᠦᠭᠡᠢ ᠪᠠᠶᠢᠨ᠎ᠠ
+          </p>
         </div>
       </div>
     );

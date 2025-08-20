@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { eventsService } from "@/services/apiService";
+import EventModal from "./EventModal";
 
 export default function EventsDesktop() {
   const [currentDate, setCurrentDate] = useState(new Date(2025, 5, 1)); // June 2025 to match test event
@@ -288,11 +289,22 @@ export default function EventsDesktop() {
       days.push(
         <div
           key={`prev-${day}`}
-          className={`border-b border-gray-200 p-2 text-gray-400 text-sm cursor-pointer hover:bg-gray-50 flex flex-col h-full min-h-[80px] min-w-[240px] ${
+          className={`border-b border-gray-200 p-2 text-gray-400 text-sm cursor-pointer hover:bg-gray-50 relative h-full min-h-[80px] min-w-[240px] ${
             isLastInRow ? "" : "border-r"
           }`}
         >
-          {toMongolianNumerals(day)}
+          <div className="absolute top-2 left-2 text-xs opacity-50">
+            {daysOfWeek[(((firstDay - 1 - i) % 7) + 7) % 7]}
+          </div>
+          <div
+            className="absolute top-2 right-2"
+            style={{
+              writingMode: "vertical-lr",
+              textOrientation: "upright",
+            }}
+          >
+            {toMongolianNumerals(day)}
+          </div>
         </div>
       );
     }
@@ -309,17 +321,46 @@ export default function EventsDesktop() {
       days.push(
         <div
           key={day}
-          className={`border-b border-gray-200 p-2 text-sm cursor-pointer hover:bg-gray-50 relative flex flex-col h-full min-h-[80px] min-w-[240px] ${
+          className={`border-b border-gray-200 p-2 text-sm cursor-pointer hover:bg-gray-50 relative h-full min-h-[80px] min-w-[240px] ${
             isLastInRow ? "" : "border-r"
           } ${event ? "hover:bg-blue-50" : ""}`}
           onClick={() => handleDayClick(dateString)}
         >
-          <span className="font-medium">{toMongolianNumerals(day)}</span>
+          <div
+            className="absolute top-2 left-2 text-xs opacity-50"
+            style={{
+              writingMode: "vertical-lr",
+              textOrientation: "upright",
+            }}
+          >
+            {daysOfWeek[dayIndex % 7]}
+          </div>
+          <div
+            className="absolute top-2 right-0 font-medium"
+            style={{
+              writingMode: "vertical-lr",
+              textOrientation: "upright",
+            }}
+          >
+            {toMongolianNumerals(day)}
+          </div>
           {event && (
-            <div
-              className={`absolute bottom-1 left-1 right-1 ${event.color} rounded px-1 py-0.5 text-xs truncate`}
-            >
-              {event.title}
+            <div className="group relative">
+              <div
+                className={`absolute right-0 bottom-4 ${event.color} w-5 h-5 rounded cursor-pointer`}
+              ></div>
+              {/* Tooltip */}
+              <div className="absolute -right-3 px-3 py-2 bg-black text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap">
+                <div
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                >
+                  {event.title}
+                </div>
+                <div className="absolute top-full right-2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-black"></div>
+              </div>
             </div>
           )}
         </div>
@@ -334,11 +375,28 @@ export default function EventsDesktop() {
       days.push(
         <div
           key={`next-${day}`}
-          className={`border-b border-gray-200 p-2 text-gray-400 text-sm cursor-pointer hover:bg-gray-50 flex flex-col h-full min-h-[80px] min-w-[240px] ${
+          className={`border-b border-gray-200 p-2 text-gray-400 text-sm cursor-pointer hover:bg-gray-50 relative h-full min-h-[80px] min-w-[240px] ${
             isLastInRow ? "" : "border-r"
           }`}
         >
-          {toMongolianNumerals(day)}
+          <div
+            className="absolute top-2 left-2 text-xs opacity-50"
+            style={{
+              writingMode: "vertical-lr",
+              textOrientation: "upright",
+            }}
+          >
+            {daysOfWeek[dayIndex % 7]}
+          </div>
+          <div
+            className="absolute top-2 right-0"
+            style={{
+              writingMode: "vertical-lr",
+              textOrientation: "upright",
+            }}
+          >
+            {toMongolianNumerals(day)}
+          </div>
         </div>
       );
     }
@@ -386,7 +444,7 @@ export default function EventsDesktop() {
             ᠪᠠᠶᠢᠭᠤᠯᠳᠠᠭ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠨᠦ᠋ᢉᠦᠳ᠃
           </h2>
           <div className="flex flex-col gap-2">
-            <div className="bg-[#D9D9D9] w-4 h-4 aspect-square"></div>
+            <div className="bg-[#D9D9D9] aspect-square"></div>
             <p
               className="text-xs"
               style={{
@@ -474,22 +532,51 @@ export default function EventsDesktop() {
               disabled={loading}
               className="px-4 py-2 hover:bg-gray-100 text-sm border rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <p>ᠥᠨᠥᠳᠦᠷ</p>
+              <p
+                style={{
+                  writingMode: "vertical-lr",
+                  textOrientation: "upright",
+                }}
+              >
+                ᠥᠨᠥᠳᠦᠷ
+              </p>
             </button>
           </div>
           <div className="flex items-center gap-4">
-            <h2 className="text-xl font-semibold">
+            <h2
+              className="text-xl font-semibold max-h-[180px]"
+              style={{
+                writingMode: "vertical-lr",
+                textOrientation: "upright",
+              }}
+            >
               {monthNames[currentDate.getMonth()]}{" "}
               {toMongolianNumerals(currentDate.getFullYear())}
             </h2>
             {loading && (
               <div className="flex items-center text-gray-500">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600 mr-2"></div>
-                <span className="text-sm">ᠠᠴᠢᠯᠠᠭᠤᠯᠵᠤ ᠪᠠᠶᠢᠨ᠎ᠠ...</span>
+                <span
+                  className="text-sm"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                >
+                  ᠠᠴᠢᠯᠠᠭᠤᠯᠵᠤ ᠪᠠᠶᠢᠨ᠎ᠠ...
+                </span>
               </div>
             )}
             {error && (
-              <div className="text-red-500 text-sm">ᠠᠯᠳᠠᠭ᠎ᠠ: {error}</div>
+              <div
+                className="text-red-500 text-sm"
+                style={{
+                  writingMode: "vertical-lr",
+                  textOrientation: "upright",
+                }}
+              >
+                ᠠᠯᠳᠠᠭ᠎ᠠ: {error}
+              </div>
             )}
           </div>
           <div></div>
@@ -497,20 +584,6 @@ export default function EventsDesktop() {
 
         {/* Calendar Grid */}
         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden flex-1 flex flex-col">
-          {/* Days of week header */}
-          <div className="grid grid-cols-7 bg-gray-50">
-            {daysOfWeek.map((day, index) => (
-              <div
-                key={day}
-                className={`p-3 text-center text-sm font-medium text-gray-700 border-r border-gray-200 ${
-                  index === 6 ? "border-r-0" : ""
-                }`}
-              >
-                {day}
-              </div>
-            ))}
-          </div>
-
           {/* Calendar days */}
           <div className="grid grid-cols-7 flex-1 auto-rows-fr">
             {renderCalendarDays()}
@@ -519,232 +592,12 @@ export default function EventsDesktop() {
       </div>
 
       {/* Event Details Modal */}
-      {showModal && selectedEvent && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-          onClick={closeModal}
-        >
-          <div
-            className="bg-white rounded-lg max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
-              <div className="flex justify-between items-start">
-                <h3 className="text-2xl font-bold">{selectedEvent.title}</h3>
-                <button
-                  onClick={closeModal}
-                  className="text-white hover:text-gray-200 text-3xl font-light"
-                >
-                  ×
-                </button>
-              </div>
-              <div className="mt-2">
-                <span
-                  className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
-                    selectedEvent.color === "bg-[#D9D9D9]"
-                      ? "bg-gray-200 text-gray-800"
-                      : selectedEvent.color === "bg-[#FB00FF]"
-                      ? "bg-pink-200 text-pink-800"
-                      : "bg-yellow-200 text-yellow-800"
-                  }`}
-                >
-                  {selectedEvent.type}
-                </span>
-              </div>
-            </div>
-
-            {/* Modal Content */}
-            <div className="flex h-[70vh]">
-              {/* Left Side - Event Details */}
-              <div className="w-1/2 p-6 overflow-y-auto">
-                <div className="space-y-6">
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h4
-                      className="text-lg font-semibold text-gray-800 mb-3"
-                      style={{
-                        writingMode: "vertical-lr",
-                        textOrientation: "upright",
-                      }}
-                    >
-                      ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠶ᠋ᠢᠨ ᠲᠠᠢᠢᠯᠪᠤᠷᠢ
-                    </h4>
-                    <div className="grid grid-cols-1 gap-4">
-                      <div className="border-l-4 border-blue-500 pl-4">
-                        <p
-                          className="text-sm font-medium text-gray-600"
-                          style={{
-                            writingMode: "vertical-lr",
-                            textOrientation: "upright",
-                          }}
-                        >
-                          ᠪᠤᠷᠲᠠᠯ ᠡᠬᠯᠠᠬᠤ:
-                        </p>
-                        <p className="text-base text-gray-900 mt-1">
-                          {formatDateToMongolian(
-                            new Date(selectedEvent.startDate)
-                              .toISOString()
-                              .split("T")[0]
-                          )}{" "}
-                          {selectedEvent.startTime}
-                        </p>
-                      </div>
-
-                      <div className="border-l-4 border-red-500 pl-4">
-                        <p
-                          className="text-sm font-medium text-gray-600"
-                          style={{
-                            writingMode: "vertical-lr",
-                            textOrientation: "upright",
-                          }}
-                        >
-                          ᠪᠤᠷᠲᠠᠯ ᠳᠤᠤᠰᠠᠬᠤ:
-                        </p>
-                        <p className="text-base text-gray-900 mt-1">
-                          {formatDateToMongolian(
-                            new Date(selectedEvent.endDate)
-                              .toISOString()
-                              .split("T")[0]
-                          )}{" "}
-                          {selectedEvent.endTime}
-                        </p>
-                      </div>
-
-                      <div className="border-l-4 border-green-500 pl-4">
-                        <p
-                          className="text-sm font-medium text-gray-600"
-                          style={{
-                            writingMode: "vertical-lr",
-                            textOrientation: "upright",
-                          }}
-                        >
-                          ᠬᠠᠭᠠᠢ:
-                        </p>
-                        <p className="text-base text-gray-900 mt-1">
-                          {selectedEvent.location || "ᠲᠣᠭᠲᠠᠭᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ"}
-                        </p>
-                      </div>
-
-                      {selectedEvent.membersOnly && (
-                        <div className="border-l-4 border-purple-500 pl-4">
-                          <p
-                            className="text-sm font-medium text-gray-600"
-                            style={{
-                              writingMode: "vertical-lr",
-                              textOrientation: "upright",
-                            }}
-                          >
-                            ᠠᠩᠭᠢᠯᠠᠯ:
-                          </p>
-                          <p className="text-base text-purple-900 mt-1 font-medium">
-                            ᠪᠠᠭ᠂ ᠪᠦᠯᠦᢉ᠂ ᠪᠦᢈᠦ ᢉᠡᠰᠢᢉᠦᠳ ᠦ᠋ᠨ ᠠᠭᠤᠯᠵᠠᠯᠲᠠ
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <h4
-                      className="text-lg font-semibold text-blue-800 mb-3"
-                      style={{
-                        writingMode: "vertical-lr",
-                        textOrientation: "upright",
-                      }}
-                    >
-                      ᠲᠠᠨᠢᠯᠴᠤᠤᠯᠭ᠎ᠠ:
-                    </h4>
-                    {selectedEvent.description ? (
-                      <p
-                        className="text-base text-gray-700 leading-relaxed"
-                        style={{
-                          writingMode: "vertical-lr",
-                          textOrientation: "upright",
-                        }}
-                      >
-                        {selectedEvent.description}
-                      </p>
-                    ) : (
-                      <p
-                        className="text-base text-gray-500 italic leading-relaxed"
-                        style={{
-                          writingMode: "vertical-lr",
-                          textOrientation: "upright",
-                        }}
-                      >
-                        ᠲᠠᠨᠢᠯᠴᠤᠤᠯᠭ᠎ᠠ ᠦᠭᠡᠢ
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Side - Google Map */}
-              <div className="w-1/2 p-6">
-                <div className="h-full bg-gray-200 rounded-lg overflow-hidden shadow-inner">
-                  {selectedEvent.location ? (
-                    <iframe
-                      src={`https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=${encodeURIComponent(
-                        selectedEvent.location
-                      )}`}
-                      width="100%"
-                      height="100%"
-                      style={{ border: 0 }}
-                      allowFullScreen=""
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                      title="Event Location Map"
-                      onError={(e) => {
-                        // Fallback to search query if place API fails
-                        e.target.src = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2673.8007304077376!2d106.91693431534425!3d47.918754779196805!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5d9692d9c6bfde3d%3A0x8c1a7ac1e1b5f234!2s${encodeURIComponent(
-                          selectedEvent.location
-                        )}!5e0!3m2!1sen!2s!4v1645123456789!5m2!1sen!2s`;
-                      }}
-                    ></iframe>
-                  ) : (
-                    <iframe
-                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2673.8007304077376!2d106.91693431534425!3d47.918754779196805!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5d9692d9c6bfde3d%3A0x8c1a7ac1e1b5f234!2sUlaanbaatar%2C%20Mongolia!5e0!3m2!1sen!2s!4v1645123456789!5m2!1sen!2s"
-                      width="100%"
-                      height="100%"
-                      style={{ border: 0 }}
-                      allowFullScreen=""
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                      title="Default Location Map"
-                    ></iframe>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Modal Footer */}
-            <div className="bg-gray-50 px-6 py-4 border-t">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center space-x-2">
-                  <div
-                    className={`w-4 h-4 rounded-full ${selectedEvent.color}`}
-                  ></div>
-                  <span
-                    className="text-sm text-gray-600"
-                    style={{
-                      writingMode: "vertical-lr",
-                      textOrientation: "upright",
-                    }}
-                  >
-                    {selectedEvent.type}
-                  </span>
-                </div>
-                <button
-                  onClick={closeModal}
-                  className="px-6 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <EventModal
+        selectedEvent={selectedEvent}
+        showModal={showModal}
+        closeModal={closeModal}
+        formatDateToMongolian={formatDateToMongolian}
+      />
     </div>
   );
 }
