@@ -288,11 +288,22 @@ export default function EventsDesktop() {
       days.push(
         <div
           key={`prev-${day}`}
-          className={`border-b border-gray-200 p-2 text-gray-400 text-sm cursor-pointer hover:bg-gray-50 flex flex-col h-full min-h-[80px] min-w-[240px] ${
+          className={`border-b border-gray-200 p-2 text-gray-400 text-sm cursor-pointer hover:bg-gray-50 relative h-full min-h-[80px] min-w-[240px] ${
             isLastInRow ? "" : "border-r"
           }`}
         >
-          {toMongolianNumerals(day)}
+          <div className="absolute top-2 left-2 text-xs opacity-50">
+            {daysOfWeek[(((firstDay - 1 - i) % 7) + 7) % 7]}
+          </div>
+          <div
+            className="absolute top-2 right-2"
+            style={{
+              writingMode: "vertical-lr",
+              textOrientation: "upright",
+            }}
+          >
+            {toMongolianNumerals(day)}
+          </div>
         </div>
       );
     }
@@ -309,17 +320,46 @@ export default function EventsDesktop() {
       days.push(
         <div
           key={day}
-          className={`border-b border-gray-200 p-2 text-sm cursor-pointer hover:bg-gray-50 relative flex flex-col h-full min-h-[80px] min-w-[240px] ${
+          className={`border-b border-gray-200 p-2 text-sm cursor-pointer hover:bg-gray-50 relative h-full min-h-[80px] min-w-[240px] ${
             isLastInRow ? "" : "border-r"
           } ${event ? "hover:bg-blue-50" : ""}`}
           onClick={() => handleDayClick(dateString)}
         >
-          <span className="font-medium">{toMongolianNumerals(day)}</span>
+          <div
+            className="absolute top-2 left-2 text-xs opacity-50"
+            style={{
+              writingMode: "vertical-lr",
+              textOrientation: "upright",
+            }}
+          >
+            {daysOfWeek[dayIndex % 7]}
+          </div>
+          <div
+            className="absolute top-2 right-0 font-medium"
+            style={{
+              writingMode: "vertical-lr",
+              textOrientation: "upright",
+            }}
+          >
+            {toMongolianNumerals(day)}
+          </div>
           {event && (
-            <div
-              className={`absolute bottom-1 left-1 right-1 ${event.color} rounded px-1 py-0.5 text-xs truncate`}
-            >
-              {event.title}
+            <div className="group relative">
+              <div
+                className={`absolute right-0 bottom-4 ${event.color} w-5 h-5 rounded cursor-pointer`}
+              ></div>
+              {/* Tooltip */}
+              <div className="absolute -right-3 px-3 py-2 bg-black text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap">
+                <div
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                >
+                  {event.title}
+                </div>
+                <div className="absolute top-full right-2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-black"></div>
+              </div>
             </div>
           )}
         </div>
@@ -334,11 +374,28 @@ export default function EventsDesktop() {
       days.push(
         <div
           key={`next-${day}`}
-          className={`border-b border-gray-200 p-2 text-gray-400 text-sm cursor-pointer hover:bg-gray-50 flex flex-col h-full min-h-[80px] min-w-[240px] ${
+          className={`border-b border-gray-200 p-2 text-gray-400 text-sm cursor-pointer hover:bg-gray-50 relative h-full min-h-[80px] min-w-[240px] ${
             isLastInRow ? "" : "border-r"
           }`}
         >
-          {toMongolianNumerals(day)}
+          <div
+            className="absolute top-2 left-2 text-xs opacity-50"
+            style={{
+              writingMode: "vertical-lr",
+              textOrientation: "upright",
+            }}
+          >
+            {daysOfWeek[dayIndex % 7]}
+          </div>
+          <div
+            className="absolute top-2 right-0"
+            style={{
+              writingMode: "vertical-lr",
+              textOrientation: "upright",
+            }}
+          >
+            {toMongolianNumerals(day)}
+          </div>
         </div>
       );
     }
@@ -386,7 +443,7 @@ export default function EventsDesktop() {
             ᠪᠠᠶᠢᠭᠤᠯᠳᠠᠭ ᠠᠷᠭ᠎ᠠ ᢈᠡᠮᠵᠢᠶ᠎ᠡ ᠨᠦ᠋ᢉᠦᠳ᠃
           </h2>
           <div className="flex flex-col gap-2">
-            <div className="bg-[#D9D9D9] w-4 h-4 aspect-square"></div>
+            <div className="bg-[#D9D9D9] aspect-square"></div>
             <p
               className="text-xs"
               style={{
@@ -474,22 +531,51 @@ export default function EventsDesktop() {
               disabled={loading}
               className="px-4 py-2 hover:bg-gray-100 text-sm border rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <p>ᠥᠨᠥᠳᠦᠷ</p>
+              <p
+                style={{
+                  writingMode: "vertical-lr",
+                  textOrientation: "upright",
+                }}
+              >
+                ᠥᠨᠥᠳᠦᠷ
+              </p>
             </button>
           </div>
           <div className="flex items-center gap-4">
-            <h2 className="text-xl font-semibold">
+            <h2
+              className="text-xl font-semibold max-h-[180px]"
+              style={{
+                writingMode: "vertical-lr",
+                textOrientation: "upright",
+              }}
+            >
               {monthNames[currentDate.getMonth()]}{" "}
               {toMongolianNumerals(currentDate.getFullYear())}
             </h2>
             {loading && (
               <div className="flex items-center text-gray-500">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600 mr-2"></div>
-                <span className="text-sm">ᠠᠴᠢᠯᠠᠭᠤᠯᠵᠤ ᠪᠠᠶᠢᠨ᠎ᠠ...</span>
+                <span
+                  className="text-sm"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                >
+                  ᠠᠴᠢᠯᠠᠭᠤᠯᠵᠤ ᠪᠠᠶᠢᠨ᠎ᠠ...
+                </span>
               </div>
             )}
             {error && (
-              <div className="text-red-500 text-sm">ᠠᠯᠳᠠᠭ᠎ᠠ: {error}</div>
+              <div
+                className="text-red-500 text-sm"
+                style={{
+                  writingMode: "vertical-lr",
+                  textOrientation: "upright",
+                }}
+              >
+                ᠠᠯᠳᠠᠭ᠎ᠠ: {error}
+              </div>
             )}
           </div>
           <div></div>
@@ -497,20 +583,6 @@ export default function EventsDesktop() {
 
         {/* Calendar Grid */}
         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden flex-1 flex flex-col">
-          {/* Days of week header */}
-          <div className="grid grid-cols-7 bg-gray-50">
-            {daysOfWeek.map((day, index) => (
-              <div
-                key={day}
-                className={`p-3 text-center text-sm font-medium text-gray-700 border-r border-gray-200 ${
-                  index === 6 ? "border-r-0" : ""
-                }`}
-              >
-                {day}
-              </div>
-            ))}
-          </div>
-
           {/* Calendar days */}
           <div className="grid grid-cols-7 flex-1 auto-rows-fr">
             {renderCalendarDays()}
@@ -531,7 +603,15 @@ export default function EventsDesktop() {
             {/* Modal Header */}
             <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
               <div className="flex justify-between items-start">
-                <h3 className="text-2xl font-bold">{selectedEvent.title}</h3>
+                <h3
+                  className="text-2xl font-bold"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                >
+                  {selectedEvent.title}
+                </h3>
                 <button
                   onClick={closeModal}
                   className="text-white hover:text-gray-200 text-3xl font-light"
@@ -548,6 +628,10 @@ export default function EventsDesktop() {
                       ? "bg-pink-200 text-pink-800"
                       : "bg-yellow-200 text-yellow-800"
                   }`}
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
                 >
                   {selectedEvent.type}
                 </span>
@@ -580,7 +664,13 @@ export default function EventsDesktop() {
                         >
                           ᠪᠤᠷᠲᠠᠯ ᠡᠬᠯᠠᠬᠤ:
                         </p>
-                        <p className="text-base text-gray-900 mt-1">
+                        <p
+                          className="text-base text-gray-900 mt-1"
+                          style={{
+                            writingMode: "vertical-lr",
+                            textOrientation: "upright",
+                          }}
+                        >
                           {formatDateToMongolian(
                             new Date(selectedEvent.startDate)
                               .toISOString()
@@ -600,7 +690,13 @@ export default function EventsDesktop() {
                         >
                           ᠪᠤᠷᠲᠠᠯ ᠳᠤᠤᠰᠠᠬᠤ:
                         </p>
-                        <p className="text-base text-gray-900 mt-1">
+                        <p
+                          className="text-base text-gray-900 mt-1"
+                          style={{
+                            writingMode: "vertical-lr",
+                            textOrientation: "upright",
+                          }}
+                        >
                           {formatDateToMongolian(
                             new Date(selectedEvent.endDate)
                               .toISOString()
@@ -620,7 +716,13 @@ export default function EventsDesktop() {
                         >
                           ᠬᠠᠭᠠᠢ:
                         </p>
-                        <p className="text-base text-gray-900 mt-1">
+                        <p
+                          className="text-base text-gray-900 mt-1"
+                          style={{
+                            writingMode: "vertical-lr",
+                            textOrientation: "upright",
+                          }}
+                        >
                           {selectedEvent.location || "ᠲᠣᠭᠲᠠᠭᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ"}
                         </p>
                       </div>
@@ -636,7 +738,13 @@ export default function EventsDesktop() {
                           >
                             ᠠᠩᠭᠢᠯᠠᠯ:
                           </p>
-                          <p className="text-base text-purple-900 mt-1 font-medium">
+                          <p
+                            className="text-base text-purple-900 mt-1 font-medium"
+                            style={{
+                              writingMode: "vertical-lr",
+                              textOrientation: "upright",
+                            }}
+                          >
                             ᠪᠠᠭ᠂ ᠪᠦᠯᠦᢉ᠂ ᠪᠦᢈᠦ ᢉᠡᠰᠢᢉᠦᠳ ᠦ᠋ᠨ ᠠᠭᠤᠯᠵᠠᠯᠲᠠ
                           </p>
                         </div>
