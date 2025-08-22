@@ -1,4 +1,5 @@
 import { X } from "lucide-react";
+import LeafletMap from "../../common/LeafletMap";
 
 export default function EventModal({
   selectedEvent,
@@ -98,7 +99,7 @@ export default function EventModal({
                   textOrientation: "upright",
                 }}
               >
-                {selectedEvent.location || "ᠲᠣᠭᠲᠠᠭᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ"}
+                {selectedEvent.address || "ᠲᠣᠭᠲᠠᠭᠠᠭᠰᠠᠨ ᠦᠭᠡᠢ"}
               </p>
             </div>
             <div className="flex flex-col items-center gap-2">
@@ -148,38 +149,11 @@ export default function EventModal({
               )}
             </div>
           </div>
-          <div className="p-8 h-64 lg:h-full w-full bg-gray-200 rounded-lg shadow-inner">
-            {selectedEvent.location ? (
-              <iframe
-                src={`https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=${encodeURIComponent(
-                  selectedEvent.location
-                )}`}
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen=""
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Event Location Map"
-                onError={(e) => {
-                  // Fallback to search query if place API fails
-                  e.target.src = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2673.8007304077376!2d106.91693431534425!3d47.918754779196805!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5d9692d9c6bfde3d%3A0x8c1a7ac1e1b5f234!2s${encodeURIComponent(
-                    selectedEvent.location
-                  )}!5e0!3m2!1sen!2s!4v1645123456789!5m2!1sen!2s`;
-                }}
-              ></iframe>
-            ) : (
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2673.8007304077376!2d106.91693431534425!3d47.918754779196805!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5d9692d9c6bfde3d%3A0x8c1a7ac1e1b5f234!2sUlaanbaatar%2C%20Mongolia!5e0!3m2!1sen!2s!4v1645123456789!5m2!1sen!2s"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen=""
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Default Location Map"
-              ></iframe>
-            )}
+          <div className="p-4 h-64 lg:h-full w-full bg-gray-200 rounded-lg shadow-inner">
+            <LeafletMap
+              coordinates={selectedEvent.coordinates}
+              className="h-full w-full rounded-lg"
+            />
           </div>
         </div>
       </div>

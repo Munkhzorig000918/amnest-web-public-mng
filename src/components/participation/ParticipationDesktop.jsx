@@ -57,9 +57,9 @@ export default function ParticipationDesktop() {
               <Image
                 src={item.image}
                 alt={item.title}
-                width={350}
+                width={413}
                 height={231}
-                className="aspect-[350/231] flex-shrink-0"
+                className="aspect-[413/231] object-cover flex-shrink-0"
               />
               <p
                 className="text-sm w-[150px] max-h-[320px] overflow-hidden"
@@ -98,9 +98,9 @@ export default function ParticipationDesktop() {
               <Image
                 src={item.image}
                 alt={item.title}
-                width={350}
+                width={413}
                 height={231}
-                className="aspect-[350/231] flex-shrink-0"
+                className="aspect-[413/231] object-cover flex-shrink-0"
               />
               <p
                 className="text-sm w-[150px] max-h-[320px] overflow-hidden"

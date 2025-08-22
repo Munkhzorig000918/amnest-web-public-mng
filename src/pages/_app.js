@@ -1,4 +1,5 @@
 import "../styles/globals.css";
+import "leaflet/dist/leaflet.css";
 import { Provider } from "react-redux";
 import { store } from "@/redux/store";
 import { Toaster } from "react-hot-toast";
