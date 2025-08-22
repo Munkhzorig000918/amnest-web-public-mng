@@ -193,7 +193,7 @@ export default function StructureChapterMembersDesktop() {
             </p>
             <Button
               text={"ᢉᠡᠰᠢᢉᠦᠨ ᠪᠣᠯᠬᠤ"}
-              onClick={() => router.push("/member")}
+              onClick={() => router.push("/membership")}
             />
           </div>
         </div>

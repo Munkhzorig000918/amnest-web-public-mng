@@ -22,7 +22,7 @@ export default function Header() {
     { text: "ᠲᠠᠨᠢ ᠣᠷᠣᠯᠴᠣᠭ", link: "/participation" },
     { text: "ᠮᠡᠳᠡᢉᠡ ᠮᠡᠳᠡᢉᠡᠯᠡᠯ", link: "/news" },
     { text: "ᠡᠷᠬᠡᢉᠡ ᠮᠡᠳᠢᠶᠡ", link: "/right" },
-    { text: "ᠭᠢᠰᠦᠦᠨᠴᠢᠯᠡᠯ", link: "/member" },
+    { text: "ᠭᠢᠰᠦᠦᠨᠴᠢᠯᠡᠯ", link: "/membership" },
     { text: "ᠬᠠᠨᠳᠢᠪ", link: "/donation" },
     { text: "ᠬᠣᠯᠪᠣᠭ᠎ᠠ ᠪᠠᠷᠢᠬᠤ", link: "/contact" },
   ];
