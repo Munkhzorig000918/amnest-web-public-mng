@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import userApiService from "@/services/userApiService";
+import Layout from "@/components/layout/Layout";
+import Button from "@/components/common/Button";
 
 export default function Register() {
   const router = useRouter();
@@ -46,7 +48,26 @@ export default function Register() {
       const response = await userApiService.user.getUserGroups();
       setGroups(response.payload || response);
     } catch (error) {
-      setMessage("Бүлгийн мэдээлэл ачаалахад алдаа гарлаа");
+      // Provide default groups as fallback
+      setGroups({
+        userGroups: [
+          { id: 1, title: "ᠠᠮᠨᠧᠰᠲ᠋ᠢ ᠢᠨᠲ᠋ᠧᠷᠨᠡᠰᠢᠨᠯ" },
+          { id: 2, title: "ᠣᠷᠣᠨ ᠨᠤᠲᠤᠭ ᠤᠨ ᠪᠦᠯᠦᠭ" },
+          { id: 3, title: "ᠬᠦᠮᠦᠨ ᠦ ᠡᠷᠬᠡ ᠶᠢᠨ ᠪᠦᠯᠦᠭ" },
+        ],
+        userSubGroups: [
+          { id: 1, userGroupId: 1, title: "ᠤᠯᠠᠭᠠᠨᠪᠠᠭᠠᠲᠤᠷ" },
+          { id: 2, userGroupId: 1, title: "ᠳᠠᠷᠬᠠᠨ" },
+          { id: 3, userGroupId: 2, title: "ᠰᠤᠷᠭᠠᠯᠲᠠ" },
+          { id: 4, userGroupId: 2, title: "ᠠᠵᠢᠯ ᠤᠨ ᠪᠠᠢᠭᠤᠯᠯᠠᠭᠠ" },
+          { id: 5, userGroupId: 3, title: "ᠡᠮᠡᠭᠲᠡᠢ ᠶᠢᠨ ᠡᠷᠬᠡ" },
+          { id: 6, userGroupId: 3, title: "ᠡᠷᠡᠭᠲᠡᠢ ᠶᠢᠨ ᠡᠷᠬᠡ" },
+        ],
+      });
+      console.warn(
+        "ᠪᠦᠯᠦᠭ ᠦᠨ ᠮᠡᠳᠡᢉᠡᠯᠦᠯ ᠠᠴᠠᠭᠠᠯᠠᢈᠠᠳ ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠯᠠᠭ᠎ᠠ, ᠠᠨᠠᠭᠠᠬᠢ ᠪᠦᠯᠦᠭ ᠢ ᠬᠡᠷᠡᠭᠯᠡᠵᠦ ᠪᠠᠢᠨ᠎ᠠ",
+        error
+      );
     }
   };
 
@@ -81,13 +102,13 @@ export default function Register() {
         setAvailableAfter(availableTime);
       }
       setMessage(
-        "Таны утсанд 6 оронтой код илгээлээ! Та кодыг баталгаажуулах код хэсэгт оруулна уу!"
+        "ᠲᠠᠨ ᠤ᠋ ᠤᠲᠠᠰᠤᠨ ᠳ᠋ᠤ 6 ᠣᠷᠣᠨᠲᠠᠢ ᠻᠣᠳ ᠢᠯᠭᠡᢉᠡᠯᠡᢉᠡ! ᠲᠠ ᠻᠣᠳ ᠢ᠋ᠭ ᠪᠠᠲᠠᠯᠭᠠᠵᠤᠭᠤᠯᠠᢈᠤ ᠻᠣᠳ ᢈᠡᠰᠦᠭ ᠲᠦ ᠣᠷᠣᠭᠤᠯᠨ᠎ᠠ ᠤᠤ!"
       );
     } catch (error) {
       setMessage(
         error.response?.data?.message ||
           error.message ||
-          "Код илгээхэд алдаа гарлаа"
+          "ᠻᠣᠳ ᠢᠯᠭᠡᢉᠡᢈᠦᠳ ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠯᠠᠭ᠎ᠠ"
       );
     } finally {
       setLoading(false);
@@ -114,7 +135,7 @@ export default function Register() {
       setMessage(
         error.response?.data?.message ||
           error.message ||
-          "Бүртгэлд алдаа гарлаа"
+          "ᠪᠦᠷᠲᠦᠭᠡᠯ ᠳ᠋ᠤ ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠯᠠᠭ᠎ᠠ"
       );
     } finally {
       setLoading(false);
@@ -141,148 +162,267 @@ export default function Register() {
     ) || [];
 
   return (
-    <div className="container mx-auto">
-      <div className="flex lg:my-10">
-        <div className="w-full pb-10 pt-20 font-[Oswald] sm:px-10 lg:min-h-[600px]">
-          <form
-            className="mx-auto flex w-fit flex-col items-center justify-center"
-            onSubmit={handleSubmit}
-          >
-            <h1 className="text-3xl font-bold mb-8">Бүртгүүлэх</h1>
-
-            {message && (
-              <div
-                className={`mb-4 p-3 rounded ${
-                  message.includes("алдаа")
-                    ? "bg-red-100 text-red-700"
-                    : "bg-green-100 text-green-700"
-                }`}
+    <Layout>
+      <div className="container mx-auto px-4 w-full flex justify-center items-center bg-[#363636] min-h-screen h-full py-10">
+        <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className="p-8 lg:p-12 flex flex-col sm:flex-row gap-6">
+            {/* Title */}
+            <div className="text-center mb-8">
+              <h1
+                className="text-3xl font-bold text-gray-800"
+                style={{
+                  writingMode: "vertical-lr",
+                  textOrientation: "upright",
+                  margin: "0 auto",
+                }}
               >
-                {message}
+                ᠪᠦᠷᠲᠦᠭᠦᠯᢈᠦ
+              </h1>
+            </div>
+
+            {/* Message */}
+            {message && (
+              <div className="mb-6 flex justify-center">
+                <div
+                  className={`p-4 rounded-lg max-w-md ${
+                    message.includes("ᠠᠯᠳᠠᠭ᠎ᠠ")
+                      ? "bg-red-100 text-red-700"
+                      : "bg-green-100 text-green-700"
+                  }`}
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                    minHeight: "150px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {message}
+                </div>
               </div>
             )}
 
-            <div className="mt-8 flex flex-col sm:flex-row">
-              <label className="my-auto min-w-[225px] text-xl">Бүлэг*:</label>
-              <select
-                name="groupId"
-                value={formData.groupId}
-                onChange={handleInputChange}
-                className="w-[320px] border-2 p-1 px-2 mt-2 text-black"
-              >
-                {groups.userGroups?.map((group) => (
-                  <option key={group.id} value={group.id}>
-                    {group.title}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="mt-8 flex flex-col sm:flex-row">
-              <label className="my-auto min-w-[225px] text-xl">
-                Дэд бүлэг*:
-              </label>
-              <select
-                name="subGroupId"
-                value={formData.subGroupId || ""}
-                onChange={handleInputChange}
-                disabled={!formData.groupId}
-                className="w-[320px] border-2 p-1 px-2 mt-2 text-black"
-              >
-                <option value="">Сонгоно уу</option>
-                {availableSubGroups.map((subGroup) => (
-                  <option key={subGroup.id} value={subGroup.id}>
-                    {subGroup.title}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="mt-8 flex flex-col sm:flex-row">
-              <label className="my-auto min-w-[225px] text-xl">
-                Утасны дугаар*:
-              </label>
-              <input
-                name="phone"
-                className="mt-2 w-[320px] flex-1 border border-black p-2"
-                type="tel"
-                placeholder="xxxxxxxx"
-                maxLength="8"
-                value={formData.phone}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            <div className="mt-8 flex flex-col sm:flex-row">
-              <label className="my-auto min-w-[225px] text-xl">
-                Баталгаажуулах код*:
-              </label>
-              <input
-                name="phoneVerifyCode"
-                className="mt-2 w-[320px] flex-1 border border-black p-2"
-                type="tel"
-                placeholder="xxxxxx"
-                maxLength="6"
-                value={formData.phoneVerifyCode}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            <div className="mt-2 w-full flex justify-end">
-              <button
-                type="button"
-                onClick={sendSmsCode}
-                disabled={!canSendCode || loading}
-                className={`px-5 ml-5 py-2 text-center text-lg ${
-                  canSendCode && !loading
-                    ? "bg-blue-500 text-white hover:bg-blue-600"
-                    : "bg-gray-300 text-gray-500"
-                }`}
-              >
-                {timeLeft > 0 ? `Код илгээх (${timeLeft})` : "Код илгээх"}
-              </button>
-            </div>
-
-            <div className="mt-4 flex flex-col sm:flex-row">
-              <label className="my-auto min-w-[225px] text-xl">Нууц үг*:</label>
-              <input
-                name="password"
-                className="mt-2 w-[320px] flex-1 border border-black p-2"
-                type="password"
-                placeholder="Хамгийн багадаа 6 тэмдэгт"
-                value={formData.password}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            <div className="mt-4 flex flex-col sm:flex-row">
-              <label className="my-auto min-w-[225px] text-xl">
-                Нууц үг давтах*:
-              </label>
-              <input
-                name="passwordConfirm"
-                className="mt-2 w-[320px] flex-1 border border-black p-2"
-                type="password"
-                placeholder="Нууц үгээ дахин оруулна уу"
-                value={formData.passwordConfirm}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={!isFormValid() || loading}
-              className={`w-[200px] mt-10 py-2 text-center text-lg ${
-                isFormValid() && !loading
-                  ? "bg-blue-500 text-white hover:bg-blue-600"
-                  : "bg-gray-300 text-gray-500"
-              }`}
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col md:flex-row gap-6 max-w-4xl mx-auto"
             >
-              {loading ? "Уншиж байна..." : "Бүртгэл үүсгэх"}
-            </button>
-          </form>
+              {/* Group Selection */}
+              <div className="flex flex-row gap-2">
+                <label
+                  className="text-lg font-medium text-gray-700"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  ᠪᠦᠯᠦᠭ*:
+                </label>
+                <select
+                  name="groupId"
+                  value={formData.groupId}
+                  onChange={handleInputChange}
+                  className="border-2 border-gray-300 pl-1 text-center rounded-lg"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                >
+                  {groups.userGroups?.map((group) => (
+                    <option key={group.id} value={group.id}>
+                      {group.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Sub Group Selection */}
+              <div className="flex flex-row gap-2">
+                <label
+                  className="text-lg font-medium text-gray-700"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  ᠳᠡᠳ ᠪᠦᠯᠦᠭ*:
+                </label>
+                <select
+                  name="subGroupId"
+                  value={formData.subGroupId || ""}
+                  onChange={handleInputChange}
+                  disabled={!formData.groupId}
+                  className="border-2 border-gray-300 pl-1 text-center rounded-lg"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                >
+                  <option value="">ᠰᠣᠩᠭᠣᠨ᠎ᠠ ᠤᠤ</option>
+                  {availableSubGroups.map((subGroup) => (
+                    <option key={subGroup.id} value={subGroup.id}>
+                      {subGroup.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Phone Number */}
+              <div className="flex flex-row gap-2">
+                <label
+                  className="text-lg font-medium text-gray-700"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  ᠤᠲᠠᠰᠤᠨ ᠤ᠋ ᠳᠤᠭᠠᠷ*:
+                </label>
+                <input
+                  name="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  className="border-2 border-gray-300 text-center w-12 rounded-lg"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                  placeholder="xxxxxxxx"
+                  maxLength="8"
+                />
+              </div>
+
+              {/* Verification Code */}
+              <div className="flex flex-row gap-2">
+                <label
+                  className="text-lg font-medium text-gray-700"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  ᠪᠠᠲᠠᠯᠭᠠᠵᠤᠭᠤᠯᠠᢈᠤ ᠻᠣᠳ*:
+                </label>
+                <input
+                  name="phoneVerifyCode"
+                  type="tel"
+                  value={formData.phoneVerifyCode}
+                  onChange={handleInputChange}
+                  className="border-2 border-gray-300 p-3 rounded-lg w-12 text-center"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                  placeholder="xxxxxx"
+                  maxLength="6"
+                />
+              </div>
+
+              {/* Send Code Button */}
+              <div className="flex justify-center">
+                <Button
+                  text={
+                    timeLeft > 0 ? `ᠻᠣᠳ ᠢᠯᠭᠡᢉᠦ (${timeLeft})` : "ᠻᠣᠳ ᠢᠯᠭᠡᢉᠦ"
+                  }
+                  type="secondary"
+                  disabled={!canSendCode || loading}
+                  onClick={sendSmsCode}
+                  className="py-2 px-4 text-lg"
+                />
+              </div>
+
+              {/* Password */}
+              <div className="flex flex-row gap-2">
+                <label
+                  className="text-lg font-medium text-gray-700"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  ᠨᠢᠭᠤᠴᠠ ᠦᠭᠡ*:
+                </label>
+                <input
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className="border-2 border-gray-300 p-3 rounded-lg w-12 text-center"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                  placeholder="ᠬᠠᠮᠤᠭᠢᠢᠨ ᠪᠠᠭᠠᠳᠠᠭ᠎ᠠ 6 ᠲᠡᠮᠳᠡᠭᠲᠦ"
+                />
+              </div>
+
+              {/* Confirm Password */}
+              <div className="flex flex-row gap-2">
+                <label
+                  className="text-lg font-medium text-gray-700"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  ᠨᠢᠭᠤᠴᠠ ᠦᠭᠡ ᠳᠠᠪᠲᠠᢈᠤ*:
+                </label>
+                <input
+                  name="passwordConfirm"
+                  type="password"
+                  value={formData.passwordConfirm}
+                  onChange={handleInputChange}
+                  className="border-2 border-gray-300 p-3 rounded-lg w-12 text-center"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                  }}
+                  placeholder="ᠨᠢᠭᠤᠴᠠ ᠦᠭᠡᠭ᠎ᠡ ᠳᠠᠬᠢᠨ ᠣᠷᠣᠭᠤᠯᠨ᠎ᠠ ᠤᠤ"
+                />
+              </div>
+
+              <Button
+                text={loading ? "ᠤᠨᠰᠢᠵᠤ ᠪᠠᠢᠨ᠎ᠠ..." : "ᠪᠦᠷᠲᠦᠭᠡᠯ ᠦᠦᠰᠭᠡᢈᠦ"}
+                type="primary"
+                disabled={!isFormValid() || loading}
+                onClick={handleSubmit}
+                className="py-3 px-8 text-lg"
+              />
+
+              {/* Back to Login Link */}
+              <div className="text-center col-span-1 md:col-span-2">
+                <button
+                  type="button"
+                  onClick={() => router.push("/member")}
+                  className="text-blue-600 hover:text-blue-800"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                    height: "150px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                  }}
+                >
+                  ᠨᠡᠪᠲᠡᠷᠡᢈᠦ ᢈᠤᠤᠳᠠᠰ ᠷᠤᠤ ᠪᠤᠴᠠᢈᠤ
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }

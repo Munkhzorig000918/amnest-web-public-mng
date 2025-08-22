@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import userApiService from "@/services/userApiService";
+import Layout from "@/components/layout/Layout";
+import Button from "@/components/common/Button";
 
 export default function ResetPassword() {
   const router = useRouter();
@@ -31,12 +33,12 @@ export default function ResetPassword() {
     try {
       await userApiService.auth.resetPasswordSendCode(formData.phone);
       setStep(2);
-      setMessage("Таны утсанд баталгаажуулах код илгээлээ!");
+      setMessage("ᠲᠠᠨ ᠤ᠋ ᠤᠲᠠᠰᠤᠨ ᠳ᠋ᠤ ᠪᠠᠲᠠᠯᠭᠠᠵᠤᠭᠤᠯᠠᢈᠤ ᠻᠣᠳ ᠢᠯᠭᠡᢉᠡᠯᠡᢉᠡ!");
     } catch (error) {
       setMessage(
         error.response?.data?.message ||
           error.message ||
-          "Код илгээхэд алдаа гарлаа"
+          "ᠻᠣᠳ ᠢᠯᠭᠡᢉᠡᢈᠦᠳ ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠯᠠᠭ᠎ᠠ"
       );
     } finally {
       setLoading(false);
@@ -52,7 +54,7 @@ export default function ResetPassword() {
       formData.newPassword !== formData.confirmPassword ||
       formData.newPassword.length < 6
     ) {
-      setMessage("Мэдээлэл буруу эсвэл нууц үг таарахгүй байна");
+      setMessage("ᠮᠡᠳᠡᢉᠡᠯᠦᠯ ᠪᠤᠷᠤᠤ ᠡᠰᠡᢉᠡ ᠨᠢᠭᠤᠴᠠ ᠦᠭᠡ ᠲᠠᠠᠷᠠᢈᠤᠭᠦᠢ ᠪᠠᠢᠨ᠎ᠠ");
       return;
     }
 
@@ -65,7 +67,7 @@ export default function ResetPassword() {
       });
 
       setMessage(
-        "Нууц үг амжилттай солигдлоо! Та шинэ нууц үгээрээ нэвтэрч орж болно."
+        "ᠨᠢᠭᠤᠴᠠ ᠦᠭᠡ ᠠᠮᠵᠢᠯᠲᠲᠠᠢ ᠰᠣᠯᠢᠭᠡᠳᠯᠡᢉᠡ! ᠲᠠ ᠰᠢᠨ᠎ᠡ ᠨᠢᠭᠤᠴᠠ ᠦᠭᠡᠭ᠎ᠡᠷᠡᢉᠡ ᠨᠡᠪᠲᠡᠷᠡᢈᠦ ᠣᠷᠣ ᠪᠣᠯᠨ᠎ᠠ."
       );
       setTimeout(() => {
         router.push("/member");
@@ -74,7 +76,7 @@ export default function ResetPassword() {
       setMessage(
         error.response?.data?.message ||
           error.message ||
-          "Нууц үг солихэд алдаа гарлаа"
+          "ᠨᠢᠭᠤᠴᠠ ᠦᠭᠡ ᠰᠣᠯᠢᢈᠦᠳ ᠠᠯᠳᠠᠭ᠎ᠠ ᠭᠠᠷᠯᠠᠭ᠎ᠠ"
       );
     } finally {
       setLoading(false);
@@ -82,153 +84,250 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Нууц үг сэргээх</h1>
+    <Layout>
+      <div className="container mx-auto px-4 w-full flex justify-center items-center bg-[#363636] min-h-screen h-full py-10">
+        <div className="max-w-lg mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className="p-8 lg:p-12 flex flex-col sm:flex-row gap-6">
+            {/* Title */}
+            <div className="text-center mb-8">
+              <h1
+                className="text-3xl font-bold text-gray-800"
+                style={{
+                  writingMode: "vertical-lr",
+                  textOrientation: "upright",
+                  margin: "0 auto",
+                }}
+              >
+                ᠨᠢᠭᠤᠴᠠ ᠦᠭᠡ ᠰᠡᠷᠭᠡᢉᠡᢈᠦ
+              </h1>
+            </div>
 
-        {message && (
-          <div
-            className={`mb-4 p-3 rounded ${
-              message.includes("алдаа")
-                ? "bg-red-100 text-red-700"
-                : "bg-green-100 text-green-700"
-            }`}
-          >
-            {message}
+            {/* Message */}
+            {message && (
+              <div className="mb-6 flex justify-center">
+                <div
+                  className={`p-4 rounded-lg max-w-md ${
+                    message.includes("ᠠᠯᠳᠠᠭ᠎ᠠ")
+                      ? "bg-red-100 text-red-700"
+                      : "bg-green-100 text-green-700"
+                  }`}
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                    minHeight: "150px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {message}
+                </div>
+              </div>
+            )}
+
+            {/* Step 1: Phone Input */}
+            {step === 1 && (
+              <form
+                onSubmit={sendResetCode}
+                className="flex flex-col md:flex-row gap-6 w-full mx-auto"
+              >
+                <div className="flex flex-row gap-2">
+                  <label
+                    className="text-lg font-medium text-gray-700"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    ᠤᠲᠠᠰᠤᠨ ᠤ᠋ ᠳᠤᠭᠠᠷ:
+                  </label>
+                  <input
+                    name="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    className="border-2 border-gray-300 text-center w-12 rounded-lg"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                    placeholder="99123456"
+                    maxLength="8"
+                    required
+                  />
+                </div>
+
+                <p
+                  className="text-sm text-gray-500 text-center"
+                  style={{
+                    writingMode: "vertical-lr",
+                    textOrientation: "upright",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  ᠪᠦᠷᠲᠦᠭᠡᠯᠲᠡᠢ ᠤᠲᠠᠰᠤᠨ ᠤ᠋ ᠳᠤᠭᠠᠷᠠᠭ᠎ᠠ ᠣᠷᠣᠭᠤᠯᠨ᠎ᠠ ᠤᠤ
+                </p>
+
+                <Button
+                  text={loading ? "ᠢᠯᠭᠡᢉᠦ ᠪᠠᠢᠨ᠎ᠠ..." : "ᠻᠣᠳ ᠢᠯᠭᠡᢉᠦ"}
+                  type="primary"
+                  disabled={
+                    loading || !formData.phone || formData.phone.length !== 8
+                  }
+                  onClick={sendResetCode}
+                  className="py-3 px-6 text-lg"
+                />
+              </form>
+            )}
+
+            {/* Step 2: Code Verification and New Password */}
+            {step === 2 && (
+              <form
+                onSubmit={confirmReset}
+                className="flex flex-col md:flex-row gap-6 max-w-4xl mx-auto"
+              >
+                <div className="flex flex-row gap-2">
+                  <label
+                    className="text-lg font-medium text-gray-700"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    ᠪᠠᠲᠠᠯᠭᠠᠵᠤᠭᠤᠯᠠᢈᠤ ᠻᠣᠳ:
+                  </label>
+                  <input
+                    name="code"
+                    type="text"
+                    value={formData.code}
+                    onChange={handleInputChange}
+                    className="border-2 border-gray-300 p-3 rounded-lg w-12 text-center"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                    placeholder="6 ᠣᠷᠣᠨᠲᠠᠢ ᠻᠣᠳ"
+                    maxLength="6"
+                    required
+                  />
+                </div>
+
+                <div className="flex flex-row gap-2">
+                  <label
+                    className="text-lg font-medium text-gray-700"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    ᠰᠢᠨ᠎ᠡ ᠨᠢᠭᠤᠴᠠ ᠦᠭᠡ:
+                  </label>
+                  <input
+                    name="newPassword"
+                    type="password"
+                    value={formData.newPassword}
+                    onChange={handleInputChange}
+                    className="border-2 border-gray-300 p-3 rounded-lg w-12 text-center"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                    required
+                  />
+                </div>
+
+                <div className="flex flex-row gap-2">
+                  <label
+                    className="text-lg font-medium text-gray-700"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    ᠨᠢᠭᠤᠴᠠ ᠦᠭᠡ ᠳᠠᠪᠲᠠᢈᠤ:
+                  </label>
+                  <input
+                    name="confirmPassword"
+                    type="password"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                    className="border-2 border-gray-300 p-3 rounded-lg w-12 text-center"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                    required
+                  />
+                </div>
+
+                {formData.newPassword &&
+                  formData.confirmPassword &&
+                  formData.newPassword !== formData.confirmPassword && (
+                    <p
+                      className="text-red-500 text-sm"
+                      style={{
+                        writingMode: "vertical-lr",
+                        textOrientation: "upright",
+                        height: "100px",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      ᠨᠢᠭᠤᠴᠠ ᠦᠭᠡ ᠲᠠᠠᠷᠠᢈᠤᠭᠦᠢ ᠪᠠᠢᠨ᠎ᠠ
+                    </p>
+                  )}
+
+                <div className="flex gap-4">
+                  <Button
+                    text="ᠪᠤᠴᠠᢈᠤ"
+                    type="secondary"
+                    onClick={() => setStep(1)}
+                    className="py-3 px-6 text-lg"
+                  />
+                  <Button
+                    text={loading ? "ᠰᠣᠯᠢᠵᠤ ᠪᠠᠢᠨ᠎ᠠ..." : "ᠰᠣᠯᠢᢈᠤ"}
+                    type="primary"
+                    disabled={
+                      loading ||
+                      !formData.code ||
+                      formData.newPassword !== formData.confirmPassword ||
+                      formData.newPassword.length < 6
+                    }
+                    onClick={confirmReset}
+                    className="py-3 px-6 text-lg"
+                  />
+                </div>
+              </form>
+            )}
+
+            {/* Back to Login Link */}
+            <div className="text-center col-span-1 md:col-span-2">
+              <button
+                onClick={() => router.push("/member")}
+                className="text-blue-600 hover:text-blue-800"
+                style={{
+                  writingMode: "vertical-lr",
+                  textOrientation: "upright",
+                  height: "150px",
+                  display: "inline-flex",
+                  alignItems: "center",
+                }}
+              >
+                ᠨᠡᠪᠲᠡᠷᠡᢈᠦ ᢈᠤᠤᠳᠠᠰ ᠷᠤᠤ ᠪᠤᠴᠠᢈᠤ
+              </button>
+            </div>
           </div>
-        )}
-
-        {step === 1 && (
-          <form onSubmit={sendResetCode} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Утасны дугаар:
-              </label>
-              <input
-                name="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={handleInputChange}
-                className="w-full border border-gray-300 p-2 rounded"
-                placeholder="99123456"
-                maxLength="8"
-                required
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Бүртгэлтэй утасны дугаараа оруулна уу
-              </p>
-            </div>
-
-            <button
-              type="submit"
-              disabled={
-                loading || !formData.phone || formData.phone.length !== 8
-              }
-              className={`w-full py-2 px-4 rounded font-medium ${
-                loading || !formData.phone || formData.phone.length !== 8
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-blue-500 text-white hover:bg-blue-600"
-              }`}
-            >
-              {loading ? "Илгээж байна..." : "Код илгээх"}
-            </button>
-          </form>
-        )}
-
-        {step === 2 && (
-          <form onSubmit={confirmReset} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Баталгаажуулах код:
-              </label>
-              <input
-                name="code"
-                type="text"
-                value={formData.code}
-                onChange={handleInputChange}
-                className="w-full border border-gray-300 p-2 rounded"
-                placeholder="6 оронтой код"
-                maxLength="6"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Шинэ нууц үг:
-              </label>
-              <input
-                name="newPassword"
-                type="password"
-                value={formData.newPassword}
-                onChange={handleInputChange}
-                className="w-full border border-gray-300 p-2 rounded"
-                placeholder="Хамгийн багадаа 6 тэмдэгт"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Нууц үг давтах:
-              </label>
-              <input
-                name="confirmPassword"
-                type="password"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                className="w-full border border-gray-300 p-2 rounded"
-                placeholder="Нууц үгээ дахин оруулна уу"
-                required
-              />
-            </div>
-
-            {formData.newPassword &&
-              formData.confirmPassword &&
-              formData.newPassword !== formData.confirmPassword && (
-                <p className="text-red-500 text-sm">Нууц үг таарахгүй байна</p>
-              )}
-
-            <div className="flex space-x-2">
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="flex-1 py-2 px-4 rounded font-medium bg-gray-300 text-gray-700 hover:bg-gray-400"
-              >
-                Буцах
-              </button>
-              <button
-                type="submit"
-                disabled={
-                  loading ||
-                  !formData.code ||
-                  formData.newPassword !== formData.confirmPassword ||
-                  formData.newPassword.length < 6
-                }
-                className={`flex-1 py-2 px-4 rounded font-medium ${
-                  loading ||
-                  !formData.code ||
-                  formData.newPassword !== formData.confirmPassword ||
-                  formData.newPassword.length < 6
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "bg-blue-500 text-white hover:bg-blue-600"
-                }`}
-              >
-                {loading ? "Солиж байна..." : "Солих"}
-              </button>
-            </div>
-          </form>
-        )}
-
-        <div className="mt-6 text-center text-sm">
-          <button
-            onClick={() => router.push("/member")}
-            className="text-blue-500 hover:underline"
-          >
-            Нэвтрэх хуудас руу буцах
-          </button>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }
