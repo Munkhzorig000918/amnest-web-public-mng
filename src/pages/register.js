@@ -164,8 +164,8 @@ export default function Register() {
   return (
     <Layout>
       <div className="container mx-auto px-4 w-full flex justify-center items-center bg-[#363636] min-h-screen h-full py-10">
-        <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="p-8 lg:p-12 flex flex-col sm:flex-row gap-6">
+        <div className="w-full max-w-6xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className="w-full p-8 lg:p-12 flex flex-col sm:flex-row gap-6">
             {/* Title */}
             <div className="text-center mb-8">
               <h1
@@ -207,217 +207,213 @@ export default function Register() {
               onSubmit={handleSubmit}
               className="flex flex-col md:flex-row gap-6 max-w-4xl mx-auto"
             >
-              {/* Group Selection */}
-              <div className="flex flex-row gap-2">
-                <label
-                  className="text-lg font-medium text-gray-700"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  ᠪᠦᠯᠦᠭ*:
-                </label>
-                <select
-                  name="groupId"
-                  value={formData.groupId}
-                  onChange={handleInputChange}
-                  className="border-2 border-gray-300 pl-1 text-center rounded-lg"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                >
-                  {groups.userGroups?.map((group) => (
-                    <option key={group.id} value={group.id}>
-                      {group.title}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {/* Mobile: Grid layout for better spacing */}
+              <div className="grid grid-cols-3 gap-4 md:contents">
+                {/* Group Selection */}
+                <div className="flex flex-row gap-2 col-span-1 md:col-span-1">
+                  <label
+                    className="text-lg font-medium text-gray-700 md:block"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    ᠪᠦᠯᠦᠭ*:
+                  </label>
+                  <select
+                    name="groupId"
+                    value={formData.groupId}
+                    onChange={handleInputChange}
+                    className="border-2 border-gray-300 pl-1 text-center rounded-lg flex-1 md:w-12"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                  >
+                    {groups.userGroups?.map((group) => (
+                      <option key={group.id} value={group.id}>
+                        {group.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {/* Sub Group Selection */}
+                <div className="flex flex-row gap-2 col-span-1 md:col-span-1">
+                  <label
+                    className="text-lg font-medium text-gray-700"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    ᠳᠡᠳ ᠪᠦᠯᠦᠭ*:
+                  </label>
+                  <select
+                    name="subGroupId"
+                    value={formData.subGroupId || ""}
+                    onChange={handleInputChange}
+                    disabled={!formData.groupId}
+                    className="border-2 border-gray-300 pl-1 text-center rounded-lg flex-1 md:w-12"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                  >
+                    <option value="">ᠰᠣᠩᠭᠣᠨ᠎ᠠ ᠤᠤ</option>
+                    {availableSubGroups.map((subGroup) => (
+                      <option key={subGroup.id} value={subGroup.id}>
+                        {subGroup.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {/* Phone Number */}
+                <div className="flex flex-row gap-2 col-span-1 md:col-span-1">
+                  <label
+                    className="text-lg font-medium text-gray-700"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    ᠤᠲᠠᠰᠤᠨ ᠤ᠋ ᠳᠤᠭᠠᠷ*:
+                  </label>
+                  <input
+                    name="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    className="border-2 border-gray-300 text-center rounded-lg flex-1 md:w-12"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                    placeholder="xxxxxxxx"
+                    maxLength="8"
+                  />
+                </div>
+                {/* Verification Code */}
+                <div className="flex flex-row gap-2 col-span-1 md:col-span-1">
+                  <label
+                    className="text-lg font-medium text-gray-700"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    ᠪᠠᠲᠠᠯᠭᠠᠵᠤᠭᠤᠯᠠᢈᠤ ᠻᠣᠳ*:
+                  </label>
+                  <input
+                    name="phoneVerifyCode"
+                    type="tel"
+                    value={formData.phoneVerifyCode}
+                    onChange={handleInputChange}
+                    className="border-2 border-gray-300 p-3 rounded-lg text-center flex-1 md:w-12"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                    placeholder="xxxxxx"
+                    maxLength="6"
+                  />
+                </div>
+                {/* Send Code Button */}
+                <div className="flex justify-center col-span-1">
+                  <Button
+                    text={
+                      timeLeft > 0 ? `ᠻᠣᠳ ᠢᠯᠭᠡᢉᠦ (${timeLeft})` : "ᠻᠣᠳ ᠢᠯᠭᠡᢉᠦ"
+                    }
+                    type="secondary"
+                    disabled={!canSendCode || loading}
+                    onClick={sendSmsCode}
+                    className="py-2 px-4 text-lg"
+                  />
+                </div>
 
-              {/* Sub Group Selection */}
-              <div className="flex flex-row gap-2">
-                <label
-                  className="text-lg font-medium text-gray-700"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  ᠳᠡᠳ ᠪᠦᠯᠦᠭ*:
-                </label>
-                <select
-                  name="subGroupId"
-                  value={formData.subGroupId || ""}
-                  onChange={handleInputChange}
-                  disabled={!formData.groupId}
-                  className="border-2 border-gray-300 pl-1 text-center rounded-lg"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                >
-                  <option value="">ᠰᠣᠩᠭᠣᠨ᠎ᠠ ᠤᠤ</option>
-                  {availableSubGroups.map((subGroup) => (
-                    <option key={subGroup.id} value={subGroup.id}>
-                      {subGroup.title}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Phone Number */}
-              <div className="flex flex-row gap-2">
-                <label
-                  className="text-lg font-medium text-gray-700"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  ᠤᠲᠠᠰᠤᠨ ᠤ᠋ ᠳᠤᠭᠠᠷ*:
-                </label>
-                <input
-                  name="phone"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  className="border-2 border-gray-300 text-center w-12 rounded-lg"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                  placeholder="xxxxxxxx"
-                  maxLength="8"
-                />
-              </div>
-
-              {/* Verification Code */}
-              <div className="flex flex-row gap-2">
-                <label
-                  className="text-lg font-medium text-gray-700"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  ᠪᠠᠲᠠᠯᠭᠠᠵᠤᠭᠤᠯᠠᢈᠤ ᠻᠣᠳ*:
-                </label>
-                <input
-                  name="phoneVerifyCode"
-                  type="tel"
-                  value={formData.phoneVerifyCode}
-                  onChange={handleInputChange}
-                  className="border-2 border-gray-300 p-3 rounded-lg w-12 text-center"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                  placeholder="xxxxxx"
-                  maxLength="6"
-                />
-              </div>
-
-              {/* Send Code Button */}
-              <div className="flex justify-center">
-                <Button
-                  text={
-                    timeLeft > 0 ? `ᠻᠣᠳ ᠢᠯᠭᠡᢉᠦ (${timeLeft})` : "ᠻᠣᠳ ᠢᠯᠭᠡᢉᠦ"
-                  }
-                  type="secondary"
-                  disabled={!canSendCode || loading}
-                  onClick={sendSmsCode}
-                  className="py-2 px-4 text-lg"
-                />
-              </div>
-
-              {/* Password */}
-              <div className="flex flex-row gap-2">
-                <label
-                  className="text-lg font-medium text-gray-700"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  ᠨᠢᠭᠤᠴᠠ ᠦᠭᠡ*:
-                </label>
-                <input
-                  name="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className="border-2 border-gray-300 p-3 rounded-lg w-12 text-center"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                  placeholder="ᠬᠠᠮᠤᠭᠢᠢᠨ ᠪᠠᠭᠠᠳᠠᠭ᠎ᠠ 6 ᠲᠡᠮᠳᠡᠭᠲᠦ"
-                />
-              </div>
-
-              {/* Confirm Password */}
-              <div className="flex flex-row gap-2">
-                <label
-                  className="text-lg font-medium text-gray-700"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  ᠨᠢᠭᠤᠴᠠ ᠦᠭᠡ ᠳᠠᠪᠲᠠᢈᠤ*:
-                </label>
-                <input
-                  name="passwordConfirm"
-                  type="password"
-                  value={formData.passwordConfirm}
-                  onChange={handleInputChange}
-                  className="border-2 border-gray-300 p-3 rounded-lg w-12 text-center"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                  }}
-                  placeholder="ᠨᠢᠭᠤᠴᠠ ᠦᠭᠡᠭ᠎ᠡ ᠳᠠᠬᠢᠨ ᠣᠷᠣᠭᠤᠯᠨ᠎ᠠ ᠤᠤ"
-                />
-              </div>
-
-              <Button
-                text={loading ? "ᠤᠨᠰᠢᠵᠤ ᠪᠠᠢᠨ᠎ᠠ..." : "ᠪᠦᠷᠲᠦᠭᠡᠯ ᠦᠦᠰᠭᠡᢈᠦ"}
-                type="primary"
-                disabled={!isFormValid() || loading}
-                onClick={handleSubmit}
-                className="py-3 px-8 text-lg"
-              />
-
-              {/* Back to Login Link */}
-              <div className="text-center col-span-1 md:col-span-2">
-                <button
-                  type="button"
-                  onClick={() => router.push("/member")}
-                  className="text-blue-600 hover:text-blue-800"
-                  style={{
-                    writingMode: "vertical-lr",
-                    textOrientation: "upright",
-                    height: "150px",
-                    display: "inline-flex",
-                    alignItems: "center",
-                  }}
-                >
-                  ᠨᠡᠪᠲᠡᠷᠡᢈᠦ ᢈᠤᠤᠳᠠᠰ ᠷᠤᠤ ᠪᠤᠴᠠᢈᠤ
-                </button>
+                {/* Password */}
+                <div className="flex flex-row gap-2 col-span-1 md:col-span-1">
+                  <label
+                    className="text-lg font-medium text-gray-700"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    ᠨᠢᠭᠤᠴᠠ ᠦᠭᠡ*:
+                  </label>
+                  <input
+                    name="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    className="border-2 border-gray-300 p-3 rounded-lg text-center flex-1 md:w-12"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                    placeholder="ᠬᠠᠮᠤᠭᠢᠢᠨ ᠪᠠᠭᠠᠳᠠᠭ᠎ᠠ 6 ᠲᠡᠮᠳᠡᠭᠲᠦ"
+                  />
+                </div>
+                {/* Confirm Password */}
+                <div className="flex flex-row gap-2 col-span-1 md:col-span-1">
+                  <label
+                    className="text-lg font-medium text-gray-700"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    ᠨᠢᠭᠤᠴᠠ ᠦᠭᠡ ᠳᠠᠪᠲᠠᢈᠤ*:
+                  </label>
+                  <input
+                    name="passwordConfirm"
+                    type="password"
+                    value={formData.passwordConfirm}
+                    onChange={handleInputChange}
+                    className="border-2 border-gray-300 p-3 rounded-lg text-center flex-1 md:w-12"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                    }}
+                    placeholder="ᠨᠢᠭᠤᠴᠠ ᠦᠭᠡᠭ᠎ᠡ ᠳᠠᠬᠢᠨ ᠣᠷᠣᠭᠤᠯᠨ᠎ᠠ ᠤᠤ"
+                  />
+                </div>
+                {/* Submit Button and Back to Login Link */}
+                <div className="flex justify-center gap-4 col-span-2 md:col-span-1">
+                  <Button
+                    text={loading ? "ᠤᠨᠰᠢᠵᠤ ᠪᠠᠢᠨ᠎ᠠ..." : "ᠪᠦᠷᠲᠦᠭᠡᠯ ᠦᠦᠰᠭᠡᢈᠦ"}
+                    type="primary"
+                    disabled={!isFormValid() || loading}
+                    onClick={handleSubmit}
+                    className="py-3 px-3 min-h-max text-lg"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => router.push("/member")}
+                    className="text-blue-600 hover:text-blue-800 py-3 px-4"
+                    style={{
+                      writingMode: "vertical-lr",
+                      textOrientation: "upright",
+                      height: "auto",
+                      display: "inline-flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    ᠨᠡᠪᠲᠡᠷᠡᢈᠦ ᢈᠤᠤᠳᠠᠰ ᠷᠤᠤ ᠪᠤᠴᠠᢈᠤ
+                  </button>
+                </div>
               </div>
             </form>
           </div>
